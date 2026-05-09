@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User App</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #f4f4f4;
+    text-align: center;
+}
+.header {
+    background: #6c2bd9;
+    color: white;
+    padding: 15px;
+    font-size: 20px;
+}
+.box {
+    margin: 30px;
+    padding: 20px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    font-size: 18px;
+}
+.loading { color: #999; font-style: italic; }
+.error   { color: #e74c3c; }
+</style>
+
+<!-- ✅ সঠিক Compat SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+</head>
+<body>
+
+<div class="header">User App</div>
+
+<div class="box" id="textBox">
+    <span class="loading">Loading...</span>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyA1CzQX9tgbLd46QfvCK6Rwqa0z9CRWoMs",
+  authDomain: "agls-5bd4c.firebaseapp.com",  // ✅ ঠিক করা হয়েছে
+  databaseURL: "https://agls-5bd4c-default-rtdb.firebaseio.com/",
+  projectId: "agls-5bd4c",
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+const textBox = document.getElementById("textBox");
+
+db.ref("message").on(
+  "value",
+  (snapshot) => {
+    const data = snapshot.val();
+    textBox.innerHTML = data
+      ? `<span>${data}</span>`
+      : `<span class="error">No message found</span>`;
+  },
+  (error) => {
+    textBox.innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+  }
+);
+</script>
+
+</body>
+</html>
