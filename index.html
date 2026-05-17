@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>পাইকারি বাজার</title>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -16,7 +16,13 @@
     --shadow: 0 4px 20px rgba(108,43,217,0.12);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Hind Siliguri',sans-serif; background:var(--bg); min-height:100vh; overflow-x:hidden; }
+body { 
+    font-family:'Hind Siliguri',sans-serif; 
+    background:var(--bg); 
+    min-height:100vh; 
+    overflow-x:hidden;
+    padding-bottom: 80px;
+}
 
 /* NO INTERNET */
 #noInternet { display:none; position:fixed; inset:0; background:linear-gradient(160deg,#1a0a3e,#6c2bd9); flex-direction:column; align-items:center; justify-content:center; z-index:9999; padding:40px; text-align:center; }
@@ -27,186 +33,198 @@ body { font-family:'Hind Siliguri',sans-serif; background:var(--bg); min-height:
 .ni-btn   { padding:13px 36px; background:var(--accent); color:#1a0a3e; border:none; border-radius:99px; font-size:15px; font-weight:700; font-family:'Hind Siliguri',sans-serif; cursor:pointer; }
 
 /* SPLASH */
-#splash { position:fixed; inset:0; background:linear-gradient(160deg,#1a0a3e,#6c2bd9,#a259f7); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9998; animation:splashOut 0.5s ease 3s forwards; }
+#splash { position:fixed; inset:0; background:linear-gradient(160deg,#1a0a3e,#6c2bd9,#a259f7); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9998; animation:splashOut 0.5s ease 2s forwards; }
 @keyframes splashOut { to{opacity:0;pointer-events:none} }
-.sp-logo { width:100px; height:100px; background:white; border-radius:26px; display:flex; align-items:center; justify-content:center; font-size:50px; margin-bottom:18px; box-shadow:0 10px 40px rgba(0,0,0,0.3); animation:popIn 0.7s cubic-bezier(.34,1.56,.64,1) 0.3s both; }
+.sp-logo { width:80px; height:80px; background:white; border-radius:22px; display:flex; align-items:center; justify-content:center; font-size:40px; margin-bottom:15px; box-shadow:0 10px 40px rgba(0,0,0,0.3); animation:popIn 0.7s cubic-bezier(.34,1.56,.64,1) 0.3s both; }
 @keyframes popIn { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }
-.sp-title { font-size:32px; font-weight:700; color:white; margin-bottom:6px; }
-.sp-sub   { font-size:13px; color:rgba(255,255,255,0.6); letter-spacing:3px; }
-.sp-bar-wrap { width:160px; height:4px; background:rgba(255,255,255,0.2); border-radius:99px; margin-top:48px; overflow:hidden; animation:fadeIn 0.4s 1s both; }
-.sp-bar { height:100%; background:var(--accent); border-radius:99px; animation:fillBar 2.4s ease 1s forwards; width:0; }
+.sp-title { font-size:28px; font-weight:700; color:white; margin-bottom:4px; }
+.sp-sub   { font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:3px; }
+.sp-bar-wrap { width:140px; height:3px; background:rgba(255,255,255,0.2); border-radius:99px; margin-top:35px; overflow:hidden; animation:fadeIn 0.4s 1s both; }
+.sp-bar { height:100%; background:var(--accent); border-radius:99px; animation:fillBar 2s ease 1s forwards; width:0; }
 @keyframes fillBar { 0%{width:0} 40%{width:60%} 100%{width:100%} }
 @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
 
 /* APP */
-#app { opacity:0; animation:appShow 0.5s ease 3.5s forwards; padding-bottom:80px; }
+#app { opacity:0; animation:appShow 0.3s ease 2.5s forwards; background:var(--bg); }
 @keyframes appShow { to{opacity:1} }
 
-/* HEADER */
-.header { background:linear-gradient(135deg,#1a0a3e,#6c2bd9); padding:48px 20px 28px; position:relative; overflow:hidden; }
-.header::before { content:''; position:absolute; top:-60px; right:-60px; width:200px; height:200px; background:rgba(255,255,255,0.05); border-radius:50%; }
-.header::after  { content:''; position:absolute; bottom:-40px; left:-40px; width:150px; height:150px; background:rgba(240,192,64,0.07); border-radius:50%; }
-.h-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; position:relative; z-index:1; }
-.h-logo { display:flex; align-items:center; gap:10px; }
-.h-logo-icon { width:38px; height:38px; background:var(--accent); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; }
-.h-logo-text { font-size:18px; font-weight:700; color:white; }
-.h-auth { display:flex; gap:8px; }
-.btn-login    { padding:8px 16px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); border-radius:99px; color:white; font-size:13px; font-family:'Hind Siliguri',sans-serif; font-weight:500; cursor:pointer; text-decoration:none; }
-.btn-register { padding:8px 16px; background:var(--accent); border:none; border-radius:99px; color:#1a0a3e; font-size:13px; font-family:'Hind Siliguri',sans-serif; font-weight:700; cursor:pointer; text-decoration:none; }
-.h-greeting { color:rgba(255,255,255,0.75); font-size:13px; margin-bottom:4px; position:relative; z-index:1; }
-.h-title    { color:white; font-size:22px; font-weight:700; margin-bottom:18px; position:relative; z-index:1; }
-.search-wrap { position:relative; z-index:1; }
-.search-input { width:100%; padding:14px 48px 14px 18px; border:none; border-radius:14px; font-size:14px; font-family:'Hind Siliguri',sans-serif; background:white; color:var(--text); box-shadow:0 4px 20px rgba(0,0,0,0.2); outline:none; }
-.search-input::placeholder { color:#aaa; }
-.search-icon { position:absolute; right:16px; top:50%; transform:translateY(-50%); font-size:18px; color:var(--primary); }
+/* ========== সার্চ বার ========== */
+.search-section {
+    padding: 0 16px;
+    margin-bottom: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: transform 0.3s ease;
+    background: var(--bg);
+    padding-top: 10px;
+}
+.search-section.hide {
+    transform: translateY(-100%);
+}
+.search-wrap {
+    position: relative;
+}
+.search-input {
+    width: 100%;
+    padding: 9px 20px 9px 22px;
+    font-size: 15px;
+    font-family: 'Hind Siliguri', sans-serif;
+    border: none;
+    border-radius: 12px;
+    background: white;
+    color: var(--text);
+    box-shadow: 0 3px 12px rgba(108,43,217,0.15);
+    outline: none;
+}
+.search-input::placeholder { color: #aaa; }
 
-/* ════ IMAGE SLIDER ════ */
-.slider-section { margin:16px; }
+/* মার্কি বাটন */
+.marquee-container { 
+    margin: 0 16px 16px;
+    padding: 2px 12px;
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(108,43,217,0.15);
+    color: white;
+}
+marquee { 
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+.marquee-disabled { 
+    text-align: center; 
+    font-size: 14px;
+    opacity: 0.8;
+    background: #ccc;
+    color: #666;
+    padding: 2px 12px;
+    border-radius: 12px;
+}
 
+/* SLIDER */
+.slider-section { margin:0 16px 12px; }
 .slider-box {
     position: relative;
-    border-radius: 18px;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 6px 24px rgba(108,43,217,0.2);
+    box-shadow: 0 4px 18px rgba(108,43,217,0.18);
     background: linear-gradient(135deg,#6c2bd9,#a259f7);
-    height: 170px;
+    height: 150px;
 }
-
-.slider-track {
-    display: flex;
-    height: 100%;
-    transition: transform 0.45s cubic-bezier(.4,0,.2,1);
-}
-
-.slide-item {
-    min-width: 100%;
-    height: 100%;
-    flex-shrink: 0;
-    position: relative;
-    cursor: pointer;
-}
-
-.slide-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.slide-placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 40px;
-}
-
-/* Prev/Next buttons */
-.sl-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255,255,255,0.85);
-    border: none;
-    border-radius: 50%;
-    width: 34px;
-    height: 34px;
-    font-size: 20px;
-    cursor: pointer;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    line-height: 1;
-}
-.sl-prev { left: 8px; }
-.sl-next { right: 8px; }
-
-/* Dots */
-.sl-dots {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 6px;
-    z-index: 10;
-}
-.sl-dot {
-    height: 8px;
-    border-radius: 4px;
-    background: rgba(255,255,255,0.5);
-    cursor: pointer;
-    transition: all 0.3s;
-    width: 8px;
-}
-.sl-dot.active { width: 22px; background: white; }
+.slider-track { display: flex; height: 100%; transition: transform 0.45s cubic-bezier(.4,0,.2,1); }
+.slide-item { min-width: 100%; height: 100%; flex-shrink: 0; position: relative; cursor: pointer; }
+.slide-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.slide-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-size: 35px; }
+.sl-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.85); border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 18px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.2); line-height: 1; }
+.sl-prev { left: 6px; }
+.sl-next { right: 6px; }
+.sl-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 10; }
+.sl-dot { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.3s; width: 6px; }
+.sl-dot.active { width: 18px; background: white; }
 
 /* BANNER */
-.add-banner { margin:0 16px 16px; background:linear-gradient(135deg,#1a0a3e,#6c2bd9); border-radius:18px; padding:18px; display:flex; align-items:center; gap:14px; box-shadow:var(--shadow); text-decoration:none; }
-.ab-icon  { width:48px; height:48px; background:var(--accent); border-radius:13px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
-.ab-title { font-size:15px; font-weight:700; color:white; margin-bottom:2px; }
-.ab-sub   { font-size:12px; color:rgba(255,255,255,0.7); }
-.ab-arrow { font-size:20px; color:var(--accent); margin-left:auto; }
+.add-banner { margin:0 16px 12px; background:linear-gradient(135deg,#1a0a3e,#6c2bd9); border-radius:16px; padding:14px; display:flex; align-items:center; gap:12px; box-shadow:var(--shadow); text-decoration:none; }
+.ab-icon  { width:42px; height:42px; background:var(--accent); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.ab-title { font-size:14px; font-weight:700; color:white; margin-bottom:2px; }
+.ab-sub   { font-size:11px; color:rgba(255,255,255,0.7); }
+.ab-arrow { font-size:18px; color:var(--accent); margin-left:auto; }
 
 /* FILTER */
-.filter-wrap { padding:0 16px; margin-bottom:8px; }
-.filter-step { background:white; border-radius:14px; padding:14px 16px; box-shadow:var(--shadow); margin-bottom:10px; border:1.5px solid rgba(108,43,217,0.06); }
-.fs-header { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
-.fs-num { width:26px; height:26px; border-radius:50%; background:var(--primary); color:white; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.filter-wrap { padding:0 16px; margin-bottom:6px; }
+.filter-step { background:white; border-radius:14px; padding:12px 14px; box-shadow:var(--shadow); margin-bottom:8px; border:1.5px solid rgba(108,43,217,0.06); }
+.fs-header { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+.fs-num { width:24px; height:24px; border-radius:50%; background:var(--primary); color:white; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 .fs-num.done { background:#2ecc71; }
-.fs-title { font-size:14px; font-weight:700; color:var(--text); }
-.fs-sel   { font-size:12px; color:var(--primary); font-weight:600; margin-left:auto; }
+.fs-title { font-size:13px; font-weight:700; color:var(--text); }
+.fs-sel   { font-size:11px; color:var(--primary); font-weight:600; margin-left:auto; }
 .chip-scroll { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding-bottom:2px; }
 .chip-scroll::-webkit-scrollbar { display:none; }
-.f-chip { padding:7px 16px; border-radius:99px; font-size:13px; font-family:'Hind Siliguri',sans-serif; font-weight:500; white-space:nowrap; cursor:pointer; border:2px solid #e0d9f7; background:white; color:var(--text); transition:all 0.2s; flex-shrink:0; }
+.f-chip { padding:6px 14px; border-radius:99px; font-size:12px; font-family:'Hind Siliguri',sans-serif; font-weight:500; white-space:nowrap; cursor:pointer; border:2px solid #e0d9f7; background:white; color:var(--text); transition:all 0.2s; flex-shrink:0; }
 .f-chip.active { background:var(--primary); color:white; border-color:var(--primary); box-shadow:0 4px 12px rgba(108,43,217,0.3); }
 .hidden { display:none; }
-.reset-btn { width:100%; padding:10px; background:#f0ebff; color:var(--primary); border:none; border-radius:12px; font-size:14px; font-weight:600; font-family:'Hind Siliguri',sans-serif; cursor:pointer; margin-bottom:10px; display:none; }
+.reset-btn { width:100%; padding:8px; background:#f0ebff; color:var(--primary); border:none; border-radius:12px; font-size:13px; font-weight:600; font-family:'Hind Siliguri',sans-serif; cursor:pointer; margin-bottom:8px; display:none; }
 
-/* SECTION */
-.section { padding:0 16px; margin-bottom:16px; }
-.sec-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
-.sec-title { font-size:16px; font-weight:700; color:var(--text); }
-.sec-count { font-size:13px; color:var(--primary); font-weight:500; }
+/* SHOP SECTION */
+.section { padding:0 16px; margin-bottom:12px; }
+.sec-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.sec-title { font-size:15px; font-weight:700; color:var(--text); }
+.sec-count { font-size:12px; color:var(--primary); font-weight:500; }
 
 /* SHOP CARD */
-.shop-card { background:white; border-radius:16px; overflow:hidden; box-shadow:var(--shadow); margin-bottom:12px; cursor:pointer; transition:transform 0.2s; border:1.5px solid rgba(108,43,217,0.06); }
+.shop-card { background:white; border-radius:14px; overflow:hidden; box-shadow:var(--shadow); margin-bottom:10px; cursor:pointer; transition:transform 0.2s; border:1.5px solid rgba(108,43,217,0.06); }
 .shop-card:active { transform:scale(0.98); }
-.card-banner { height:78px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
-.card-banner-text { font-size:20px; font-weight:900; letter-spacing:2px; background:linear-gradient(90deg,#fff8dc,#fff,#fff8dc); background-size:200%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:shimmer 3s linear infinite; padding:0 16px; text-align:center; }
+.card-banner { height:70px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+.card-banner-text { font-size:18px; font-weight:900; letter-spacing:2px; background:linear-gradient(90deg,#fff8dc,#fff,#fff8dc); background-size:200%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:shimmer 3s linear infinite; padding:0 14px; text-align:center; }
 @keyframes shimmer { 0%{background-position:200%} 100%{background-position:-100%} }
-.card-avatar { width:50px; height:50px; border-radius:13px; border:3px solid white; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:700; color:white; margin:-25px 0 0 14px; position:relative; z-index:2; box-shadow:0 4px 12px rgba(0,0,0,0.15); }
-.card-info { padding:8px 14px 14px; }
-.card-name    { font-size:15px; font-weight:700; color:var(--text); margin-bottom:3px; }
-.card-address { font-size:12px; color:var(--text-light); margin-bottom:8px; }
-.card-btns  { display:flex; gap:6px; flex-wrap:wrap; }
-.c-btn { padding:5px 10px; border-radius:99px; font-size:11px; font-weight:600; border:none; cursor:pointer; font-family:'Hind Siliguri',sans-serif; text-decoration:none; display:inline-flex; align-items:center; gap:3px; }
+.card-avatar { width:44px; height:44px; border-radius:12px; border:3px solid white; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; color:white; margin:-22px 0 0 12px; position:relative; z-index:2; box-shadow:0 4px 12px rgba(0,0,0,0.15); }
+.card-info { padding:6px 12px 12px; }
+.card-name    { font-size:14px; font-weight:700; color:var(--text); margin-bottom:2px; }
+.card-address { font-size:11px; color:var(--text-light); margin-bottom:6px; }
+.card-btns  { display:flex; gap:5px; flex-wrap:wrap; }
+.c-btn { padding:4px 8px; border-radius:99px; font-size:10px; font-weight:600; border:none; cursor:pointer; font-family:'Hind Siliguri',sans-serif; text-decoration:none; display:inline-flex; align-items:center; gap:3px; }
 .c-call { background:#f0ebff; color:var(--primary); }
 .c-wa   { background:#e8faf0; color:#25D366; }
 .c-fb   { background:#e8f0fe; color:#1877F2; }
 .c-yt   { background:#fef0f0; color:#FF0000; }
 
 /* SKELETON */
-.skel-card { background:white; border-radius:16px; padding:14px; margin-bottom:12px; box-shadow:var(--shadow); }
+.skel-card { background:white; border-radius:14px; padding:12px; margin-bottom:10px; box-shadow:var(--shadow); }
 .skel { background:linear-gradient(90deg,#f0ebff 25%,#e8e0ff 50%,#f0ebff 75%); background-size:200% 100%; animation:skelAnim 1.5s infinite; border-radius:8px; }
 @keyframes skelAnim { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
 /* EMPTY */
-.empty { text-align:center; padding:40px 20px; color:var(--text-light); }
-.empty-icon  { font-size:48px; margin-bottom:12px; }
-.empty-title { font-size:16px; font-weight:600; color:var(--text); margin-bottom:6px; }
-.empty-sub   { font-size:13px; }
+.empty { text-align:center; padding:35px 20px; color:var(--text-light); }
+.empty-icon  { font-size:42px; margin-bottom:10px; }
+.empty-title { font-size:15px; font-weight:600; color:var(--text); margin-bottom:5px; }
+.empty-sub   { font-size:12px; }
 
-/* BOTTOM NAV */
-.bottom-nav { position:fixed; bottom:0; left:0; right:0; background:white; display:flex; border-top:1px solid #f0ebff; box-shadow:0 -4px 20px rgba(108,43,217,0.1); z-index:100; }
-.nav-item { flex:1; display:flex; flex-direction:column; align-items:center; padding:10px 0 14px; cursor:pointer; font-size:11px; color:#aaa; font-family:'Hind Siliguri',sans-serif; gap:4px; text-decoration:none; }
-.nav-item.active { color:var(--primary); }
-.nav-icon { font-size:22px; }
+/* ========== নতুন Bottom Navigation স্টাইল (গোলাকার + ব্লার) ========== */
+.bottom-nav {
+    position: fixed;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 24px);
+    max-width: 430px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(15px);
+    border-radius: 24px;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.10);
+    z-index: 1000;
+}
+
+.nav-item {
+    text-align: center;
+    font-size: 11px;
+    color: #666;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: transparent;
+    border: none;
+    font-family: 'Hind Siliguri', sans-serif;
+    flex: 1;
+}
+
+.nav-item .icon {
+    display: block;
+    font-size: 22px;
+    margin-bottom: 4px;
+}
+
+.nav-item.active {
+    color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.nav-item:active {
+    transform: scale(0.95);
+}
 </style>
 </head>
 <body>
@@ -230,27 +248,14 @@ body { font-family:'Hind Siliguri',sans-serif; background:var(--bg); min-height:
 <!-- APP -->
 <div id="app">
 
-    <!-- HEADER -->
-    <div class="header">
-        <div class="h-top">
-            <div class="h-logo">
-                <div class="h-logo-icon">🏪</div>
-                <div class="h-logo-text">পাইকারি বাজার</div>
-            </div>
-            <div class="h-auth" id="authBtns">
-                <a href="login.html" class="btn-login">লগিন</a>
-                <a href="register.html" class="btn-register">+ দোকান</a>
-            </div>
-        </div>
-        <div class="h-greeting">স্বাগতম! 👋</div>
-        <div class="h-title">বাংলাদেশের পাইকারি<br>দোকান খুঁজুন সহজেই</div>
+    <!-- সার্চ বার -->
+    <div class="search-section" id="searchSection">
         <div class="search-wrap">
             <input class="search-input" type="text" id="searchInput" placeholder="দোকানের নাম বা এলাকা খুঁজুন..." oninput="applyFilters()">
-            <span class="search-icon">🔍</span>
         </div>
     </div>
 
-    <!-- ════ IMAGE SLIDER ════ -->
+    <!-- IMAGE SLIDER -->
     <div class="slider-section" id="sliderSection" style="display:none">
         <div class="slider-box">
             <div class="slider-track" id="sliderTrack"></div>
@@ -259,6 +264,9 @@ body { font-family:'Hind Siliguri',sans-serif; background:var(--bg); min-height:
             <div class="sl-dots" id="sliderDots"></div>
         </div>
     </div>
+
+    <!-- MARQUEE SECTION -->
+    <div id="marqueeSection"></div>
 
     <!-- BANNER -->
     <a href="register.html" class="add-banner">
@@ -274,7 +282,6 @@ body { font-family:'Hind Siliguri',sans-serif; background:var(--bg); min-height:
     <div class="filter-wrap">
         <button class="reset-btn" id="resetBtn" onclick="resetFilters()">🔄 ফিল্টার রিসেট করুন</button>
 
-        <!-- Step 1: বিভাগ -->
         <div class="filter-step" id="step1">
             <div class="fs-header">
                 <div class="fs-num" id="num1">১</div>
@@ -294,7 +301,6 @@ body { font-family:'Hind Siliguri',sans-serif; background:var(--bg); min-height:
             </div>
         </div>
 
-        <!-- Step 2: জেলা -->
         <div class="filter-step hidden" id="step2">
             <div class="fs-header">
                 <div class="fs-num" id="num2">২</div>
@@ -304,7 +310,6 @@ body { font-family:'Hind Siliguri',sans-serif; background:var(--bg); min-height:
             <div class="chip-scroll" id="distChips"></div>
         </div>
 
-        <!-- Step 3: ক্যাটাগরি -->
         <div class="filter-step hidden" id="step3">
             <div class="fs-header">
                 <div class="fs-num" id="num3">৩</div>
@@ -347,20 +352,36 @@ body { font-family:'Hind Siliguri',sans-serif; background:var(--bg); min-height:
             <div class="sec-count" id="shopCount"></div>
         </div>
         <div id="skeleton">
-            <div class="skel-card"><div class="skel" style="height:78px;border-radius:10px;margin-bottom:12px"></div><div class="skel" style="height:14px;width:55%;margin-bottom:8px"></div><div class="skel" style="height:11px;width:40%"></div></div>
-            <div class="skel-card"><div class="skel" style="height:78px;border-radius:10px;margin-bottom:12px"></div><div class="skel" style="height:14px;width:65%;margin-bottom:8px"></div><div class="skel" style="height:11px;width:45%"></div></div>
+            <div class="skel-card"><div class="skel" style="height:70px;border-radius:8px;margin-bottom:10px"></div><div class="skel" style="height:12px;width:55%;margin-bottom:6px"></div><div class="skel" style="height:10px;width:40%"></div></div>
+            <div class="skel-card"><div class="skel" style="height:70px;border-radius:8px;margin-bottom:10px"></div><div class="skel" style="height:12px;width:65%;margin-bottom:6px"></div><div class="skel" style="height:10px;width:45%"></div></div>
         </div>
         <div id="shopList"></div>
     </div>
 
 </div>
 
-<!-- BOTTOM NAV -->
+<!-- নতুন Bottom Navigation (গোলাকার + ব্লার) -->
 <div class="bottom-nav">
-    <a href="index.html" class="nav-item active"><span class="nav-icon">🏠</span>হোম</a>
-    <a href="#" class="nav-item" onclick="document.getElementById('searchInput').focus()"><span class="nav-icon">🔍</span>খুঁজুন</a>
-    <a href="register.html" class="nav-item"><span class="nav-icon">🏪</span>দোকান</a>
-    <a href="login.html" class="nav-item" id="profileNav"><span class="nav-icon">👤</span>প্রোফাইল</a>
+    <button class="nav-item active" onclick="navigateTo('home')">
+        <span class="icon">🏠</span>
+        হোম
+    </button>
+    <button class="nav-item" onclick="navigateTo('category')">
+        <span class="icon">📂</span>
+        ক্যাটাগরি
+    </button>
+    <button class="nav-item" onclick="navigateTo('searchFocus')">
+        <span class="icon">🔍</span>
+        খুঁজুন
+    </button>
+    <button class="nav-item" onclick="navigateTo('shop')">
+        <span class="icon">🏪</span>
+        দোকান
+    </button>
+    <button class="nav-item" onclick="navigateTo('profile')">
+        <span class="icon">👤</span>
+        প্রোফাইল
+    </button>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -376,7 +397,77 @@ firebase.initializeApp({
 const auth = firebase.auth();
 const db   = firebase.database();
 
-// ══ SLIDER ══
+// ========== নেভিগেশন ফাংশন ==========
+function navigateTo(page) {
+    // সক্রিয় নেভিগেশন পরিবর্তন
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    event.currentTarget.classList.add('active');
+    
+    // পেজ অনুযায়ী রিডাইরেক্ট বা অ্যাকশন
+    switch(page) {
+        case 'home':
+            window.location.href = 'index.html';
+            break;
+        case 'category':
+            window.location.href = 'categories.html';
+            break;
+        case 'searchFocus':
+            // সার্চ বারে ফোকাস করা
+            const searchInput = document.getElementById('searchInput');
+            const searchSection = document.getElementById('searchSection');
+            if (searchInput) {
+                searchInput.focus();
+                if (searchSection) searchSection.classList.remove('hide');
+                setTimeout(() => {
+                    searchSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+            break;
+        case 'shop':
+            window.location.href = 'register.html';
+            break;
+        case 'profile':
+            window.location.href = 'login.html';
+            break;
+        default:
+            console.log('Navigate to:', page);
+    }
+}
+
+// ========== স্ক্রোল কন্ট্রোল ==========
+let lastScrollTop = 0;
+const searchSection = document.getElementById('searchSection');
+
+window.addEventListener('scroll', function() {
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    if (scrollTop > lastScrollTop && scrollTop > 80) {
+        searchSection.classList.add('hide');
+    } else {
+        searchSection.classList.remove('hide');
+    }
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+});
+
+// ========== MARQUEE ==========
+function loadMarquee() {
+    db.ref('marquee').on('value', snap => {
+        const container = document.getElementById('marqueeSection');
+        if (snap.exists()) {
+            const data = snap.val();
+            if (data.enabled === true && data.text && data.text.trim() !== '') {
+                container.innerHTML = `<div class="marquee-container"><marquee behavior="scroll" direction="left" scrollamount="4" onmouseover="this.stop()" onmouseout="this.start()">✨ ${data.text} ✨</marquee></div>`;
+            } else {
+                container.innerHTML = `<div class="marquee-container marquee-disabled">🔇 কোনো ঘোষণা নেই</div>`;
+            }
+        } else {
+            container.innerHTML = `<div class="marquee-container marquee-disabled">🔇 কোনো ঘোষণা নেই</div>`;
+        }
+    });
+}
+
+// ========== SLIDER ==========
 let curSlide = 0, slTimer = null, slData = [];
 
 function loadSlider() {
@@ -385,24 +476,13 @@ function loadSlider() {
         if (snap.exists()) {
             snap.forEach(c => { if (c.val().image) slData.push(c.val()); });
         }
-
         const sec = document.getElementById('sliderSection');
         if (slData.length === 0) { sec.style.display = 'none'; return; }
         sec.style.display = 'block';
-
         const track = document.getElementById('sliderTrack');
         const dots  = document.getElementById('sliderDots');
-
-        track.innerHTML = slData.map((s,i) => `
-            <div class="slide-item" onclick="${s.link?`window.open('${s.link}','_blank')`:''}" >
-                <img src="${s.image}"
-                    onerror="this.outerHTML='<div class=slide-placeholder>🏪</div>'">
-            </div>`).join('');
-
-        dots.innerHTML = slData.map((_,i) =>
-            `<div class="sl-dot${i===0?' active':''}" id="d${i}" onclick="goSlide(${i})"></div>`
-        ).join('');
-
+        track.innerHTML = slData.map((s,i) => `<div class="slide-item" onclick="${s.link?`window.open('${s.link}','_blank')`:''}"><img src="${s.image}" onerror="this.outerHTML='<div class=slide-placeholder>🏪</div>'"></div>`).join('');
+        dots.innerHTML = slData.map((_,i) => `<div class="sl-dot${i===0?' active':''}" id="d${i}" onclick="goSlide(${i})"></div>`).join('');
         goSlide(0);
         if (slData.length > 1) {
             clearInterval(slTimer);
@@ -413,7 +493,8 @@ function loadSlider() {
 
 function goSlide(n) {
     curSlide = (n + slData.length) % slData.length;
-    document.getElementById('sliderTrack').style.transform = `translateX(-${curSlide*100}%)`;
+    const track = document.getElementById('sliderTrack');
+    if (track) track.style.transform = `translateX(-${curSlide*100}%)`;
     slData.forEach((_,i) => {
         const d = document.getElementById('d'+i);
         if (d) { d.className = 'sl-dot' + (i===curSlide?' active':''); }
@@ -423,18 +504,22 @@ function goSlide(n) {
 function prevSlide() { clearInterval(slTimer); goSlide(curSlide-1); slTimer=setInterval(()=>goSlide((curSlide+1)%slData.length),3500); }
 function nextSlide() { clearInterval(slTimer); goSlide(curSlide+1); slTimer=setInterval(()=>goSlide((curSlide+1)%slData.length),3500); }
 
-// ══ AUTH ══
+// ========== AUTH ==========
 auth.onAuthStateChanged(u => {
     if (u) {
-        document.getElementById('authBtns').innerHTML = `<a href="dashboard.html" class="btn-register">⚙️ ড্যাশবোর্ড</a>`;
-        document.getElementById('profileNav').href = 'dashboard.html';
+        // লগইন থাকলে প্রোফাইল বাটন dashboard এ নিয়ে যাবে
+        const profileBtn = document.querySelector('.nav-item:last-child');
+        if (profileBtn) {
+            profileBtn.onclick = () => window.location.href = 'dashboard.html';
+        }
     }
 });
 
-// ══ INTERNET ══
+// ========== INTERNET ==========
 function checkNet() {
     if (navigator.onLine) {
         document.getElementById('noInternet').style.display = 'none';
+        loadMarquee();
         loadSlider();
         loadShops();
     } else {
@@ -443,9 +528,9 @@ function checkNet() {
 }
 window.addEventListener('load', checkNet);
 window.addEventListener('offline', () => document.getElementById('noInternet').style.display='flex');
-window.addEventListener('online',  () => { document.getElementById('noInternet').style.display='none'; loadSlider(); loadShops(); });
+window.addEventListener('online',  () => { document.getElementById('noInternet').style.display='none'; loadMarquee(); loadSlider(); loadShops(); });
 
-// ══ DIVISION MAP ══
+// ========== DIVISION MAP ==========
 const divMap = {
     'ঢাকা':['ঢাকা','গাজীপুর','নারায়ণগঞ্জ','মুন্সীগঞ্জ','মানিকগঞ্জ','নরসিংদী','ফরিদপুর','রাজবাড়ী','গোপালগঞ্জ','মাদারীপুর','শরীয়তপুর','কিশোরগঞ্জ','টাঙ্গাইল'],
     'চট্টগ্রাম':['চট্টগ্রাম','কক্সবাজার','কুমিল্লা','চাঁদপুর','ব্রাহ্মণবাড়িয়া','নোয়াখালী','ফেনী','লক্ষ্মীপুর','রাঙামাটি','খাগড়াছড়ি','বান্দরবান'],
@@ -459,18 +544,15 @@ const divMap = {
 
 let allShops=[], selDiv='', selDist='', selCat='';
 
-// ══ FILTERS ══
 function selectDiv(div) {
     selDiv=div; selDist=''; selCat='';
     document.querySelectorAll('#step1 .f-chip').forEach(c=>c.classList.toggle('active',c.textContent===(div||'সব বিভাগ')));
     document.getElementById('sel1').textContent = div?`✅ ${div}`:'';
     document.getElementById('num1').className = div?'fs-num done':'fs-num';
     document.getElementById('resetBtn').style.display = div?'block':'none';
-
     if (div) {
         const chips = document.getElementById('distChips');
-        chips.innerHTML = `<div class="f-chip active" onclick="selectDist('')">সব জেলা</div>` +
-            (divMap[div]||[]).map(d=>`<div class="f-chip" onclick="selectDist('${d}')">${d}</div>`).join('');
+        chips.innerHTML = `<div class="f-chip active" onclick="selectDist('')">সব জেলা</div>` + (divMap[div]||[]).map(d=>`<div class="f-chip" onclick="selectDist('${d}')">${d}</div>`).join('');
         document.getElementById('step2').classList.remove('hidden');
         document.getElementById('step3').classList.add('hidden');
         document.getElementById('sel2').textContent='';
@@ -531,7 +613,6 @@ function applyFilters() {
     renderShops(list);
 }
 
-// ══ LOAD SHOPS ══
 function loadShops() {
     db.ref('shops').orderByChild('status').equalTo('approved').on('value', snap => {
         document.getElementById('skeleton').style.display='none';
@@ -541,7 +622,6 @@ function loadShops() {
     });
 }
 
-// ══ RENDER ══
 const grads=['linear-gradient(135deg,#6c2bd9,#a259f7)','linear-gradient(135deg,#0f3460,#16213e)','linear-gradient(135deg,#1a6b3c,#2ecc71)','linear-gradient(135deg,#e74c3c,#c0392b)','linear-gradient(135deg,#f39c12,#e67e22)','linear-gradient(135deg,#1abc9c,#16a085)','linear-gradient(135deg,#2980b9,#1a5276)'];
 
 function renderShops(shops) {
@@ -549,23 +629,9 @@ function renderShops(shops) {
     if (!shops.length) { document.getElementById('shopList').innerHTML=`<div class="empty"><div class="empty-icon">🏪</div><div class="empty-title">কোনো দোকান নেই</div><div class="empty-sub">অন্য ফিল্টার চেষ্টা করুন</div></div>`; return; }
     document.getElementById('shopList').innerHTML = shops.map((s,i)=>{
         const g=grads[i%grads.length], av=(s.shopName||'?').charAt(0);
-        return `<div class="shop-card" onclick="location.href='profile.html?id=${s.id}'">
-            <div class="card-banner" style="background:${g}"><span class="card-banner-text">${s.shopName||''}</span></div>
-            <div class="card-avatar" style="background:${g}">${av}</div>
-            <div class="card-info">
-                <div class="card-name">${s.shopName||''}</div>
-                <div class="card-address">📍 ${s.area||''}, ${s.district||''}</div>
-                <div class="card-btns">
-                    ${s.phone?`<a href="tel:${s.phone}" class="c-btn c-call" onclick="event.stopPropagation()">📞 Call</a>`:''}
-                    ${s.whatsapp?`<a href="https://wa.me/88${s.whatsapp}" class="c-btn c-wa" onclick="event.stopPropagation()">💬 WhatsApp</a>`:''}
-                    ${s.facebook?`<a href="${s.facebook}" target="_blank" class="c-btn c-fb" onclick="event.stopPropagation()">👍 Facebook</a>`:''}
-                    ${s.youtube?`<a href="${s.youtube}" target="_blank" class="c-btn c-yt" onclick="event.stopPropagation()">▶ YouTube</a>`:''}
-                </div>
-            </div>
-        </div>`;
+        return `<div class="shop-card" onclick="location.href='profile.html?id=${s.id}'"><div class="card-banner" style="background:${g}"><span class="card-banner-text">${s.shopName||''}</span></div><div class="card-avatar" style="background:${g}">${av}</div><div class="card-info"><div class="card-name">${s.shopName||''}</div><div class="card-address">📍 ${s.area||''}, ${s.district||''}</div><div class="card-btns">${s.phone?`<a href="tel:${s.phone}" class="c-btn c-call" onclick="event.stopPropagation()">📞 Call</a>`:''}${s.whatsapp?`<a href="https://wa.me/88${s.whatsapp}" class="c-btn c-wa" onclick="event.stopPropagation()">💬 WhatsApp</a>`:''}${s.facebook?`<a href="${s.facebook}" target="_blank" class="c-btn c-fb" onclick="event.stopPropagation()">👍 Facebook</a>`:''}${s.youtube?`<a href="${s.youtube}" target="_blank" class="c-btn c-yt" onclick="event.stopPropagation()">▶ YouTube</a>`:''}</div></div></div>`;
     }).join('');
 }
 </script>
 </body>
 </html>
-
