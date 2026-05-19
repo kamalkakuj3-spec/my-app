@@ -187,15 +187,17 @@ marquee {
 .shop-video-info {
     padding: 12px 0 0;
     background: transparent;
+    text-align: center;
 }
 .shop-video-name {
-    font-size: 16px;
-    font-weight: 700;
+    font-size: 24px;
+    font-weight: 800;
     color: var(--primary);
-    margin-bottom: 4px;
+    margin-bottom: 8px;
     cursor: pointer;
     transition: color 0.2s;
     display: inline-block;
+    text-align: center;
 }
 .shop-video-name:hover {
     color: var(--primary-dark);
@@ -204,15 +206,16 @@ marquee {
 .shop-video-desc {
     font-size: 13px;
     color: var(--text-light);
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     line-height: 1.5;
+    text-align: center;
+    margin-left: 16px;
+    margin-right: 16px;
 }
 .shop-video-address {
     font-size: 12px;
     color: var(--text-light);
-    display: flex;
-    align-items: center;
-    gap: 4px;
+    text-align: center;
 }
 @keyframes tileIn {
     from { transform: translateY(15px); opacity: 0; }
@@ -244,7 +247,7 @@ marquee {
     border-radius: 24px;
     display: flex;
     justify-content: space-around;
-    padding: 10px 0;
+    padding: 2px 0;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.10);
     z-index: 1000;
 }
@@ -422,9 +425,7 @@ const db   = firebase.database();
 // ========== ভিডিও অটো-পজ (স্ক্রিন থেকে বেরিয়ে গেলে) ==========
 let videoObservers = [];
 
-// সব ভিডিওর জন্য Observer সেটআপ
 function setupVideoAutoPause() {
-    // আগের সব observer disconnect করুন
     videoObservers.forEach(observer => observer.disconnect());
     videoObservers = [];
     
@@ -435,35 +436,25 @@ function setupVideoAutoPause() {
         
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                // isIntersecting = false মানে ভিডিওটি স্ক্রিনের বাইরে
                 if (!entry.isIntersecting) {
-                    // ভিডিও পজ করার চেষ্টা
                     try {
-                        // YouTube iframe কে পজ কমান্ড পাঠানো
                         iframe.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-                    } catch(e) {
-                        // কোনো error হলে ইগনোর
-                    }
+                    } catch(e) {}
                 }
             });
-        }, { 
-            threshold: 0,  // 0% visible মানে সম্পূর্ণ বেরিয়ে গেলে
-            rootMargin: '0px'
-        });
+        }, { threshold: 0, rootMargin: '0px' });
         
         observer.observe(iframe);
         videoObservers.push(observer);
     });
 }
 
-// ভিডিও রেন্ডার করার পর Observer সেটআপ করুন
 function initVideoObservers() {
     setTimeout(() => {
         setupVideoAutoPause();
     }, 300);
 }
 
-// ========== ইউটিউব API লোড ==========
 function loadYouTubeAPI() {
     if (document.querySelector('script[src*="youtube.com/iframe_api"]')) return;
     const tag = document.createElement('script');
@@ -473,18 +464,19 @@ function loadYouTubeAPI() {
 }
 loadYouTubeAPI();
 
-// YouTube API ready হলে
 window.onYouTubeIframeAPIReady = function() {
     console.log('YouTube API ready');
     setupVideoAutoPause();
 };
 
-// ========== নেভিগেশন ==========
 function navigateTo(page) {
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
     event.currentTarget.classList.add('active');
     switch(page) {
         case 'home': window.location.href = 'index.html'; break;
+        case 'category': 
+            alert('ক্যাটাগরি ফিচার শীঘ্রই আসছে!');
+            break;
         case 'searchFocus':
             document.getElementById('searchInput').focus();
             document.getElementById('searchSection').classList.remove('hide');
@@ -501,7 +493,6 @@ function viewShop(shopId) {
     else alert('দোকানের আইডি পাওয়া যায়নি!');
 }
 
-// ========== স্ক্রোল কন্ট্রোল ==========
 let lastScrollTop = 0;
 const searchSection = document.getElementById('searchSection');
 window.addEventListener('scroll', function() {
@@ -511,7 +502,6 @@ window.addEventListener('scroll', function() {
     lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
 });
 
-// ========== MARQUEE ==========
 function loadMarquee() {
     db.ref('marquee').on('value', snap => {
         const container = document.getElementById('marqueeSection');
@@ -528,7 +518,6 @@ function loadMarquee() {
     });
 }
 
-// ========== SLIDER ==========
 let curSlide = 0, slTimer = null, slData = [];
 function loadSlider() {
     db.ref('slider').on('value', snap => {
@@ -557,7 +546,6 @@ function goSlide(n) {
 function prevSlide() { clearInterval(slTimer); goSlide(curSlide-1); slTimer=setInterval(()=>goSlide((curSlide+1)%slData.length),3500); }
 function nextSlide() { clearInterval(slTimer); goSlide(curSlide+1); slTimer=setInterval(()=>goSlide((curSlide+1)%slData.length),3500); }
 
-// ========== AUTH ==========
 auth.onAuthStateChanged(u => {
     if (u) {
         const profileBtn = document.querySelector('.nav-item:last-child');
@@ -565,7 +553,6 @@ auth.onAuthStateChanged(u => {
     }
 });
 
-// ========== INTERNET ==========
 function checkNet() {
     if (navigator.onLine) {
         document.getElementById('noInternet').style.display = 'none';
@@ -580,7 +567,6 @@ window.addEventListener('load', checkNet);
 window.addEventListener('offline', () => document.getElementById('noInternet').style.display='flex');
 window.addEventListener('online', () => { document.getElementById('noInternet').style.display='none'; loadMarquee(); loadSlider(); loadShops(); });
 
-// ========== থানা ও জেলার ডাটাবেস ==========
 const thanaMap = {
     'ঢাকা': ['আদাবর', 'উত্তরা', 'তেজগাঁও', 'ধামরাই', 'নবাবগঞ্জ', 'বাড্ডা', 'মিরপুর', 'মোহাম্মদপুর', 'যাত্রাবাড়ী', 'রামপুরা', 'লালবাগ', 'শাহবাগ', 'সাভার', 'সূত্রাপুর', 'হাজারীবাগ'],
     'গাজীপুর': ['গাজীপুর সদর', 'কালিয়াকৈর', 'কাপাসিয়া', 'শ্রীপুর'],
@@ -659,14 +645,12 @@ const divisionMap = {
     'ময়মনসিংহ': ['ময়মনসিংহ','জামালপুর','শেরপুর','নেত্রকোণা'],
 };
 
-// ========== ফিল্টার ভেরিয়েবল ==========
 let allShops = [];
 let selectedDivision = '';
 let selectedDistrict = '';
 let selectedThana = '';
 let selectedCategory = '';
 
-// ========== ফিল্টার ফাংশন ==========
 function selectDivision(div) {
     selectedDivision = div;
     selectedDistrict = '';
@@ -824,7 +808,6 @@ function applyFilters() {
     renderShops(filtered);
 }
 
-// ========== LOAD SHOPS ==========
 function loadShops() {
     db.ref('shops').on('value', snap => {
         document.getElementById('skeleton')?.remove();
@@ -841,7 +824,6 @@ function loadShops() {
     });
 }
 
-// ========== RENDER SHOPS (ভিডিও অটো-পজ সহ) ==========
 function renderShops(shops) {
     const container = document.getElementById('shopList');
     if (shops.length === 0) {
@@ -880,12 +862,11 @@ function renderShops(shops) {
             <div class="shop-video-info">
                 <h3 class="shop-video-name" onclick="viewShop('${shop.id}')">${shop.shopName || 'নাম নেই'}</h3>
                 <p class="shop-video-desc">${description}</p>
-                <p class="shop-video-address">📍 ${addressText}</p>
+                <p class="shop-video-address">${addressText}</p>
             </div>
         </div>`;
     }).join('');
     
-    // ভিডিও অটো-পজ সেটআপ
     initVideoObservers();
 }
 </script>
