@@ -248,6 +248,30 @@ body {
     font-weight: 700;
 }
 
+/* Browser Button */
+.browser-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #f0ebff, #e8e0ff);
+    border: 2px solid #c4b5fd;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Hind Siliguri', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    color: var(--primary);
+}
+.browser-btn:hover {
+    background: #f0ebff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(108,43,217,0.15);
+}
+
 /* ── ERROR/SUCCESS MSG ── */
 .msg-box {
     padding: 14px 16px;
@@ -399,6 +423,17 @@ body {
         </button>
     </div>
 
+    <!-- WebView-এ কাজ না করলে ব্রাউজারে ওপেন করুন -->
+    <div class="tile-card" style="margin-top: 0;">
+        <button class="browser-btn" onclick="openInBrowser()">
+            <span class="google-icon">🌐</span>
+            ব্রাউজারে ওপেন করুন
+        </button>
+        <p style="font-size: 11px; color: #999; text-align: center; margin-top: 10px;">
+            ⚠️ Google লগইন কাজ না করলে এই বাটনে ক্লিক করুন
+        </p>
+    </div>
+
     <!-- Divider -->
     <div class="divider">
         <span>অথবা</span>
@@ -464,11 +499,29 @@ const googleProvider = new firebase.auth.GoogleAuthProvider();
 // ── Auto redirect if already logged in ──
 auth.onAuthStateChanged(user => {
     if (user) {
-        window.location.href = 'index.html';
+        // চেক করুন এই ইউজারের দোকান সম্পূর্ণ প্রোফাইল আছে কিনা
+        db.ref('shops/' + user.uid).get().then((shopSnap) => {
+            const shopData = shopSnap.val();
+            const hasCompleteProfile = shopData && 
+                                       shopData.shopName && 
+                                       shopData.shopName.trim() !== '' &&
+                                       shopData.district && 
+                                       shopData.district.trim() !== '' &&
+                                       shopData.phone && 
+                                       shopData.phone.trim() !== '';
+            
+            if (hasCompleteProfile) {
+                window.location.href = 'index.html';
+            } else {
+                window.location.href = 'register.html';
+            }
+        }).catch(() => {
+            window.location.href = 'register.html';
+        });
     }
 });
 
-// ── Google Sign In (সরাসরি register.html এ যাবে) ──
+// ── Google Sign In (popup ব্যবহার না করে redirect ব্যবহার) ──
 async function googleSignIn() {
     const btn = document.querySelector('.google-btn');
     const originalHtml = btn.innerHTML;
@@ -476,30 +529,30 @@ async function googleSignIn() {
     btn.disabled = true;
     
     try {
-        const result = await auth.signInWithPopup(googleProvider);
-        const user = result.user;
-        
-        // চেক করুন এই ইউজারের দোকান আছে কিনা
-        const shopSnap = await db.ref('shops/' + user.uid).get();
-        
-        // Google দিয়ে লগইন করলে সবসময় register.html এ যাবে
-        // শুধু যদি আগে থেকে সম্পূর্ণ প্রোফাইল থাকে তাহলে index.html এ যাবে
-        if (shopSnap.exists() && shopSnap.val().shopName && shopSnap.val().phone) {
-            showSuccess('Google লগিন সফল! হোম পেজে যাচ্ছেন...');
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 1500);
-        } else {
-            showSuccess('Google লগিন সফল! এখন আপনার দোকানের তথ্য দিন...');
-            setTimeout(() => {
-                window.location.href = 'register.html';
-            }, 1500);
-        }
+        // Redirect ব্যবহার করুন (WebView-এর জন্য ভালো)
+        await auth.signInWithRedirect(googleProvider);
     } catch (error) {
         btn.innerHTML = originalHtml;
         btn.disabled = false;
         showError('Google লগিন ব্যর্থ: ' + error.message);
     }
+}
+
+// ── Redirect result handle ──
+auth.getRedirectResult().then((result) => {
+    if (result.user) {
+        // লগইন সফল, register.html এ যাবে
+        window.location.href = 'register.html';
+    }
+}).catch((error) => {
+    console.log('Redirect error:', error);
+});
+
+// ── ব্রাউজারে ওপেন করুন ──
+function openInBrowser() {
+    const currentUrl = window.location.href;
+    // _system ব্যবহার করলে সিস্টেম ব্রাউজার খুলবে
+    window.open(currentUrl, '_system');
 }
 
 // ── Password toggle ──
@@ -522,7 +575,7 @@ function showSuccess(msg) {
     box.classList.add('show');
 }
 
-// ── Email Login (প্রোফাইল চেক সহ) ──
+// ── Email Login ──
 async function loginShop() {
     const email    = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
@@ -537,7 +590,6 @@ async function loginShop() {
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
         const user = userCredential.user;
         
-        // চেক করুন এই ইউজারের দোকান সম্পূর্ণ প্রোফাইল আছে কিনা
         const shopSnap = await db.ref('shops/' + user.uid).get();
         const shopData = shopSnap.val();
         
