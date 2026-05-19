@@ -46,7 +46,7 @@ body {
 @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
 
 /* APP */
-#app { opacity:0; animation:appShow 0.3s ease 2.5s forwards; background:var(--bg); }
+#app { display:none; animation:appShow 0.3s ease 2.5s forwards; background:var(--bg); }
 @keyframes appShow { to{opacity:1} }
 
 /* ========== সার্চ বার ========== */
@@ -572,10 +572,8 @@ const db   = firebase.database();
 // ========== লগইন চেক (পেজ লোড হলে) ==========
 auth.onAuthStateChanged(user => {
     if (!user) {
-        // লগইন না থাকলে লগইন পেজে রিডাইরেক্ট
         window.location.href = 'login.html';
     } else {
-        // লগইন থাকলে কন্টেন্ট লোড করুন
         document.getElementById('splash').style.display = 'none';
         document.getElementById('app').style.display = 'block';
         loadNotice();
@@ -665,7 +663,7 @@ function viewShop(shopId) {
     else alert('দোকানের আইডি পাওয়া যায়নি!');
 }
 
-// ========== ফেভারিট ফাংশন ==========
+// ========== ফেভারিট ফাংশন (ঠিক করা) ==========
 function toggleFavorite(shopId, event) {
     event.stopPropagation();
     const user = auth.currentUser;
@@ -676,16 +674,19 @@ function toggleFavorite(shopId, event) {
     }
     const storageKey = `favorites_${user.uid}`;
     let favorites = JSON.parse(localStorage.getItem(storageKey) || '[]');
+    
     if (favorites.includes(shopId)) {
         favorites = favorites.filter(id => id !== shopId);
     } else {
         favorites.push(shopId);
     }
     localStorage.setItem(storageKey, JSON.stringify(favorites));
-    renderShops(allShops);
+    
+    // UI রি-রেন্ডার
+    applyFilters();
 }
 
-// ========== রেটিং ফাংশন ==========
+// ========== রেটিং ফাংশন (ঠিক করা - একাধিক দোকানে কাজ করবে) ==========
 function setRating(shopId, rating, event) {
     event.stopPropagation();
     const user = auth.currentUser;
@@ -694,30 +695,45 @@ function setRating(shopId, rating, event) {
         window.location.href = 'login.html';
         return;
     }
+    
+    // ইউজারের রেটিং সেভ করুন
     db.ref('ratings/' + shopId + '/' + user.uid).set({
         rating: rating,
         updatedAt: Date.now()
+    }).then(() => {
+        // রেটিং সেভ হওয়ার পর সব দোকানের রেটিং আবার লোড করুন
+        loadAllRatings();
     });
-    calculateAverageRating(shopId);
 }
 
-function calculateAverageRating(shopId) {
-    db.ref('ratings/' + shopId).once('value', snap => {
-        let total = 0;
-        let count = 0;
+// সব দোকানের রেটিং একসাথে লোড করুন
+function loadAllRatings() {
+    db.ref('ratings').once('value', snap => {
+        // প্রতিটি দোকানের রেটিং রিসেট করুন
+        allShops.forEach(shop => {
+            shop.userRating = 0;
+        });
+        
         if (snap.exists()) {
-            snap.forEach(child => {
-                total += child.val().rating;
-                count++;
+            snap.forEach(ratingSnap => {
+                const shopId = ratingSnap.key;
+                let total = 0;
+                let count = 0;
+                ratingSnap.forEach(userRating => {
+                    total += userRating.val().rating;
+                    count++;
+                });
+                const avg = count > 0 ? total / count : 0;
+                const shopIndex = allShops.findIndex(s => s.id === shopId);
+                if (shopIndex !== -1) {
+                    allShops[shopIndex].userRating = Math.round(avg * 10) / 10;
+                }
             });
         }
-        const avg = count > 0 ? total / count : 0;
-        const shopIndex = allShops.findIndex(s => s.id === shopId);
-        if (shopIndex !== -1) {
-            allShops[shopIndex].userRating = Math.round(avg * 10) / 10;
-            allShops.sort((a, b) => (b.userRating || 0) - (a.userRating || 0));
-            applyFilters();
-        }
+        
+        // রেটিং অনুযায়ী সাজান (সবচেয়ে বেশি রেটিং উপরে)
+        allShops.sort((a, b) => (b.userRating || 0) - (a.userRating || 0));
+        applyFilters();
     });
 }
 
@@ -1071,30 +1087,7 @@ function loadShops() {
                 }
             });
         }
-        loadRatings();
-    });
-}
-
-function loadRatings() {
-    db.ref('ratings').on('value', snap => {
-        if (snap.exists()) {
-            snap.forEach(ratingSnap => {
-                const shopId = ratingSnap.key;
-                let total = 0;
-                let count = 0;
-                ratingSnap.forEach(userRating => {
-                    total += userRating.val().rating;
-                    count++;
-                });
-                const avg = count > 0 ? total / count : 0;
-                const shopIndex = allShops.findIndex(s => s.id === shopId);
-                if (shopIndex !== -1) {
-                    allShops[shopIndex].userRating = Math.round(avg * 10) / 10;
-                }
-            });
-        }
-        allShops.sort((a, b) => (b.userRating || 0) - (a.userRating || 0));
-        applyFilters();
+        loadAllRatings();
     });
 }
 
