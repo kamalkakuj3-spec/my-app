@@ -2,113 +2,685 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Admin Panel — পাইকারি বাজার</title>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-    --primary:#6c2bd9; --primary-light:#a259f7;
-    --accent:#f0c040; --bg:#f5f3ff;
-    --text:#1a1a2e; --text-light:#666;
-    --success:#2ecc71; --error:#e74c3c; --warning:#f0c040;
-    --shadow:0 8px 32px rgba(108,43,217,0.15);
+    --primary: #6c2bd9;
+    --primary-dark: #4a1a9e;
+    --primary-light: #a259f7;
+    --accent: #f0c040;
+    --bg: #f5f3ff;
+    --text: #1a1a2e;
+    --text-light: #666;
+    --success: #2ecc71;
+    --success-dark: #27ae60;
+    --error: #e74c3c;
+    --error-dark: #c0392b;
+    --warning: #f0c040;
+    --warning-dark: #d4a000;
+    --white: #ffffff;
+    --card-shadow: 0 20px 35px -10px rgba(108,43,217,0.25);
+    --card-shadow-hover: 0 25px 45px -12px rgba(108,43,217,0.35);
+    --button-shadow: 0 8px 20px -5px rgba(108,43,217,0.3);
+    --button-shadow-hover: 0 12px 28px -8px rgba(108,43,217,0.4);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Hind Siliguri',sans-serif; background:var(--bg); min-height:100vh; }
+body { 
+    font-family:'Hind Siliguri',sans-serif; 
+    background: linear-gradient(135deg, var(--bg) 0%, #ede8ff 100%);
+    min-height:100vh; 
+    overflow-x:hidden;
+    padding-bottom: 30px;
+}
 
-/* HEADER */
-.header { background:linear-gradient(135deg,#1a0a3e,#6c2bd9); padding:50px 20px 24px; position:relative; overflow:hidden; }
-.header::before { content:''; position:absolute; top:-60px; right:-60px; width:200px; height:200px; background:rgba(255,255,255,0.05); border-radius:50%; }
-.h-top { display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1; }
-.h-logo { display:flex; align-items:center; gap:10px; }
-.h-logo-icon { width:38px; height:38px; background:var(--accent); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; }
-.h-logo-text { font-size:16px; font-weight:700; color:white; }
-.h-sub { color:rgba(255,255,255,0.7); font-size:13px; margin-top:8px; position:relative; z-index:1; }
+/* HEADER - 3D Premium */
+.header {
+    background: linear-gradient(135deg, #1a0a3e 0%, #6c2bd9 50%, #a259f7 100%);
+    padding: 55px 20px 28px;
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+}
+.header::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 250px; height: 250px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translateZ(-20px);
+    animation: float 8s ease-in-out infinite;
+}
+.header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(240,192,64,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translateZ(-15px);
+    animation: float 6s ease-in-out infinite reverse;
+}
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) translateZ(-20px); }
+    50% { transform: translate(15px, -15px) translateZ(-20px); }
+}
+.h-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
+}
+.h-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.h-logo-icon {
+    width: 42px; height: 42px;
+    background: var(--accent);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    animation: logoGlow 3s ease-in-out infinite;
+}
+@keyframes logoGlow {
+    0%, 100% { box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+    50% { box-shadow: 0 8px 30px rgba(240,192,64,0.5); }
+}
+.h-logo-text {
+    font-size: 18px;
+    font-weight: 800;
+    color: white;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    letter-spacing: 1px;
+}
+.home-link {
+    padding: 10px 22px;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 99px;
+    color: white;
+    font-size: 13px;
+    font-family: 'Hind Siliguri', sans-serif;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.home-link:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+.home-link:active {
+    transform: translateY(1px);
+}
+.h-sub {
+    color: rgba(255,255,255,0.85);
+    font-size: 14px;
+    margin-top: 12px;
+    position: relative;
+    z-index: 2;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
 
-/* STATS */
-.stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:16px; }
-.stat-tile { background:white; border-radius:18px; padding:18px; box-shadow:var(--shadow); text-align:center; border:1.5px solid rgba(108,43,217,0.06); animation:tileIn 0.5s ease both; }
-.stat-tile:nth-child(1){animation-delay:.1s} .stat-tile:nth-child(2){animation-delay:.2s}
-.stat-tile:nth-child(3){animation-delay:.3s} .stat-tile:nth-child(4){animation-delay:.4s}
-@keyframes tileIn { from{transform:translateY(20px) scale(0.95);opacity:0} to{transform:translateY(0) scale(1);opacity:1} }
-.stat-num   { font-size:28px; font-weight:700; margin-bottom:4px; }
-.stat-label { font-size:13px; color:var(--text-light); }
-.stat-tile.pending  .stat-num { color:var(--warning); }
-.stat-tile.approved .stat-num { color:var(--success); }
-.stat-tile.rejected .stat-num { color:var(--error); }
-.stat-tile.total    .stat-num { color:var(--primary); }
+/* STATS - 3D Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    padding: 20px 16px;
+}
+.stat-tile {
+    background: white;
+    border-radius: 24px;
+    padding: 22px 18px;
+    box-shadow: var(--card-shadow);
+    text-align: center;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+    transform: translateY(0);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+.stat-tile::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s ease;
+}
+.stat-tile:hover::before {
+    left: 100%;
+}
+.stat-tile:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--card-shadow-hover);
+}
+.stat-tile:active {
+    transform: translateY(-2px);
+}
+.stat-tile:nth-child(1){animation:tileIn 0.5s ease both 0.1s}
+.stat-tile:nth-child(2){animation:tileIn 0.5s ease both 0.2s}
+.stat-tile:nth-child(3){animation:tileIn 0.5s ease both 0.3s}
+.stat-tile:nth-child(4){animation:tileIn 0.5s ease both 0.4s}
+@keyframes tileIn {
+    from{transform:translateY(35px) scale(0.92);opacity:0}
+    to{transform:translateY(0) scale(1);opacity:1}
+}
+.stat-num {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: numberPop 0.6s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+@keyframes numberPop {
+    0% { transform: scale(0.5); opacity: 0; }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+.stat-label {
+    font-size: 13px;
+    color: var(--text-light);
+    font-weight: 600;
+}
+.stat-tile.pending .stat-num { background: linear-gradient(135deg, var(--warning), #f5b042); -webkit-background-clip: text; background-clip: text; }
+.stat-tile.approved .stat-num { background: linear-gradient(135deg, var(--success), #3ae374); -webkit-background-clip: text; background-clip: text; }
+.stat-tile.rejected .stat-num { background: linear-gradient(135deg, var(--error), #ff6b6b); -webkit-background-clip: text; background-clip: text; }
+.stat-tile.total .stat-num { background: linear-gradient(135deg, var(--primary), var(--primary-light)); -webkit-background-clip: text; background-clip: text; }
 
-/* TABS */
-.tabs { display:flex; margin:0 16px 14px; background:white; border-radius:16px; overflow:hidden; box-shadow:var(--shadow); overflow-x:auto; scrollbar-width:none; }
+/* TABS - 3D Premium (নোটিশ ট্যাব বাদ) */
+.tabs {
+    display: flex;
+    margin: 0 16px 20px;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(108,43,217,0.15);
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 2px;
+    padding: 4px;
+}
 .tabs::-webkit-scrollbar { display:none; }
-.tab { flex:1; min-width:70px; padding:13px 8px; text-align:center; font-size:12px; font-weight:600; cursor:pointer; color:var(--text-light); font-family:'Hind Siliguri',sans-serif; transition:all 0.2s; border-bottom:3px solid transparent; white-space:nowrap; }
-.tab.active { color:var(--primary); border-bottom-color:var(--primary); background:#faf8ff; }
-.tab-badge { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; background:var(--warning); color:#1a0a3e; border-radius:50%; font-size:10px; font-weight:700; margin-left:3px; }
+.tab {
+    flex: 1;
+    min-width: 80px;
+    padding: 14px 10px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--text-light);
+    font-family: 'Hind Siliguri', sans-serif;
+    transition: all 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+    border-radius: 16px;
+    position: relative;
+    background: transparent;
+}
+.tab:hover {
+    background: rgba(108,43,217,0.08);
+    transform: translateY(-2px);
+}
+.tab.active {
+    color: var(--primary);
+    background: white;
+    box-shadow: 0 6px 20px rgba(108,43,217,0.2);
+    transform: translateY(-2px);
+}
+.tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(135deg, var(--warning), #f5b042);
+    color: white;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 6px;
+    box-shadow: 0 2px 8px rgba(240,192,64,0.3);
+}
 
 /* SECTION */
-.section { padding:0 16px; }
+.section { padding: 0 16px; }
 
-/* ADMIN CARD */
-.admin-card { background:white; border-radius:18px; padding:16px; box-shadow:var(--shadow); margin-bottom:12px; border:1.5px solid rgba(108,43,217,0.06); }
-.ac-top { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
-.ac-avatar { width:50px; height:50px; border-radius:13px; display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:700; color:white; flex-shrink:0; }
-.ac-name { font-size:15px; font-weight:700; color:var(--text); margin-bottom:3px; }
-.ac-info { font-size:12px; color:var(--text-light); }
-.ac-row  { display:flex; align-items:center; gap:8px; padding:5px 0; font-size:13px; color:var(--text-light); border-bottom:1px solid #f9f7ff; }
-.ac-row:last-of-type { border-bottom:none; }
-.ac-row-icon { font-size:14px; width:20px; }
-.ac-row-val  { color:var(--text); font-weight:500; }
-.status-badge { padding:4px 12px; border-radius:99px; font-size:11px; font-weight:600; margin-left:auto; flex-shrink:0; }
-.status-badge.pending  { background:#fffbeb; color:#d97706; border:1px solid #fcd34d; }
-.status-badge.approved { background:#ecfdf5; color:#059669; border:1px solid #6ee7b7; }
-.status-badge.rejected { background:#fef2f2; color:#dc2626; border:1px solid #fca5a5; }
-.ac-actions { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
-.ac-btn { flex:1; min-width:75px; padding:10px 6px; border:none; border-radius:12px; font-size:12px; font-weight:600; font-family:'Hind Siliguri',sans-serif; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:4px; transition:transform 0.15s; }
-.ac-btn:active { transform:scale(0.96); }
-.btn-approve { background:#ecfdf5; color:#059669; border:1.5px solid #6ee7b7; }
-.btn-reject  { background:#fef2f2; color:#dc2626; border:1.5px solid #fca5a5; }
-.btn-delete  { background:#fef2f2; color:#dc2626; border:1.5px solid #fca5a5; }
-.btn-view    { background:#f0ebff; color:var(--primary); border:1.5px solid #c4b5fd; }
+/* ADMIN CARD - 3D Premium */
+.admin-card {
+    background: white;
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 16px;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+    transform: translateY(0);
+    position: relative;
+    overflow: hidden;
+}
+.admin-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(108,43,217,0.05), transparent);
+    transition: left 0.6s ease;
+}
+.admin-card:hover::before {
+    left: 100%;
+}
+.admin-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--card-shadow-hover);
+}
+.ac-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+.ac-avatar {
+    width: 55px;
+    height: 55px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 800;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+}
+.admin-card:hover .ac-avatar {
+    transform: scale(1.05) rotate(2deg);
+}
+.ac-name {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+.ac-info {
+    font-size: 12px;
+    color: var(--text-light);
+}
+.ac-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 13px;
+    color: var(--text-light);
+    border-bottom: 1px solid #f0ebff;
+    transition: all 0.2s ease;
+}
+.ac-row:hover {
+    background: #faf8ff;
+    padding-left: 6px;
+    border-radius: 10px;
+}
+.ac-row:last-of-type { border-bottom: none; }
+.ac-row-icon { font-size: 16px; width: 24px; }
+.ac-row-val { color: var(--text); font-weight: 600; }
+.status-badge {
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: auto;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+.status-badge.pending  { background: linear-gradient(135deg, #fffbeb, #fff6e0); color: #d97706; border: 1px solid #fcd34d; }
+.status-badge.approved { background: linear-gradient(135deg, #ecfdf5, #e0f5e8); color: #059669; border: 1px solid #6ee7b7; }
+.status-badge.rejected { background: linear-gradient(135deg, #fef2f2, #fde8e6); color: #dc2626; border: 1px solid #fca5a5; }
+.ac-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+.ac-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 12px 8px;
+    border: none;
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Hind Siliguri', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+    transform: translateY(0);
+    position: relative;
+    overflow: hidden;
+}
+.ac-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.5s, height 0.5s;
+}
+.ac-btn:hover::before {
+    width: 200px;
+    height: 200px;
+}
+.ac-btn:hover {
+    transform: translateY(-3px);
+}
+.ac-btn:active {
+    transform: translateY(1px);
+}
+.btn-approve { background: linear-gradient(135deg, #ecfdf5, #e0f5e8); color: #059669; border: 1.5px solid #6ee7b7; box-shadow: 0 4px 12px rgba(46,204,113,0.2); }
+.btn-approve:hover { box-shadow: 0 8px 20px rgba(46,204,113,0.35); }
+.btn-reject  { background: linear-gradient(135deg, #fef2f2, #fde8e6); color: #dc2626; border: 1.5px solid #fca5a5; box-shadow: 0 4px 12px rgba(231,76,60,0.2); }
+.btn-reject:hover { box-shadow: 0 8px 20px rgba(231,76,60,0.35); }
+.btn-delete  { background: linear-gradient(135deg, #fef2f2, #fde8e6); color: #dc2626; border: 1.5px solid #fca5a5; box-shadow: 0 4px 12px rgba(231,76,60,0.2); }
+.btn-delete:hover { box-shadow: 0 8px 20px rgba(231,76,60,0.35); }
+.btn-view    { background: linear-gradient(135deg, #f0ebff, #e8e0ff); color: var(--primary); border: 1.5px solid #c4b5fd; box-shadow: 0 4px 12px rgba(108,43,217,0.2); }
+.btn-view:hover { box-shadow: 0 8px 20px rgba(108,43,217,0.35); }
 
-/* NOTICE */
-.notice-card { background:white; border-radius:18px; padding:20px; box-shadow:var(--shadow); margin:0 16px 16px; }
-.nc-title { font-size:15px; font-weight:700; color:var(--text); margin-bottom:14px; padding-bottom:10px; border-bottom:1.5px solid #f0ebff; }
-.nc-textarea { width:100%; padding:13px 16px; border:2px solid #e8e0ff; border-radius:12px; font-size:14px; font-family:'Hind Siliguri',sans-serif; color:var(--text); background:#faf8ff; outline:none; resize:none; height:100px; margin-bottom:12px; }
-.nc-textarea:focus { border-color:var(--primary); }
-.nc-btn { width:100%; padding:14px; background:linear-gradient(135deg,var(--primary),var(--primary-light)); color:white; border:none; border-radius:12px; font-size:15px; font-weight:700; font-family:'Hind Siliguri',sans-serif; cursor:pointer; box-shadow:0 4px 15px rgba(108,43,217,0.3); }
+/* MARQUEE CARD - 3D Premium */
+.marquee-card {
+    background: white;
+    border-radius: 28px;
+    padding: 24px;
+    box-shadow: var(--card-shadow);
+    margin: 0 16px 20px;
+    transition: all 0.3s ease;
+}
+.marquee-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--card-shadow-hover);
+}
+.marquee-preview {
+    background: linear-gradient(135deg, #f8f6ff, #f0ebff);
+    padding: 16px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+    border: 1px solid #e8e0ff;
+}
+.marquee-label {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+.marquee-preview-area {
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    color: white;
+    padding: 14px;
+    border-radius: 99px;
+    overflow-x: auto;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(108,43,217,0.2);
+}
+.marquee-input {
+    width: 100%;
+    padding: 15px 18px;
+    border: 2px solid #e8e0ff;
+    border-radius: 18px;
+    font-size: 14px;
+    font-family: 'Hind Siliguri', sans-serif;
+    color: var(--text);
+    background: #faf8ff;
+    outline: none;
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+}
+.marquee-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(108,43,217,0.1);
+    transform: translateY(-2px);
+}
+.marquee-check {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+.marquee-check label {
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 500;
+}
+.marquee-save-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 800;
+    font-family: 'Hind Siliguri', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--button-shadow);
+}
+.marquee-save-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--button-shadow-hover);
+}
+.marquee-save-btn:active {
+    transform: translateY(1px);
+}
 
-/* ════ SLIDER SECTION ════ */
-.slider-card { background:white; border-radius:18px; padding:20px; box-shadow:var(--shadow); margin:0 16px 16px; }
-.sl-title { font-size:15px; font-weight:700; color:var(--text); margin-bottom:14px; padding-bottom:10px; border-bottom:1.5px solid #f0ebff; }
+/* SLIDER CARD */
+.slider-card {
+    background: white;
+    border-radius: 28px;
+    padding: 24px;
+    box-shadow: var(--card-shadow);
+    margin: 0 16px 20px;
+    transition: all 0.3s ease;
+}
+.slider-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--card-shadow-hover);
+}
+.sl-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0ebff;
+}
+.sl-item {
+    background: #faf8ff;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    border: 1.5px solid #e8e0ff;
+    transition: all 0.3s ease;
+}
+.sl-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+.sl-item img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+}
+.sl-item-info {
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+.sl-item-link {
+    font-size: 12px;
+    color: var(--text-light);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 240px;
+}
+.sl-del-btn {
+    background: linear-gradient(135deg, #fef2f2, #fde8e6);
+    color: #dc2626;
+    border: 1.5px solid #fca5a5;
+    border-radius: 14px;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-family: 'Hind Siliguri', sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+.sl-del-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231,76,60,0.3);
+}
+.sl-empty {
+    text-align: center;
+    color: var(--text-light);
+    padding: 30px;
+    font-size: 14px;
+}
+.sl-add-box {
+    background: linear-gradient(135deg, #f0ebff, #e8e0ff);
+    border-radius: 20px;
+    padding: 20px;
+    margin-top: 18px;
+    border: 1.5px solid rgba(108,43,217,0.15);
+}
+.sl-add-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--primary-dark);
+    margin-bottom: 14px;
+}
+.sl-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e8e0ff;
+    border-radius: 16px;
+    font-size: 14px;
+    font-family: 'Hind Siliguri', sans-serif;
+    color: var(--text);
+    background: white;
+    outline: none;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+.sl-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(108,43,217,0.1);
+    transform: translateY(-2px);
+}
+.sl-add-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    border: none;
+    border-radius: 18px;
+    font-size: 15px;
+    font-weight: 800;
+    font-family: 'Hind Siliguri', sans-serif;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.3s ease;
+    box-shadow: var(--button-shadow);
+}
+.sl-add-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--button-shadow-hover);
+}
+.sl-add-btn:active {
+    transform: translateY(1px);
+}
 
-/* Existing slides list */
-.sl-item { background:#faf8ff; border-radius:14px; overflow:hidden; margin-bottom:12px; border:1.5px solid #e8e0ff; }
-.sl-item img { width:100%; height:130px; object-fit:cover; display:block; }
-.sl-item-info { padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:8px; }
-.sl-item-link { font-size:12px; color:var(--text-light); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:220px; }
-.sl-del-btn { background:#fef2f2; color:#dc2626; border:1.5px solid #fca5a5; border-radius:8px; padding:6px 12px; font-size:12px; font-family:'Hind Siliguri',sans-serif; cursor:pointer; white-space:nowrap; flex-shrink:0; }
-.sl-empty { text-align:center; color:var(--text-light); padding:20px; font-size:14px; }
+/* EMPTY STATE */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-light);
+}
+.empty-icon {
+    font-size: 56px;
+    margin-bottom: 16px;
+    animation: bounce 2s ease-in-out infinite;
+}
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+.empty-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+}
 
-/* Add new slide form */
-.sl-add-box { background:linear-gradient(135deg,#f0ebff,#e8e0ff); border-radius:14px; padding:16px; margin-top:14px; border:1.5px solid rgba(108,43,217,0.15); }
-.sl-add-title { font-size:14px; font-weight:700; color:var(--primary-dark,#4a1a9e); margin-bottom:12px; }
-.sl-input { width:100%; padding:12px 14px; border:2px solid #e8e0ff; border-radius:10px; font-size:13px; font-family:'Hind Siliguri',sans-serif; color:var(--text); background:white; outline:none; margin-bottom:8px; transition:border-color 0.2s; }
-.sl-input:focus { border-color:var(--primary); }
-.sl-add-btn { width:100%; padding:13px; background:linear-gradient(135deg,var(--primary),var(--primary-light)); color:white; border:none; border-radius:10px; font-size:14px; font-weight:700; font-family:'Hind Siliguri',sans-serif; cursor:pointer; margin-top:4px; box-shadow:0 4px 14px rgba(108,43,217,0.3); }
-
-/* EMPTY */
-.empty-state { text-align:center; padding:40px 20px; color:var(--text-light); }
-.empty-icon  { font-size:48px; margin-bottom:12px; }
-.empty-title { font-size:16px; font-weight:600; color:var(--text); margin-bottom:6px; }
-
-/* TOAST */
-.toast { position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:#1a1a2e; color:white; padding:12px 24px; border-radius:99px; font-size:14px; font-weight:500; z-index:9999; display:none; white-space:nowrap; box-shadow:0 8px 30px rgba(0,0,0,0.3); font-family:'Hind Siliguri',sans-serif; }
-
-/* BOTTOM NAV */
-.bottom-nav { position:fixed; bottom:0; left:0; right:0; background:white; display:flex; border-top:1px solid #f0ebff; box-shadow:0 -4px 20px rgba(108,43,217,0.1); z-index:100; overflow-x:auto; }
-.nav-item { flex:1; min-width:60px; display:flex; flex-direction:column; align-items:center; padding:10px 0 14px; cursor:pointer; font-size:10px; color:#aaa; font-family:'Hind Siliguri',sans-serif; gap:4px; white-space:nowrap; }
-.nav-item.active { color:var(--primary); }
-.nav-icon { font-size:20px; }
+/* TOAST - Premium */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: linear-gradient(135deg, #1a1a2e, #2d2d44);
+    color: white;
+    padding: 14px 28px;
+    border-radius: 99px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 9999;
+    display: none;
+    white-space: nowrap;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    font-family: 'Hind Siliguri', sans-serif;
+    backdrop-filter: blur(10px);
+    animation: toastIn 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+@keyframes toastIn {
+    from { transform: translateX(-50%) translateY(30px); opacity: 0; }
+    to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
 </style>
 </head>
 <body>
@@ -120,7 +692,7 @@ body { font-family:'Hind Siliguri',sans-serif; background:var(--bg); min-height:
             <div class="h-logo-icon">🛡️</div>
             <div class="h-logo-text">Admin Panel</div>
         </div>
-        <a href="index.html" style="padding:8px 14px;background:rgba(255,255,255,0.15);border:none;border-radius:99px;color:white;font-size:13px;font-family:'Hind Siliguri',sans-serif;text-decoration:none;">🏠 হোম</a>
+        <a href="index.html" class="home-link">🏠 হোম</a>
     </div>
     <div class="h-sub">পাইকারি বাজার — সব নিয়ন্ত্রণ এখানে</div>
 </div>
@@ -145,13 +717,13 @@ body { font-family:'Hind Siliguri',sans-serif; background:var(--bg); min-height:
     </div>
 </div>
 
-<!-- TABS -->
+<!-- TABS (নোটিশ ট্যাব বাদ) -->
 <div class="tabs">
-    <div class="tab active" id="tabPending"  onclick="switchTab('pending')">⏳ পেন্ডিং <span class="tab-badge" id="pendingBadge">0</span></div>
+    <div class="tab active" id="tabPending" onclick="switchTab('pending')">⏳ পেন্ডিং <span class="tab-badge" id="pendingBadge">0</span></div>
     <div class="tab" id="tabApproved" onclick="switchTab('approved')">✅ Approved</div>
     <div class="tab" id="tabRejected" onclick="switchTab('rejected')">❌ Rejected</div>
-    <div class="tab" id="tabNotice"   onclick="switchTab('notice')">📢 নোটিশ</div>
-    <div class="tab" id="tabSlider"   onclick="switchTab('slider')">🖼️ Slider</div>
+    <div class="tab" id="tabMarquee" onclick="switchTab('marquee')">📢 চলন্ত লেখা</div>
+    <div class="tab" id="tabSlider" onclick="switchTab('slider')">🖼️ Slider</div>
 </div>
 
 <!-- SHOP SECTION -->
@@ -159,12 +731,20 @@ body { font-family:'Hind Siliguri',sans-serif; background:var(--bg); min-height:
     <div id="shopList"></div>
 </div>
 
-<!-- NOTICE SECTION -->
-<div id="noticeSection" style="display:none">
-    <div class="notice-card">
-        <div class="nc-title">📢 সকলকে নোটিশ পাঠান</div>
-        <textarea class="nc-textarea" id="noticeText" placeholder="নোটিশ লিখুন..."></textarea>
-        <button class="nc-btn" onclick="sendNotice()">📤 নোটিশ পাঠান</button>
+<!-- MARQUEE SECTION -->
+<div id="marqueeSection" style="display:none">
+    <div class="marquee-card">
+        <div class="nc-title">📢 চলন্ত লেখা (Marquee) নিয়ন্ত্রণ</div>
+        <div class="marquee-preview">
+            <div class="marquee-label">প্রিভিউ:</div>
+            <div class="marquee-preview-area" id="marqueePreview">এখানে লেখা দেখাবে</div>
+        </div>
+        <input type="text" class="marquee-input" id="marqueeTextInput" placeholder="চলন্ত লেখার টেক্সট লিখুন...">
+        <div class="marquee-check">
+            <input type="checkbox" id="marqueeEnableCheck">
+            <label>চলন্ত লেখা সক্রিয় করুন (On/Off)</label>
+        </div>
+        <button class="marquee-save-btn" onclick="saveMarquee()">💾 সেটিংস সংরক্ষণ করুন</button>
     </div>
 </div>
 
@@ -172,11 +752,7 @@ body { font-family:'Hind Siliguri',sans-serif; background:var(--bg); min-height:
 <div id="sliderSection" style="display:none">
     <div class="slider-card">
         <div class="sl-title">🖼️ Image Slider পরিচালনা</div>
-
-        <!-- Existing Slides -->
         <div id="slideList"><div class="sl-empty">লোড হচ্ছে...</div></div>
-
-        <!-- Add New -->
         <div class="sl-add-box">
             <div class="sl-add-title">➕ নতুন Slide যোগ করুন</div>
             <input class="sl-input" type="url" id="slideImg" placeholder="ছবির URL — https://example.com/image.jpg">
@@ -188,15 +764,6 @@ body { font-family:'Hind Siliguri',sans-serif; background:var(--bg); min-height:
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
-
-<!-- BOTTOM NAV -->
-<div class="bottom-nav">
-    <div class="nav-item active" onclick="switchTab('pending')"><span class="nav-icon">⏳</span>পেন্ডিং</div>
-    <div class="nav-item" onclick="switchTab('approved')"><span class="nav-icon">✅</span>Approved</div>
-    <div class="nav-item" onclick="switchTab('rejected')"><span class="nav-icon">❌</span>Rejected</div>
-    <div class="nav-item" onclick="switchTab('notice')"><span class="nav-icon">📢</span>নোটিশ</div>
-    <div class="nav-item" onclick="switchTab('slider')"><span class="nav-icon">🖼️</span>Slider</div>
-</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -212,7 +779,14 @@ const db = firebase.database();
 let currentTab = 'pending';
 let allShops   = {};
 
-const grads = ['linear-gradient(135deg,#6c2bd9,#a259f7)','linear-gradient(135deg,#0f3460,#16213e)','linear-gradient(135deg,#1a6b3c,#2ecc71)','linear-gradient(135deg,#e74c3c,#c0392b)','linear-gradient(135deg,#f39c12,#e67e22)','linear-gradient(135deg,#1abc9c,#16a085)'];
+const grads = [
+    'linear-gradient(135deg,#6c2bd9,#a259f7)',
+    'linear-gradient(135deg,#0f3460,#16213e)',
+    'linear-gradient(135deg,#1a6b3c,#2ecc71)',
+    'linear-gradient(135deg,#e74c3c,#c0392b)',
+    'linear-gradient(135deg,#f39c12,#e67e22)',
+    'linear-gradient(135deg,#1abc9c,#16a085)'
+];
 
 // ══ LOAD ALL SHOPS ══
 db.ref('shops').on('value', snap => {
@@ -223,33 +797,40 @@ db.ref('shops').on('value', snap => {
             allShops[c.key] = c.val();
             total++;
             const st = c.val().status;
-            if (st==='pending')  pending++;
+            if (st==='pending') pending++;
             if (st==='approved') approved++;
             if (st==='rejected') rejected++;
         });
     }
-    document.getElementById('statTotal').textContent    = total;
-    document.getElementById('statPending').textContent  = pending;
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statPending').textContent = pending;
     document.getElementById('statApproved').textContent = approved;
     document.getElementById('statRejected').textContent = rejected;
     document.getElementById('pendingBadge').textContent = pending;
-    if (currentTab !== 'notice' && currentTab !== 'slider') renderShops(currentTab);
+    
+    document.querySelectorAll('.stat-num').forEach(el => {
+        el.style.animation = 'none';
+        el.offsetHeight;
+        el.style.animation = 'numberPop 0.6s cubic-bezier(0.34, 1.2, 0.64, 1)';
+    });
+    
+    if (currentTab !== 'slider' && currentTab !== 'marquee') renderShops(currentTab);
 });
 
 // ══ SWITCH TAB ══
 function switchTab(tab) {
     currentTab = tab;
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
     const tabEl = document.getElementById('tab'+tab.charAt(0).toUpperCase()+tab.slice(1));
     if (tabEl) tabEl.classList.add('active');
 
-    document.getElementById('shopSection').style.display   = ['pending','approved','rejected'].includes(tab) ? 'block' : 'none';
-    document.getElementById('noticeSection').style.display  = tab==='notice'  ? 'block' : 'none';
-    document.getElementById('sliderSection').style.display  = tab==='slider'  ? 'block' : 'none';
+    document.getElementById('shopSection').style.display = ['pending','approved','rejected'].includes(tab) ? 'block' : 'none';
+    document.getElementById('marqueeSection').style.display = tab==='marquee' ? 'block' : 'none';
+    document.getElementById('sliderSection').style.display = tab==='slider' ? 'block' : 'none';
 
     if (tab==='slider') loadSliderAdmin();
-    else if (tab!=='notice') renderShops(tab);
+    else if (tab==='marquee') loadMarqueeSettings();
+    else renderShops(tab);
 }
 
 // ══ RENDER SHOPS ══
@@ -258,7 +839,10 @@ function renderShops(status) {
     const filtered = Object.entries(allShops).filter(([,s])=>s.status===status);
 
     if (!filtered.length) {
-        list.innerHTML=`<div class="empty-state"><div class="empty-icon">${status==='pending'?'⏳':status==='approved'?'✅':'❌'}</div><div class="empty-title">কোনো দোকান নেই</div></div>`;
+        list.innerHTML=`<div class="empty-state">
+            <div class="empty-icon">${status==='pending'?'⏳':status==='approved'?'✅':'❌'}</div>
+            <div class="empty-title">কোনো দোকান নেই</div>
+        </div>`;
         return;
     }
 
@@ -296,6 +880,10 @@ function renderShops(status) {
             <div class="ac-actions">${actionBtns}</div>
         </div>`;
     }).join('');
+    
+    document.querySelectorAll('.admin-card').forEach((card, idx) => {
+        card.style.animation = `tileIn 0.4s ease both ${idx * 0.05}s`;
+    });
 }
 
 // ══ UPDATE STATUS ══
@@ -315,14 +903,38 @@ async function deleteShop(id, name) {
     } catch(e) { showToast('⚠️ সমস্যা হয়েছে!'); }
 }
 
-// ══ NOTICE ══
-async function sendNotice() {
-    const msg = document.getElementById('noticeText').value.trim();
-    if (!msg) { showToast('⚠️ নোটিশ লিখুন!'); return; }
+// ══ MARQUEE FUNCTIONS ══
+function loadMarqueeSettings() {
+    db.ref('marquee').on('value', snap => {
+        if (snap.exists()) {
+            const data = snap.val();
+            document.getElementById('marqueeTextInput').value = data.text || '';
+            document.getElementById('marqueeEnableCheck').checked = data.enabled === true;
+            updateMarqueePreview(data.text || '');
+        } else {
+            document.getElementById('marqueeTextInput').value = '';
+            document.getElementById('marqueeEnableCheck').checked = false;
+            updateMarqueePreview('');
+        }
+    });
+}
+
+function updateMarqueePreview(text) {
+    const previewEl = document.getElementById('marqueePreview');
+    if (text && text.trim() !== '') {
+        previewEl.innerHTML = `<marquee behavior="scroll" direction="left" scrollamount="4">✨ ${text} ✨</marquee>`;
+    } else {
+        previewEl.innerHTML = '<span style="opacity:0.6">🔇 চলন্ত লেখা বন্ধ আছে</span>';
+    }
+}
+
+async function saveMarquee() {
+    const text = document.getElementById('marqueeTextInput').value.trim();
+    const enabled = document.getElementById('marqueeEnableCheck').checked;
     try {
-        await db.ref('message').set(msg);
-        document.getElementById('noticeText').value='';
-        showToast('📢 নোটিশ পাঠানো হয়েছে!');
+        await db.ref('marquee').set({ text: text, enabled: enabled });
+        updateMarqueePreview(text);
+        showToast('💾 চলন্ত লেখার সেটিংস সংরক্ষিত!');
     } catch(e) { showToast('⚠️ সমস্যা হয়েছে!'); }
 }
 
