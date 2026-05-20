@@ -448,7 +448,8 @@ select.input-field { cursor: pointer; appearance: none; }
             </div>
         </div>
 
-        <div class="tile-card" id="categorySection" style="display:none">
+        <!-- ক্যাটাগরি সেকশন - সবসময় Visible থাকবে (display: block) -->
+        <div class="tile-card" id="categorySection">
             <div class="tile-header"><div class="tile-icon">🗂️</div><div><div class="tile-title">পণ্যের ক্যাটাগরি (একাধিক)</div><div class="tile-subtitle">আপনার দোকানের পণ্যের ধরন বাছাই করুন</div></div></div>
             <div id="selectedChipsContainer" class="cat-chips-wrap"></div>
             <button type="button" class="cat-select-btn" onclick="openMultiCategoryPopup()"><span><i class="fas fa-plus-circle"></i> ক্যাটাগরি যুক্ত করুন</span><span>▼</span></button>
@@ -503,27 +504,21 @@ const districtMap = {
     'ময়মনসিংহ': ['ময়মনসিংহ', 'জামালপুর', 'শেরপুর', 'নেত্রকোণা']
 };
 
-// সম্পূর্ণ থানা ম্যাপ (এখন সিলেটের সব জেলার জন্য সঠিক তথ্য যুক্ত করা হয়েছে)
+// সম্পূর্ণ থানা ম্যাপ (সিলেটের সব জেলার তথ্য সমৃদ্ধ)
 const thanaMap = {
-    // ঢাকা বিভাগের কয়েকটি জেলা (পূর্ণ তালিকা সংক্ষেপে রাখা হয়েছে)
     'ঢাকা': ['আদাবর', 'উত্তরা', 'তেজগাঁও', 'ধামরাই', 'নবাবগঞ্জ', 'বাড্ডা', 'মিরপুর', 'মোহাম্মদপুর', 'যাত্রাবাড়ী', 'রামপুরা', 'লালবাগ', 'শাহবাগ', 'সাভার', 'সূত্রাপুর', 'হাজারীবাগ'],
     'গাজীপুর': ['গাজীপুর সদর', 'কালিয়াকৈর', 'কাপাসিয়া', 'শ্রীপুর'],
     'নারায়ণগঞ্জ': ['নারায়ণগঞ্জ সদর', 'আড়াইহাজার', 'বন্দর', 'রূপগঞ্জ', 'সোনারগাঁও'],
     'টাঙ্গাইল': ['টাঙ্গাইল সদর', 'বাসাইল', 'দেলদুয়ার', 'ঘাটাইল', 'গোপালপুর', 'কালিহাতী', 'মধুপুর', 'মির্জাপুর', 'নাগরপুর', 'সখিপুর', 'ধনবাড়ী'],
-    // চট্টগ্রাম বিভাগ
     'চট্টগ্রাম': ['চট্টগ্রাম সদর', 'আনোয়ারা', 'বাঁশখালী', 'বোয়ালখালী', 'চন্দনাইশ', 'দোহাজারী', 'ফটিকছড়ি', 'হাটহাজারী', 'লোহাগাড়া', 'মিরসরাই', 'পটিয়া', 'রাঙ্গুনিয়া', 'রাউজান', 'সন্দ্বীপ', 'সাতকানিয়া', 'সীতাকুণ্ডা'],
     'নোয়াখালী': ['নোয়াখালী সদর', 'বেগমগঞ্জ', 'চাটখিল', 'কবিরহাট', 'সেনবাগ', 'সোনাইমুড়ি', 'সুবর্ণচর', 'কোম্পানীগঞ্জ'],
     'কুমিল্লা': ['কুমিল্লা সদর', 'বরুড়া', 'ব্রাহ্মণপাড়া', 'বুড়িচং', 'চান্দিনা', 'চৌদ্দগ্রাম', 'দাউদকান্দি', 'দেবিদ্বার', 'হোমনা', 'লাকসাম', 'মনোহরগঞ্জ', 'মুরাদনগর', 'নাঙ্গলকোট', 'তিতাস'],
-    // সিলেট বিভাগের সব জেলার থানা/উপজেলা (সম্পূর্ণ)
     'সিলেট': ['সিলেট সদর', 'বালাগঞ্জ', 'বিয়ানীবাজার', 'বিশ্বনাথ', 'ফেঞ্চুগঞ্জ', 'গোলাপগঞ্জ', 'গোয়াইনঘাট', 'জৈন্তাপুর', 'কানাইঘাট', 'কোম্পানীগঞ্জ', 'জকিগঞ্জ', 'দক্ষিণ সুরমা'],
     'মৌলভীবাজার': ['মৌলভীবাজার সদর', 'বড়লেখা', 'জুড়ী', 'কমলগঞ্জ', 'কুলাউড়া', 'রাজনগর', 'শ্রীমঙ্গল'],
     'হবিগঞ্জ': ['হবিগঞ্জ সদর', 'আজমিরীগঞ্জ', 'বাহুবল', 'বানিয়াচং', 'চুনারুঘাট', 'কালাউক', 'লাখাই', 'মাধবপুর', 'নবীগঞ্জ', 'শায়েস্তাগঞ্জ'],
     'সুনামগঞ্জ': ['সুনামগঞ্জ সদর', 'ছাতক', 'দিরাই', 'ধর্মপাশা', 'দোয়ারাবাজার', 'জগন্নাথপুর', 'জামালগঞ্জ', 'শাল্লা', 'তাহিরপুর', 'বিশ্বম্ভরপুর'],
-    // রাজশাহী বিভাগ
     'রাজশাহী': ['রাজশাহী সদর', 'বাঘা', 'বাগমারা', 'চারঘাট', 'দুর্গাপুর', 'গোদাগাড়ী', 'মোহনপুর', 'পবা', 'পুঠিয়া', 'তানোর'],
-    // খুলনা বিভাগ
     'খুলনা': ['খুলনা সদর', 'বটিয়াঘাটা', 'দাকোপ', 'ডুমুরিয়া', 'দিঘলিয়া', 'কয়রা', 'পাইকগাছা', 'রূপসা', 'তেরখাদা'],
-    // রংপুর বিভাগ
     'রংপুর': ['রংপুর সদর', 'বদরগঞ্জ', 'গঙ্গাচড়া', 'কাউনিয়া', 'মিঠাপুকুর', 'পীরগাছা', 'পীরগঞ্জ', 'তারাগঞ্জ'],
     'দিনাজপুর': ['দিনাজপুর সদর', 'বিরামপুর', 'বীরগঞ্জ', 'বোচাগঞ্জ', 'চিরিরবন্দর', 'ফুলবাড়ী', 'ঘোড়াঘাট', 'হাকিমপুর', 'খানসামা', 'নবাবগঞ্জ', 'পার্বতীপুর', 'সেতাবগঞ্জ'],
     'ময়মনসিংহ': ['ময়মনসিংহ সদর', 'ভালুকা', 'ধোবাউড়া', 'ফুলবাড়িয়া', 'গফরগাঁও', 'গৌরীপুর', 'হালুয়াঘাট', 'ঈশ্বরগঞ্জ', 'মুক্তাগাছা', 'নান্দাইল', 'ফুলপুর', 'ত্রিশাল']
@@ -536,7 +531,6 @@ function onDivisionChange() {
     document.getElementById('districtGroup').style.display = 'none'; 
     document.getElementById('thanaGroup').style.display = 'none'; 
     document.getElementById('areaGroup').style.display = 'none'; 
-    document.getElementById('categorySection').style.display = 'none'; 
     if(div && districtMap[div]) {
         districtMap[div].forEach(d => { 
             let opt = new Option(d, d); 
@@ -552,7 +546,6 @@ function onDistrictChange() {
     tSel.innerHTML = '<option value="">— উপজেলা / থানা বাছাই করুন —</option>'; 
     document.getElementById('thanaGroup').style.display = 'none'; 
     document.getElementById('areaGroup').style.display = 'none'; 
-    document.getElementById('categorySection').style.display = 'none'; 
     if(dist && thanaMap[dist]) {
         thanaMap[dist].forEach(t => { 
             let opt = new Option(t, t); 
@@ -560,7 +553,6 @@ function onDistrictChange() {
         }); 
         document.getElementById('thanaGroup').style.display = 'block';
     } else if(dist) {
-        // যদি কোন জেলার ডাটা না থাকে তবুও একটি ফাকা অপশন দেখাবে এবং মেসেজ দেবে
         tSel.innerHTML = '<option value="">উপজেলা তালিকা পাওয়া যায়নি</option>';
         document.getElementById('thanaGroup').style.display = 'block';
     }
@@ -569,11 +561,9 @@ function onDistrictChange() {
 function onThanaChange() { 
     const thana = document.getElementById('thana').value; 
     if(thana && thana !== "উপজেলা তালিকা পাওয়া যায়নি") { 
-        document.getElementById('areaGroup').style.display = 'block'; 
-        document.getElementById('categorySection').style.display = 'block';
+        document.getElementById('areaGroup').style.display = 'block';
     } else { 
-        document.getElementById('areaGroup').style.display = 'none'; 
-        document.getElementById('categorySection').style.display = 'none';
+        document.getElementById('areaGroup').style.display = 'none';
     } 
 }
 
@@ -604,7 +594,7 @@ auth.onAuthStateChanged(async user=>{ if(!user){ window.location.href='login.htm
     else if(data.status==='rejected'){ cardBadge.className='small-status-badge rejected'; cardBadge.innerHTML='❌ Rejected';} 
     else { cardBadge.className='small-status-badge pending'; cardBadge.innerHTML='⏳ পেন্ডিং';}
     document.getElementById('shopName').value=data.shopName||''; document.getElementById('ownerName').value=data.ownerName||''; document.getElementById('description').value=data.description||''; document.getElementById('phone').value=data.phone||''; document.getElementById('whatsapp').value=data.whatsapp||''; document.getElementById('telegram').value=data.telegram||''; document.getElementById('youtube').value=data.youtube||''; document.getElementById('area').value=data.area||'';
-    if(data.division){ document.getElementById('division').value=data.division; onDivisionChange(); setTimeout(()=>{ if(data.district){ document.getElementById('district').value=data.district; onDistrictChange(); setTimeout(()=>{ if(data.thana) document.getElementById('thana').value=data.thana; else if(data.upazila) document.getElementById('thana').value=data.upazila; if(document.getElementById('thana').value && document.getElementById('thana').value !== "উপজেলা তালিকা পাওয়া যায়নি"){ document.getElementById('areaGroup').style.display='block'; document.getElementById('categorySection').style.display='block';}},100);}},50);}
+    if(data.division){ document.getElementById('division').value=data.division; onDivisionChange(); setTimeout(()=>{ if(data.district){ document.getElementById('district').value=data.district; onDistrictChange(); setTimeout(()=>{ if(data.thana) document.getElementById('thana').value=data.thana; else if(data.upazila) document.getElementById('thana').value=data.upazila; if(document.getElementById('thana').value && document.getElementById('thana').value !== "উপজেলা তালিকা পাওয়া যায়নি"){ document.getElementById('areaGroup').style.display='block'; }},100);}},50);}
     if(data.categories){ let cats=typeof data.categories==='string'?data.categories.split(',').map(s=>s.trim()):(Array.isArray(data.categories)?data.categories:[]); selectedCategories=cats.filter(c=>c); renderChips();} else if(data.category && !data.categories){ selectedCategories=[data.category]; renderChips();} else renderChips();} else renderChips();});
 
 async function saveShopData(){ const user=auth.currentUser; if(!user) return; const shopName=document.getElementById('shopName').value.trim(); const ownerName=document.getElementById('ownerName').value.trim(); const division=document.getElementById('division').value; const district=document.getElementById('district').value; const thana=document.getElementById('thana').value; const area=document.getElementById('area').value.trim(); const phone=document.getElementById('phone').value.trim(); if(!shopName) return showFloatyToast('দোকানের নাম দিন!',true); if(!ownerName) return showFloatyToast('মালিকের নাম দিন!',true); if(!division) return showFloatyToast('বিভাগ বাছাই করুন!',true); if(!district) return showFloatyToast('জেলা বাছাই করুন!',true); if(!thana || thana === "উপজেলা তালিকা পাওয়া যায়নি") return showFloatyToast('সঠিক উপজেলা/থানা নির্বাচন করুন!',true); if(!area) return showFloatyToast('এলাকা/বিস্তারিত ঠিকানা দিন!',true); if(!phone) return showFloatyToast('মোবাইল নম্বর দিন!',true); const btn=document.getElementById('saveBtn'); btn.classList.add('loading'); try{ await db.ref('shops/'+user.uid).update({ shopName, ownerName, description:document.getElementById('description').value.trim(), division, district, thana, upazila:thana, area, categories:selectedCategories.join(','), phone, whatsapp:document.getElementById('whatsapp').value.trim(), telegram:document.getElementById('telegram').value.trim(), youtube:document.getElementById('youtube').value.trim(), updatedAt:Date.now()}); document.getElementById('previewCardShopName').innerHTML = `${shopName}`; document.getElementById('previewCardAddress').innerHTML = `${area}`; showFloatyToast('✅ তথ্য সফলভাবে সংরক্ষণ হয়েছে!'); btn.classList.remove('loading');} catch(e){ btn.classList.remove('loading'); showFloatyToast('সংরক্ষণ ব্যর্থ! আবার চেষ্টা করুন।',true);}}
