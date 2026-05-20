@@ -369,6 +369,58 @@ select.input-field { cursor: pointer; appearance: none; }
 }
 .home-btn i { margin-right: 6px; }
 .home-btn:hover { background-color: #27ae60; transform: scale(0.98); }
+
+/* লগআউট বাটন - ইউনিক ডিজাইন ও অ্যানিমেশন */
+.logout-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    position: relative;
+    overflow: hidden;
+}
+.logout-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+.logout-btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+.logout-btn:hover {
+    background: linear-gradient(135deg, #c0392b, #a93226);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(231,76,60,0.4);
+}
+.logout-btn:active {
+    transform: translateY(2px) scale(0.98);
+}
+.logout-btn i {
+    transition: transform 0.3s ease;
+}
+.logout-btn:hover i {
+    transform: translateX(3px);
+}
+
 .submit-btn {
     width: 100%;
     padding: 16px;
@@ -468,6 +520,8 @@ select.input-field { cursor: pointer; appearance: none; }
 <div class="submit-wrap" id="saveWrap" style="display:none">
     <a href="index.html" class="home-btn"><i class="fas fa-home"></i> হোম পেজে ফিরে যান</a>
     <button class="submit-btn" id="saveBtn" onclick="saveShopData()"><div class="spinner"></div><span class="btn-text">💾 সেভ করুন</span></button>
+    <!-- লগআউট বাটন - ইউনিক ডিজাইন ও অ্যানিমেশন -->
+    <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> লগআউট</button>
 </div>
 
 <div id="multiCatPopup" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:flex-end;">
@@ -631,7 +685,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if(viewBtn) viewBtn.innerHTML = '<i class="fas fa-user-circle"></i> আপনার প্রোফাইল (অন্যরা যেভাবে দেখবে)';
 });
 
-// ========== সঠিক viewProfile ফাংশন (প্রোফাইল পেজে UID সহ যাবে) ==========
+// ========== প্রোফাইল ফাংশন ==========
 function viewProfile() {
     const user = auth.currentUser;
     if (user) {
@@ -640,7 +694,19 @@ function viewProfile() {
         window.location.href = 'login.html';
     }
 }
-// ================================================================
+
+// ========== লগআউট ফাংশন ==========
+function logout() {
+    auth.signOut().then(() => {
+        showFloatyToast('✅ সফলভাবে লগআউট হয়েছে!');
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1500);
+    }).catch((error) => {
+        showFloatyToast('লগআউট করতে সমস্যা হয়েছে!', true);
+    });
+}
+// ==================================
 
 auth.onAuthStateChanged(async user=>{ if(!user){ window.location.href='login.html'; return;} const snap=await db.ref('shops/'+user.uid).get(); const data=snap.val(); document.getElementById('loadingScreen').style.display='none'; document.getElementById('mainContent').style.display='block'; document.getElementById('saveWrap').style.display='block'; if(data){ 
     document.getElementById('previewCardShopName').innerHTML = `${data.shopName || 'দোকানের নাম'}`;
