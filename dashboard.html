@@ -54,14 +54,14 @@ body {
     padding: 20px 16px 120px; 
 }
 
-/* 3D কার্ড - সব লেখা সেন্টার বরাবর */
+/* 3D কার্ড - সাদা কালার */
 .shop-preview-card {
     background: white;
     border-radius: 28px;
     padding: 24px 20px;
     margin-bottom: 24px;
-    box-shadow: 0 20px 35px -12px rgba(108,43,217,0.25);
-    border: 1px solid rgba(108,43,217,0.15);
+    box-shadow: 0 20px 35px -12px rgba(0,0,0,0.15);
+    border: 1px solid rgba(0,0,0,0.08);
     transform-style: preserve-3d;
     transition: transform 0.3s ease, box-shadow 0.3s;
     animation: floatCard 3s infinite ease-in-out;
@@ -75,61 +75,73 @@ body {
 .card-shop-name {
     font-size: 22px;
     font-weight: 800;
-    color: var(--primary-dark);
-    margin-bottom: 12px;
-    /* আইকন বাদ দেওয়া হয়েছে - শুধু টেক্সট */
+    color: white;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 50px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(108,43,217,0.3);
 }
 .card-shop-address {
     font-size: 14px;
-    color: #555;
+    color: var(--text);
     margin-top: 6px;
-    padding-top: 8px;
-    display: flex;
+    padding: 8px 12px;
+    background: #f8f6ff;
+    border-radius: 30px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
 }
-/* শুধুমাত্র একটি লোকেশন আইকন */
 .card-shop-address i { 
     color: var(--primary); 
     font-size: 13px;
 }
 
-/* সিলেক্টেড ক্যাটাগরি দেখানোর জন্য */
+/* সিলেক্টেড ক্যাটাগরি দেখানোর জন্য - দোকানের নামের নিচে */
 .selected-categories-display {
-    margin-top: 12px;
-    padding-top: 10px;
-    border-top: 1px solid #efe6ff;
+    margin: 15px auto 0;
+    padding: 8px 12px;
+    background: #f0ebff;
+    border-radius: 30px;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     justify-content: center;
+    max-width: 95%;
 }
 .selected-cat-tag-mini {
-    background: linear-gradient(135deg, #f0ebff, #e8e0ff);
+    background: white;
     color: var(--primary);
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 11px;
     font-weight: 500;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-/* ছোট স্ট্যাটাস ব্যাজ - কার্ডের ভিতরে সেন্টার বরাবর */
+/* ছোট স্ট্যাটাস ব্যাজ - সাদা */
 .small-status-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 5px;
-    padding: 4px 14px;
+    padding: 6px 18px;
     border-radius: 99px;
     font-size: 12px;
     font-weight: 600;
-    margin-top: 12px;
-    width: auto;
+    margin-top: 15px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
-.small-status-badge.approved { background: rgba(46,204,113,0.15); color: #2ecc71; border: 1px solid rgba(46,204,113,0.3); }
-.small-status-badge.pending { background: rgba(240,192,64,0.15); color: #f0c040; border: 1px solid rgba(240,192,64,0.3); }
-.small-status-badge.rejected { background: rgba(231,76,60,0.15); color: #e74c3c; border: 1px solid rgba(231,76,60,0.3); }
+.small-status-badge.approved { background: #2ecc71; color: white; border: none; }
+.small-status-badge.pending { background: #f0c040; color: white; border: none; }
+.small-status-badge.rejected { background: #e74c3c; color: white; border: none; }
 
 .toast-congrats {
     position: fixed;
@@ -296,7 +308,7 @@ select.input-field { cursor: pointer; appearance: none; }
     to { transform: translateY(0); opacity: 1; }
 }
 
-.view-profile-btn, .edit-toggle-btn {
+.view-profile-btn {
     width: 100%;
     padding: 14px;
     background: #f0ebff;
@@ -312,14 +324,24 @@ select.input-field { cursor: pointer; appearance: none; }
     justify-content: center;
     gap: 8px;
 }
-/* একটি চোখের আইকন বাদ দেওয়া হয়েছে */
-.view-profile-btn i:first-child { display: none; }
-.view-profile-btn i:last-child { display: inline-block; }
+/* সমস্ত চোখের আইকন সরানো হয়েছে */
+.view-profile-btn i { display: none; }
 
 .edit-toggle-btn {
+    width: 100%;
+    padding: 14px;
     background: linear-gradient(135deg, var(--primary-light), var(--primary));
     color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
     margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 .edit-toggle-btn i { color: white; }
 
@@ -406,13 +428,13 @@ select.input-field { cursor: pointer; appearance: none; }
             <i class="fas fa-map-marker-alt"></i> 
             <span id="previewCardAddress">ঠিকানা প্রদর্শিত হবে</span>
         </div>
-        <!-- সিলেক্টেড ক্যাটাগরি প্রদর্শন -->
+        <!-- সিলেক্টেড ক্যাটাগরি প্রদর্শন - দোকানের নামের নিচে -->
         <div id="selectedCategoriesDisplay" class="selected-categories-display"></div>
         <div id="cardStatusBadge" class="small-status-badge pending">⏳ পেন্ডিং</div>
     </div>
 
-    <!-- প্রোফাইল দেখুন বাটন - একটি চোখের আইকন বাদ -->
-    <button class="view-profile-btn" onclick="viewProfile()"><i class="fas fa-eye"></i> আপনার প্রোফাইল (অন্যরা যেভাবে দেখবে)</button>
+    <!-- প্রোফাইল দেখুন বাটন - সব চোখের আইকন বাদ -->
+    <button class="view-profile-btn" onclick="viewProfile()"> আপনার প্রোফাইল (অন্যরা যেভাবে দেখবে)</button>
     
     <!-- প্রোফাইল এডিট টগল বাটন -->
     <button class="edit-toggle-btn" id="editToggleBtn" onclick="toggleEditForm()"><i class="fas fa-edit"></i> প্রোফাইল এডিট করুন</button>
@@ -540,7 +562,7 @@ function onThanaChange() { const thana=document.getElementById('thana').value; i
 const allCategories = ['👗 পোশাক ও বস্ত্র','🛒 খাদ্যপণ্য ও মসলা','📱 ইলেকট্রনিক্স','🏠 গৃহস্থালি পণ্য','🔧 হার্ডওয়্যার ও নির্মাণ','💊 ওষুধ ও স্বাস্থ্য','🧴 সৌন্দর্য ও কসমেটিক্স','🎒 ব্যাগ ও জুতা','🌾 কৃষি ও সার','🖨️ স্টেশনারি ও অফিস','🚗 অটোমোবাইল','🧸 খেলনা ও শিশু পণ্য','🎉 উপহার ও সাজসজ্জা','📦 প্যাকেজিং সামগ্রী','🔬 শিল্প ও কারখানা','🐟 মাছ ও মাংস','🪴 নার্সারি ও বাগান','⚽ খেলাধুলা সামগ্রী','📚 বই ও শিক্ষা সামগ্রী','🔌 সোলার ও বিদ্যুৎ','🧵 সেলাই ও কারুকাজ','🛺 যানবাহন যন্ত্রাংশ','🔹 অন্যান্য'];
 let selectedCategories = [];
 function renderChips() { const container=document.getElementById('selectedChipsContainer'); container.innerHTML=''; selectedCategories.forEach(cat=>{ const chip=document.createElement('div'); chip.className='cat-chip'; chip.innerHTML=`${cat} <i class="fas fa-times-circle" onclick="removeCategory('${cat.replace(/'/g,"\\'")}')"></i>`; container.appendChild(chip);}); document.getElementById('categoriesHidden').value=selectedCategories.join(','); updatePreviewCategories(); }
-function updatePreviewCategories() { const container=document.getElementById('selectedCategoriesDisplay'); if(selectedCategories.length>0){ container.innerHTML=selectedCategories.map(cat=>`<span class="selected-cat-tag-mini">${cat}</span>`).join(''); } else { container.innerHTML=''; } }
+function updatePreviewCategories() { const container=document.getElementById('selectedCategoriesDisplay'); if(selectedCategories.length>0){ container.innerHTML=selectedCategories.map(cat=>`<span class="selected-cat-tag-mini">${cat}</span>`).join(''); container.style.display='flex'; } else { container.innerHTML=''; container.style.display='none'; } }
 function removeCategory(cat){ selectedCategories=selectedCategories.filter(c=>c!==cat); renderChips();}
 function openMultiCategoryPopup(){ const listDiv=document.getElementById('multiCatList'); listDiv.innerHTML=''; allCategories.forEach(cat=>{ const isSelected=selectedCategories.includes(cat); const div=document.createElement('div'); div.className=`cat-item-multi ${isSelected?'selected':''}`; div.innerHTML=`${cat} ${isSelected?'<i class="fas fa-check-circle"></i>':''}`; div.onclick=()=>{ if(selectedCategories.includes(cat)) selectedCategories=selectedCategories.filter(c=>c!==cat); else selectedCategories.push(cat); renderChips(); openMultiCategoryPopup();}; listDiv.appendChild(div);}); document.getElementById('multiCatPopup').style.display='flex';}
 function closeMultiCatPopup(){ document.getElementById('multiCatPopup').style.display='none'; renderChips();}
