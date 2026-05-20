@@ -150,10 +150,17 @@ body {
 }
 .card-shop-address i { color: var(--primary); margin-top: 2px; }
 
-/* notice tile সম্পূর্ণ বাদ দেওয়া হয়েছে - স্ক্রিনশটের মার্ক করা অংশ */
 .notice-tile {
-    display: none;
+    border-radius: 18px;
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 20px;
 }
+.notice-tile.pending { background: #fffbeb; border: 1.5px solid #f0c040; }
+.notice-tile.approved { background: #edfaf3; border: 1.5px solid #2ecc71; }
+.notice-tile.rejected { background: #fdf0ef; border: 1.5px solid #e74c3c; }
 
 .toast-congrats {
     position: fixed;
@@ -393,9 +400,11 @@ select.input-field { cursor: pointer; appearance: none; }
 }
 .edit-toggle-btn i { color: white; }
 
-/* অদৃশ্য স্পেসার বাটন */
+/* অদৃশ্য স্পেসার বাটন - এই বাটনটি দৃশ্যমান না হয়ে জায়গা দখল করে রাখবে */
 .invisible-spacer {
     width: 100%;
+    padding: 14px;
+    margin-bottom: 12px;
     opacity: 0;
     pointer-events: none;
     visibility: hidden;
@@ -444,19 +453,23 @@ select.input-field { cursor: pointer; appearance: none; }
         <div class="card-shop-address"><i class="fas fa-map-marker-alt"></i> <span id="previewCardAddress">ঠিকানা প্রদর্শিত হবে</span></div>
     </div>
 
-    <!-- notice-tile সম্পূর্ণ বাদ দেওয়া হয়েছে (স্ক্রিনশটের মার্ক করা অংশ) -->
+    <div class="notice-tile pending" id="noticeTile">
+        <div class="notice-icon">⏳</div>
+        <div class="notice-text"><div class="notice-title">Approval পেন্ডিং</div>আপনার দোকান Admin-এর কাছে Approval-এর জন্য অপেক্ষায় আছে।</div>
+    </div>
 
     <!-- প্রোফাইল দেখুন বাটন -->
     <button class="view-profile-btn" onclick="viewProfile()"><i class="fas fa-eye"></i> আমার প্রোফাইল (অন্যরা যেভাবে দেখবে)</button>
     
-    <!-- অদৃশ্য স্পেসার বাটন -->
+    <!-- অদৃশ্য স্পেসার বাটন - এটি জায়গা ধরে রাখবে কিন্তু দেখা যাবে না এবং ক্লিকযোগ্যও নয় -->
     <div class="invisible-spacer"></div>
     
     <!-- প্রোফাইল এডিট টগল বাটন -->
     <button class="edit-toggle-btn" id="editToggleBtn" onclick="toggleEditForm()"><i class="fas fa-edit"></i> প্রোফাইল এডিট করুন</button>
 
-    <!-- এডিট ফর্ম -->
+    <!-- এডিট ফর্ম (সবকিছু লুকানো থাকবে, টগল বাটনে ক্লিক করলে দেখাবে) -->
     <div id="editFormContainer">
+        <!-- দোকানের তথ্য -->
         <div class="tile-card">
             <div class="tile-header"><div class="tile-icon">🏪</div><div><div class="tile-title">দোকানের তথ্য</div><div class="tile-subtitle">প্রয়োজনীয় তথ্য দিন</div></div></div>
             <div class="input-group"><label class="input-label">দোকানের নাম *</label><div class="input-wrap"><span class="input-icon">🏷️</span><input class="input-field" type="text" id="shopName" placeholder="দোকানের নাম"></div></div>
@@ -464,6 +477,7 @@ select.input-field { cursor: pointer; appearance: none; }
             <div class="input-group"><label class="input-label">দোকান পরিচিতি</label><div class="input-wrap"><span class="input-icon" style="top:18px">📝</span><textarea class="input-field" id="description" placeholder="দোকান সম্পর্কে লিখুন..."></textarea></div></div>
         </div>
 
+        <!-- ঠিকানা -->
         <div class="tile-card">
             <div class="tile-header"><div class="tile-icon">📍</div><div><div class="tile-title">দোকানের ঠিকানা</div><div class="tile-subtitle">বিভাগ → জেলা → থানা/উপজেলা</div></div></div>
             <div class="input-group">
@@ -493,6 +507,7 @@ select.input-field { cursor: pointer; appearance: none; }
             </div>
         </div>
 
+        <!-- ক্যাটাগরি -->
         <div class="tile-card" id="categorySection" style="display:none">
             <div class="tile-header"><div class="tile-icon">🗂️</div><div><div class="tile-title">পণ্যের ক্যাটাগরি (একাধিক)</div><div class="tile-subtitle">আপনার দোকানের পণ্যের ধরন বাছাই করুন</div></div></div>
             <div id="selectedChipsContainer" class="cat-chips-wrap"></div>
@@ -500,6 +515,7 @@ select.input-field { cursor: pointer; appearance: none; }
             <input type="hidden" id="categoriesHidden" value="">
         </div>
 
+        <!-- যোগাযোগ -->
         <div class="tile-card">
             <div class="tile-header"><div class="tile-icon">📞</div><div><div class="tile-title">যোগাযোগের তথ্য</div><div class="tile-subtitle">গ্রাহকরা যোগাযোগ করবে</div></div></div>
             <div class="input-group"><label class="input-label">মোবাইল নম্বর *</label><div class="input-wrap"><span class="input-icon">📱</span><input class="input-field" type="tel" id="phone" placeholder="01XXXXXXXXX"></div></div>
@@ -537,6 +553,7 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
+// District & Thana Maps
 const districtMap = {
     'ঢাকা': ['ঢাকা', 'গাজীপুর', 'নারায়ণগঞ্জ', 'মুন্সীগঞ্জ', 'মানিকগঞ্জ', 'নরসিংদী', 'ফরিদপুর', 'রাজবাড়ী', 'গোপালগঞ্জ', 'মাদারীপুর', 'শরীয়তপুর', 'কিশোরগঞ্জ', 'টাঙ্গাইল'],
     'চট্টগ্রাম': ['চট্টগ্রাম', 'কক্সবাজার', 'কুমিল্লা', 'চাঁদপুর', 'ব্রাহ্মণবাড়িয়া', 'নোয়াখালী', 'ফেনী', 'লক্ষ্মীপুর', 'রাঙামাটি', 'খাগড়াছড়ি', 'বান্দরবান'],
@@ -581,13 +598,19 @@ function removeCategory(cat){ selectedCategories=selectedCategories.filter(c=>c!
 function openMultiCategoryPopup(){ const listDiv=document.getElementById('multiCatList'); listDiv.innerHTML=''; allCategories.forEach(cat=>{ const isSelected=selectedCategories.includes(cat); const div=document.createElement('div'); div.className=`cat-item-multi ${isSelected?'selected':''}`; div.innerHTML=`${cat} ${isSelected?'<i class="fas fa-check-circle"></i>':''}`; div.onclick=()=>{ if(selectedCategories.includes(cat)) selectedCategories=selectedCategories.filter(c=>c!==cat); else selectedCategories.push(cat); renderChips(); openMultiCategoryPopup();}; listDiv.appendChild(div);}); document.getElementById('multiCatPopup').style.display='flex';}
 function closeMultiCatPopup(){ document.getElementById('multiCatPopup').style.display='none'; renderChips();}
 
-function toggleEditForm(){ const formDiv=document.getElementById('editFormContainer'); formDiv.classList.toggle('show'); if(formDiv.classList.contains('show')){ setTimeout(()=>{ document.getElementById('editToggleBtn').scrollIntoView({ behavior:'smooth', block:'center' }); }, 100); } }
+function toggleEditForm(){ 
+    const formDiv=document.getElementById('editFormContainer'); 
+    formDiv.classList.toggle('show'); 
+    if(formDiv.classList.contains('show')){
+        setTimeout(()=>{ document.getElementById('editToggleBtn').scrollIntoView({ behavior:'smooth', block:'center' }); }, 100);
+    }
+}
 
 let firstApprovalFlagShown=false;
 function showConfettiAndToast(){ canvasConfetti({particleCount:150,spread:70,origin:{y:0.6},startVelocity:20,colors:['#6c2bd9','#f0c040','#2ecc71']}); let end=Date.now()+2000; const frame=()=>{ canvasConfetti({particleCount:3,angle:60,spread:55,origin:{x:0,y:0.7},startVelocity:25}); canvasConfetti({particleCount:3,angle:120,spread:55,origin:{x:1,y:0.7},startVelocity:25}); if(Date.now()<end) requestAnimationFrame(frame);}; frame(); const toastDiv=document.createElement('div'); toastDiv.className='toast-congrats'; toastDiv.innerHTML='<i class="fas fa-trophy"></i> অভিনন্দন! আপনার দোকান Approved হয়েছে 🎉'; document.body.appendChild(toastDiv); setTimeout(()=>toastDiv.remove(),4500); localStorage.setItem('congratsShown_'+auth.currentUser?.uid,'true');}
 function showFloatyToast(msg,isError=false){ let toast=document.createElement('div'); toast.className='custom-toast'+(isError?' error':''); toast.innerHTML=`<i class="fas ${isError?'fa-exclamation-circle':'fa-check-circle'}"></i> ${msg}`; document.body.appendChild(toast); setTimeout(()=>toast.remove(),4000);}
 
-auth.onAuthStateChanged(async user=>{ if(!user){ window.location.href='login.html'; return;} const snap=await db.ref('shops/'+user.uid).get(); const data=snap.val(); document.getElementById('loadingScreen').style.display='none'; document.getElementById('mainHeader').style.display='block'; document.getElementById('mainContent').style.display='block'; document.getElementById('saveWrap').style.display='block'; if(data){ document.getElementById('previewAvatar').textContent=data.shopName?data.shopName.charAt(0):'?'; document.getElementById('previewName').textContent=data.shopName||''; document.getElementById('previewCardShopName').innerHTML=`<i class="fas fa-store"></i> ${data.shopName||'দোকানের নাম'}`; const addrLine=`${data.thana||data.upazila||''}, ${data.district||''}`; document.getElementById('previewAddress').textContent=`📍 ${addrLine}`; document.getElementById('previewCardAddress').innerHTML=`<i class="fas fa-map-marker-alt"></i> ${data.area||addrLine||'ঠিকানা নেই'}`; const badge=document.getElementById('statusBadge'); if(data.status==='approved'){ badge.className='status-badge approved'; badge.textContent='✅ Approved'; const alreadyShown=localStorage.getItem('congratsShown_'+user.uid); if(!alreadyShown && !firstApprovalFlagShown){ firstApprovalFlagShown=true; showConfettiAndToast();}} else if(data.status==='rejected'){ badge.className='status-badge rejected'; badge.textContent='❌ Rejected';}
+auth.onAuthStateChanged(async user=>{ if(!user){ window.location.href='login.html'; return;} const snap=await db.ref('shops/'+user.uid).get(); const data=snap.val(); document.getElementById('loadingScreen').style.display='none'; document.getElementById('mainHeader').style.display='block'; document.getElementById('mainContent').style.display='block'; document.getElementById('saveWrap').style.display='block'; if(data){ document.getElementById('previewAvatar').textContent=data.shopName?data.shopName.charAt(0):'?'; document.getElementById('previewName').textContent=data.shopName||''; document.getElementById('previewCardShopName').innerHTML=`<i class="fas fa-store"></i> ${data.shopName||'দোকানের নাম'}`; const addrLine=`${data.thana||data.upazila||''}, ${data.district||''}`; document.getElementById('previewAddress').textContent=`📍 ${addrLine}`; document.getElementById('previewCardAddress').innerHTML=`<i class="fas fa-map-marker-alt"></i> ${data.area||addrLine||'ঠিকানা নেই'}`; const badge=document.getElementById('statusBadge'), notice=document.getElementById('noticeTile'); if(data.status==='approved'){ badge.className='status-badge approved'; badge.textContent='✅ Approved'; notice.className='notice-tile approved'; notice.innerHTML='<div class="notice-icon">🎉</div><div class="notice-text"><div class="notice-title">অভিনন্দন!</div>আপনার দোকান Approved এবং তালিকায় যুক্ত।</div>'; const alreadyShown=localStorage.getItem('congratsShown_'+user.uid); if(!alreadyShown && !firstApprovalFlagShown){ firstApprovalFlagShown=true; showConfettiAndToast();}} else if(data.status==='rejected'){ badge.className='status-badge rejected'; badge.textContent='❌ Rejected'; notice.className='notice-tile rejected'; notice.innerHTML='<div class="notice-icon">❌</div><div class="notice-text"><div class="notice-title">দুঃখিত!</div>আপনার দোকান Reject হয়েছে। সঠিক তথ্য দিন।</div>';}
 document.getElementById('shopName').value=data.shopName||''; document.getElementById('ownerName').value=data.ownerName||''; document.getElementById('description').value=data.description||''; document.getElementById('phone').value=data.phone||''; document.getElementById('whatsapp').value=data.whatsapp||''; document.getElementById('telegram').value=data.telegram||''; document.getElementById('youtube').value=data.youtube||''; document.getElementById('area').value=data.area||'';
 if(data.division){ document.getElementById('division').value=data.division; onDivisionChange(); setTimeout(()=>{ if(data.district){ document.getElementById('district').value=data.district; onDistrictChange(); setTimeout(()=>{ if(data.thana) document.getElementById('thana').value=data.thana; else if(data.upazila) document.getElementById('thana').value=data.upazila; if(document.getElementById('thana').value){ document.getElementById('areaGroup').style.display='block'; document.getElementById('categorySection').style.display='block';}},100);}},50);}
 if(data.categories){ let cats=typeof data.categories==='string'?data.categories.split(',').map(s=>s.trim()):(Array.isArray(data.categories)?data.categories:[]); selectedCategories=cats.filter(c=>c); renderChips();} else if(data.category && !data.categories){ selectedCategories=[data.category]; renderChips();} else renderChips();} else renderChips();});
