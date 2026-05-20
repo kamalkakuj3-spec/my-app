@@ -3,35 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>ড্যাশবোর্ড — দোকান ব্যবস্থাপনা</title>
+<title>প্রিমিয়াম ড্যাশবোর্ড — সোনালী দোকান ব্যবস্থাপনা</title>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
 <style>
 :root {
-    --primary: #6c2bd9;
-    --primary-dark: #4a1a9e;
-    --primary-light: #a259f7;
-    --accent: #f0c040;
-    --bg: #f5f3ff;
+    --gold: linear-gradient(135deg, #FFD700, #FFA500);
+    --gold-dark: #B8860B;
+    --gold-light: #FFE4B5;
+    --silver: linear-gradient(135deg, #E0E0E0, #A9A9A9);
+    --silver-dark: #808080;
+    --silver-light: #F5F5F5;
+    --bg-dark: #0a0a0a;
+    --bg-card: rgba(20, 20, 30, 0.95);
+    --text-gold: #FFD700;
+    --text-silver: #C0C0C0;
     --white: #ffffff;
-    --text: #1a1a2e;
-    --text-light: #666;
-    --error: #e74c3c;
-    --success: #2ecc71;
-    --card-shadow: 0 8px 32px rgba(108,43,217,0.15);
+    --shadow-gold: 0 8px 32px rgba(255, 215, 0, 0.3);
+    --shadow-silver: 0 8px 32px rgba(192, 192, 192, 0.2);
+    --glow-gold: 0 0 20px rgba(255, 215, 0, 0.5);
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
     font-family: 'Hind Siliguri', sans-serif;
-    background: var(--bg);
+    background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #0a0a0a);
     min-height: 100vh;
     overflow-x: hidden;
+    position: relative;
+}
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 50%, rgba(255,215,0,0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
 }
 #loadingScreen {
     position: fixed;
     inset: 0;
-    background: linear-gradient(135deg, #1a0a3e, #6c2bd9);
+    background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -39,344 +54,388 @@ body {
     z-index: 9999;
 }
 .loading-spinner {
-    width: 50px; height: 50px;
-    border: 4px solid rgba(255,255,255,0.2);
-    border-top-color: var(--accent);
+    width: 60px;
+    height: 60px;
+    border: 3px solid rgba(255,215,0,0.2);
+    border-top-color: #FFD700;
+    border-right-color: #FFA500;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
+    box-shadow: var(--glow-gold);
 }
-.loading-text { color: white; font-size: 16px; opacity: 0.8; }
+.loading-text {
+    color: var(--text-gold);
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    animation: pulse 1.5s ease-in-out infinite;
+}
 @keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; text-shadow: 0 0 10px gold; } }
 
-/* হেডার সম্পূর্ণ বাদ দেওয়া হয়েছে */
 .content { 
-    padding: 20px 16px 120px; 
+    padding: 20px 16px 120px;
+    position: relative;
+    z-index: 1;
 }
 
-/* 3D কার্ড - সাইজ অর্ধেক করা হয়েছে (উপরে ও নিচে কমিয়ে) */
+/* 3D প্রিমিয়াম কার্ড - সম্পূর্ণ পুনরায় ডিজাইন */
 .shop-preview-card {
-    background: linear-gradient(135deg, var(--primary), var(--primary-light));
-    border-radius: 24px;
-    padding: 16px 16px;
-    margin-bottom: 24px;
-    box-shadow: 0 15px 25px -10px rgba(108,43,217,0.4);
-    border: none;
+    background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.1));
+    backdrop-filter: blur(10px);
+    border-radius: 28px;
+    padding: 24px 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255,215,0,0.3);
+    box-shadow: var(--shadow-gold), 0 20px 40px -15px rgba(0,0,0,0.5);
     transform-style: preserve-3d;
-    transition: transform 0.3s ease, box-shadow 0.3s;
-    animation: floatCard 3s infinite ease-in-out;
-    text-align: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: floatCard 4s infinite ease-in-out;
+    position: relative;
+    overflow: hidden;
+}
+.shop-preview-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,215,0,0.1), transparent);
+    animation: rotateGlow 8s linear infinite;
+}
+@keyframes rotateGlow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 @keyframes floatCard {
-    0% { transform: translateY(0px) rotateX(1deg); }
-    50% { transform: translateY(-4px) rotateX(2deg); }
-    100% { transform: translateY(0px) rotateX(1deg); }
+    0% { transform: translateY(0px) rotateX(2deg); }
+    50% { transform: translateY(-6px) rotateX(4deg); }
+    100% { transform: translateY(0px) rotateX(2deg); }
+}
+.shop-preview-card:hover {
+    transform: translateY(-8px) rotateX(5deg);
+    box-shadow: 0 25px 50px -12px rgba(255,215,0,0.5);
 }
 
-/* দোকানের নাম - ট্রান্সপারেন্ট ব্যাকগ্রাউন্ড, অ্যানিমেশন */
 .card-shop-name {
-    font-size: 22px;
+    font-size: 26px;
     font-weight: 800;
-    color: white;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-    display: inline-block;
-    padding: 6px 16px;
-    background: transparent;
-    backdrop-filter: none;
+    background: var(--gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
     margin-bottom: 12px;
-    letter-spacing: 0.5px;
-    animation: textPop 0.5s ease-out;
+    letter-spacing: 1px;
+    animation: textGlow 2s ease-in-out infinite;
 }
-@keyframes textPop {
-    0% { transform: scale(0.8); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
+@keyframes textGlow {
+    0%, 100% { filter: drop-shadow(0 0 5px rgba(255,215,0,0.5)); }
+    50% { filter: drop-shadow(0 0 15px rgba(255,215,0,0.8)); }
 }
 
-/* ঠিকানা - ট্রান্সপারেন্ট ব্যাকগ্রাউন্ড */
+/* ট্রান্সপারেন্ট ঠিকানা ব্যাজ - সম্পূর্ণ স্বচ্ছ */
 .card-shop-address {
-    font-size: 12px;
-    color: rgba(255,255,255,0.9);
-    margin-top: 4px;
-    padding: 5px 12px;
+    font-size: 13px;
+    color: rgba(255,215,0,0.8);
+    padding: 8px 16px;
     background: transparent;
     border-radius: 30px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 8px;
     max-width: 95%;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto;
+    border: 1px solid rgba(255,215,0,0.2);
+    backdrop-filter: blur(4px);
 }
 .card-shop-address i { 
-    color: white; 
-    font-size: 11px;
+    color: #FFD700; 
+    font-size: 12px;
 }
 
-/* সিলেক্টেড ক্যাটাগরি - দোকানের নামের নিচে (এখন অবশ্যই নিচে যাবে) */
+/* সিলেক্টেড ক্যাটাগরি ডিসপ্লে - সম্পূর্ণ রিমুভ করা হয়েছে */
 .selected-categories-display {
-    margin: 10px auto 0;
-    padding: 6px 10px;
-    background: transparent;
-    border-radius: 30px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    justify-content: center;
-    max-width: 100%;
-    min-height: 35px;
-}
-.selected-cat-tag-mini {
-    background: rgba(255,255,255,0.25);
-    color: white;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 10px;
-    font-weight: 500;
-    backdrop-filter: blur(2px);
-    animation: tagFadeIn 0.3s ease-out;
-}
-@keyframes tagFadeIn {
-    from { transform: scale(0.8); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-.no-categories-msg {
-    color: rgba(255,255,255,0.7);
-    font-size: 11px;
-    padding: 2px 0;
+    display: none;
 }
 
-/* স্ট্যাটাস ব্যাজ - ট্রান্সপারেন্ট ব্যাকগ্রাউন্ড */
+/* স্ট্যাটাস ব্যাজ - নিচে সরানো হয়েছে */
 .small-status-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 4px 14px;
-    border-radius: 99px;
-    font-size: 11px;
-    font-weight: 600;
-    margin-top: 10px;
-    background: rgba(255,255,255,0.2);
-    color: white;
-    backdrop-filter: blur(2px);
+    gap: 8px;
+    padding: 8px 24px;
+    border-radius: 40px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 18px;
+    background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,165,0,0.1));
+    border: 1px solid rgba(255,215,0,0.4);
+    color: #FFD700;
+    backdrop-filter: blur(8px);
+    letter-spacing: 1px;
 }
-.small-status-badge.approved { background: rgba(46,204,113,0.5); color: white; }
-.small-status-badge.pending { background: rgba(240,192,64,0.5); color: white; }
-.small-status-badge.rejected { background: rgba(231,76,60,0.5); color: white; }
+.small-status-badge.approved { 
+    background: linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,165,0,0.2));
+    border-color: #FFD700;
+    color: #FFD700;
+    animation: statusPulse 2s ease-in-out infinite;
+}
+.small-status-badge.pending { 
+    background: linear-gradient(135deg, rgba(192,192,192,0.2), rgba(128,128,128,0.1));
+    border-color: #C0C0C0;
+    color: #C0C0C0;
+}
+.small-status-badge.rejected { 
+    background: linear-gradient(135deg, rgba(255,0,0,0.2), rgba(139,0,0,0.1));
+    border-color: #ff4444;
+    color: #ff6666;
+}
+@keyframes statusPulse {
+    0%, 100% { box-shadow: 0 0 5px rgba(255,215,0,0.3); }
+    50% { box-shadow: 0 0 20px rgba(255,215,0,0.6); }
+}
 
 .toast-congrats {
     position: fixed;
     bottom: 30px;
     left: 20px;
     right: 20px;
-    background: #2ecc71ee;
-    backdrop-filter: blur(8px);
-    color: white;
-    padding: 14px 20px;
-    border-radius: 40px;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #0a0a0a;
+    padding: 16px 24px;
+    border-radius: 50px;
     display: flex;
     align-items: center;
     gap: 12px;
-    font-weight: 600;
+    font-weight: 700;
     z-index: 10000;
-    animation: slideUpFade 0.4s ease forwards;
+    animation: slideUpFade 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 10px 30px rgba(255,215,0,0.4);
 }
 @keyframes slideUpFade {
-    from { transform: translateY(100px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from { transform: translateY(100px) scale(0.8); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
 }
 
+/* প্রিমিয়াম টাইল কার্ড - সিলভার এবং গোল্ড থিম */
 .tile-card {
-    background: white;
-    border-radius: 20px;
-    padding: 18px;
-    box-shadow: var(--card-shadow);
-    border: 1.5px solid rgba(108,43,217,0.08);
-    margin-bottom: 16px;
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 20px;
+    border: 1px solid rgba(255,215,0,0.2);
+    box-shadow: var(--shadow-silver);
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.5s ease-out;
 }
+.tile-card:hover {
+    border-color: rgba(255,215,0,0.4);
+    box-shadow: var(--shadow-gold);
+    transform: translateY(-2px);
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .tile-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 16px;
+    gap: 12px;
+    margin-bottom: 18px;
     padding-bottom: 12px;
-    border-bottom: 1.5px solid #f0ebff;
+    border-bottom: 1px solid rgba(255,215,0,0.2);
 }
 .tile-icon {
-    width: 38px; height: 38px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    width: 44px;
+    height: 44px;
+    border-radius: 16px;
+    background: var(--gold);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
-    box-shadow: 0 4px 12px rgba(108,43,217,0.3);
+    font-size: 22px;
+    box-shadow: var(--shadow-gold);
+    animation: iconGlow 2s ease-in-out infinite;
 }
-.tile-title { font-size: 15px; font-weight: 700; color: var(--text); }
-.tile-subtitle { font-size: 12px; color: var(--text-light); }
+@keyframes iconGlow {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.2); box-shadow: 0 0 15px gold; }
+}
+.tile-title { 
+    font-size: 16px; 
+    font-weight: 700; 
+    background: var(--gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.tile-subtitle { 
+    font-size: 12px; 
+    color: var(--text-silver);
+}
 
-.input-group { margin-bottom: 14px; }
-.input-label { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; display: block; }
+.input-group { margin-bottom: 16px; }
+.input-label { 
+    font-size: 13px; 
+    font-weight: 600; 
+    color: var(--text-gold);
+    margin-bottom: 6px; 
+    display: block; 
+}
 .input-wrap { position: relative; }
 .input-icon {
     position: absolute;
-    left: 14px; top: 50%;
+    left: 14px;
+    top: 50%;
     transform: translateY(-50%);
     font-size: 16px;
+    color: #FFD700;
     pointer-events: none;
 }
 .input-field {
     width: 100%;
-    padding: 13px 14px 13px 42px;
-    border: 2px solid #e8e0ff;
-    border-radius: 12px;
+    padding: 14px 14px 14px 44px;
+    border: 1.5px solid rgba(255,215,0,0.3);
+    border-radius: 16px;
     font-size: 14px;
     font-family: 'Hind Siliguri', sans-serif;
-    color: var(--text);
-    background: #faf8ff;
+    background: rgba(10,10,10,0.8);
+    color: var(--text-silver);
     outline: none;
-    transition: all 0.2s;
+    transition: all 0.3s;
 }
 .input-field:focus {
-    border-color: var(--primary);
-    background: white;
-    box-shadow: 0 0 0 4px rgba(108,43,217,0.08);
+    border-color: #FFD700;
+    box-shadow: 0 0 0 3px rgba(255,215,0,0.2);
+    background: rgba(20,20,30,0.9);
 }
 textarea.input-field {
-    padding-top: 13px;
+    padding-top: 14px;
     resize: none;
     height: 90px;
-    line-height: 1.6;
 }
-select.input-field { cursor: pointer; appearance: none; }
+select.input-field {
+    cursor: pointer;
+    appearance: none;
+    color: var(--text-silver);
+}
 .select-arrow {
     position: absolute;
-    right: 14px; top: 50%;
+    right: 14px;
+    top: 50%;
     transform: translateY(-50%);
     font-size: 12px;
-    color: var(--primary);
+    color: #FFD700;
     pointer-events: none;
 }
 
+/* ক্যাটাগরি চিপস - প্রিমিয়াম স্টাইল */
 .cat-chips-wrap { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
 .cat-chip {
-    background: #f0ebff;
+    background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.1));
     border-radius: 40px;
-    padding: 6px 14px;
+    padding: 7px 16px;
     font-size: 13px;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    color: #4a1a9e;
+    gap: 10px;
+    color: #FFD700;
     font-weight: 500;
+    border: 1px solid rgba(255,215,0,0.3);
+    backdrop-filter: blur(4px);
+    transition: all 0.2s;
 }
-.cat-chip i { cursor: pointer; font-size: 12px; color: #6c2bd9; }
+.cat-chip:hover {
+    border-color: #FFD700;
+    transform: scale(1.02);
+}
+.cat-chip i { cursor: pointer; font-size: 12px; color: #FFD700; }
 .cat-select-btn {
     width: 100%;
-    padding: 12px 16px;
-    border: 2px dashed #cbbff5;
-    border-radius: 12px;
-    background: #faf8ff;
+    padding: 14px 18px;
+    border: 1.5px dashed rgba(255,215,0,0.4);
+    border-radius: 16px;
+    background: rgba(10,10,10,0.6);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: var(--primary);
+    color: #FFD700;
     font-weight: 500;
     cursor: pointer;
+    transition: all 0.3s;
 }
-.cat-select-btn:hover { background: #f0ebff; border-color: var(--primary); }
-
-.cat-popup-list {
-    max-height: 60vh;
-    overflow-y: auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px,1fr));
-    gap: 8px;
-}
-.cat-item-multi {
-    padding: 12px 12px;
-    background: #faf8ff;
-    border-radius: 40px;
-    font-size: 13px;
-    font-weight: 500;
-    border: 1.5px solid #e8e0ff;
-    cursor: pointer;
-}
-.cat-item-multi.selected { background: #6c2bd9; color: white; border-color: #6c2bd9; }
-.cat-popup-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 18px; }
-.popup-btn { padding: 10px 16px; border-radius: 40px; border: none; font-weight: 600; cursor: pointer; }
-
-.custom-toast {
-    position: fixed;
-    bottom: 90px;
-    left: 20px;
-    right: 20px;
-    background: #2ecc71;
-    color: white;
-    padding: 14px 18px;
-    border-radius: 50px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    z-index: 10001;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-    animation: fadeSlideUp 0.3s ease forwards;
-}
-.custom-toast.error { background: #e74c3c; }
-@keyframes fadeSlideUp {
-    from { transform: translateY(40px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+.cat-select-btn:hover {
+    background: rgba(255,215,0,0.1);
+    border-color: #FFD700;
+    transform: translateY(-1px);
 }
 
+/* প্রিমিয়াম বাটন */
 .view-profile-btn {
     width: 100%;
     padding: 14px;
-    background: #f0ebff;
-    color: var(--primary);
-    border: none;
-    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.1));
+    color: var(--text-gold);
+    border: 1px solid rgba(255,215,0,0.3);
+    border-radius: 18px;
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin-bottom: 16px;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s;
 }
-.view-profile-btn i { display: none; }
+.view-profile-btn:hover {
+    border-color: #FFD700;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-gold);
+}
 
 .edit-toggle-btn {
     width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, var(--primary-light), var(--primary));
-    color: white;
+    padding: 16px;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #0a0a0a;
     border: none;
-    border-radius: 14px;
-    font-size: 15px;
-    font-weight: 600;
+    border-radius: 18px;
+    font-size: 16px;
+    font-weight: 700;
     cursor: pointer;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
+    transition: all 0.3s;
+    animation: btnPulse 2s ease-in-out infinite;
 }
-.edit-toggle-btn i { color: white; }
+@keyframes btnPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); box-shadow: 0 5px 20px rgba(255,215,0,0.4); }
+}
+.edit-toggle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(255,215,0,0.5);
+}
 
 #editFormContainer {
     display: none;
-    transition: all 0.3s ease;
-    margin-bottom: 20px;
+    transition: all 0.4s ease;
 }
 #editFormContainer.show {
     display: block;
-    animation: slideDown 0.4s ease;
+    animation: slideDown 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(-30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .submit-wrap {
@@ -384,82 +443,159 @@ select.input-field { cursor: pointer; appearance: none; }
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 16px 20px;
-    background: white;
-    border-top: 1px solid #f0ebff;
-    box-shadow: 0 -4px 20px rgba(108,43,217,0.1);
+    padding: 18px 20px 25px;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255,215,0,0.3);
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
     z-index: 100;
 }
 .home-btn {
     display: block;
     text-align: center;
-    background-color: #2ecc71;
-    color: white;
+    background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.1));
+    color: #FFD700;
     font-weight: 700;
     font-size: 16px;
-    padding: 12px 16px;
-    border-radius: 40px;
+    padding: 14px 20px;
+    border-radius: 50px;
     margin-bottom: 12px;
     text-decoration: none;
+    border: 1px solid rgba(255,215,0,0.3);
+    transition: all 0.3s;
 }
-.home-btn i { margin-right: 6px; }
-.home-btn:hover { background-color: #27ae60; transform: scale(0.98); }
+.home-btn:hover {
+    border-color: #FFD700;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-gold);
+}
 .submit-btn {
     width: 100%;
     padding: 16px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-light));
-    color: white;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #0a0a0a;
     border: none;
-    border-radius: 14px;
-    font-size: 17px;
-    font-weight: 700;
+    border-radius: 50px;
+    font-size: 18px;
+    font-weight: 800;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
+    transition: all 0.3s;
 }
-.submit-btn.loading { background: #b39ddb; pointer-events: none; }
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(255,215,0,0.4);
+}
+.submit-btn.loading {
+    background: linear-gradient(135deg, #B8860B, #DAA520);
+    pointer-events: none;
+}
 .spinner {
-    width: 20px; height: 20px;
-    border: 3px solid rgba(255,255,255,0.3);
-    border-top-color: white;
+    width: 22px;
+    height: 22px;
+    border: 3px solid rgba(0,0,0,0.2);
+    border-top-color: #0a0a0a;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     display: none;
 }
 .submit-btn.loading .spinner { display: block; }
 .submit-btn.loading .btn-text { display: none; }
+
+/* মাল্টি সিলেক্ট পপআপ */
+#multiCatPopup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    align-items: flex-end;
+}
+#multiCatPopup > div {
+    background: linear-gradient(135deg, #1a1a2e, #0a0a0a);
+    border-radius: 30px 30px 0 0;
+    padding: 24px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-top: 2px solid #FFD700;
+}
+.cat-popup-list {
+    max-height: 60vh;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 10px;
+}
+.cat-item-multi {
+    padding: 12px 16px;
+    background: rgba(255,215,0,0.08);
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid rgba(255,215,0,0.2);
+    cursor: pointer;
+    color: #C0C0C0;
+    transition: all 0.2s;
+}
+.cat-item-multi.selected {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #0a0a0a;
+    border-color: #FFD700;
+    font-weight: 600;
+}
+.custom-toast {
+    position: fixed;
+    bottom: 100px;
+    left: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #0a0a0a;
+    padding: 16px 20px;
+    border-radius: 50px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 10001;
+    box-shadow: 0 10px 30px rgba(255,215,0,0.4);
+    animation: slideUpFade 0.4s ease forwards;
+}
+.custom-toast.error {
+    background: linear-gradient(135deg, #ff4444, #cc0000);
+    color: white;
+}
 </style>
 </head>
 <body>
 
-<div id="loadingScreen"><div class="loading-spinner"></div><div class="loading-text">লোড হচ্ছে...</div></div>
+<div id="loadingScreen"><div class="loading-spinner"></div><div class="loading-text">✨ লোড হচ্ছে... ✨</div></div>
 
 <div class="content" id="mainContent" style="display:none">
-    <!-- 3D প্রিভিউ কার্ড - সাইজ অর্ধেক, ট্রান্সপারেন্ট ব্যাকগ্রাউন্ডের উপাদান -->
+    <!-- 3D প্রিমিয়াম কার্ড - ক্যাটাগরি বাদ, স্ট্যাটাস নিচে -->
     <div class="shop-preview-card" id="shopPreviewCard">
         <div class="card-shop-name" id="previewCardShopName">দোকানের নাম</div>
         <div class="card-shop-address">
             <i class="fas fa-map-marker-alt"></i> 
             <span id="previewCardAddress">ঠিকানা প্রদর্শিত হবে</span>
         </div>
-        <!-- সিলেক্টেড ক্যাটাগরি - দোকানের নামের ঠিক নিচে -->
-        <div id="selectedCategoriesDisplay" class="selected-categories-display">
-            <span class="no-categories-msg">কোন ক্যাটাগরি নির্বাচন করা হয়নি</span>
-        </div>
+        <!-- স্ট্যাটাস ব্যাজ - কার্ডের নিচের অংশে (এখন এখানে) -->
         <div id="cardStatusBadge" class="small-status-badge pending">⏳ পেন্ডিং</div>
     </div>
 
-    <button class="view-profile-btn" onclick="viewProfile()"> আপনার প্রোফাইল (অন্যরা যেভাবে দেখবে)</button>
+    <button class="view-profile-btn" onclick="viewProfile()">👑 আপনার প্রোফাইল (অন্যরা যেভাবে দেখবে)</button>
     
-    <button class="edit-toggle-btn" id="editToggleBtn" onclick="toggleEditForm()"><i class="fas fa-edit"></i> প্রোফাইল এডিট করুন</button>
+    <button class="edit-toggle-btn" id="editToggleBtn" onclick="toggleEditForm()"><i class="fas fa-edit"></i> ✨ প্রোফাইল এডিট করুন ✨</button>
 
     <div id="editFormContainer">
         <div class="tile-card">
-            <div class="tile-header"><div class="tile-icon">🏪</div><div><div class="tile-title">দোকানের তথ্য</div><div class="tile-subtitle">প্রয়োজনীয় তথ্য দিন</div></div></div>
+            <div class="tile-header"><div class="tile-icon">🏪</div><div><div class="tile-title">দোকানের তথ্য</div><div class="tile-subtitle">সোনালী তথ্য দিন</div></div></div>
             <div class="input-group"><label class="input-label">দোকানের নাম *</label><div class="input-wrap"><span class="input-icon">🏷️</span><input class="input-field" type="text" id="shopName" placeholder="দোকানের নাম"></div></div>
-            <div class="input-group"><label class="input-label">প্রোপাইটারের নাম *</label><div class="input-wrap"><span class="input-icon">👤</span><input class="input-field" type="text" id="ownerName" placeholder="এখানে প্রোপাইটারের নাম লিখুন"></div></div>
+            <div class="input-group"><label class="input-label">প্রোপাইটারের নাম *</label><div class="input-wrap"><span class="input-icon">👑</span><input class="input-field" type="text" id="ownerName" placeholder="এখানে প্রোপাইটারের নাম লিখুন"></div></div>
             <div class="input-group"><label class="input-label">দোকান পরিচিতি</label><div class="input-wrap"><span class="input-icon" style="top:18px">📝</span><textarea class="input-field" id="description" placeholder="দোকান সম্পর্কে লিখুন..."></textarea></div></div>
         </div>
 
@@ -510,15 +646,15 @@ select.input-field { cursor: pointer; appearance: none; }
 </div>
 
 <div class="submit-wrap" id="saveWrap" style="display:none">
-    <a href="index.html" class="home-btn"><i class="fas fa-home"></i> হোম পেজে ফিরে যান</a>
-    <button class="submit-btn" id="saveBtn" onclick="saveShopData()"><div class="spinner"></div><span class="btn-text">💾 সেভ করুন</span></button>
+    <a href="index.html" class="home-btn"><i class="fas fa-home"></i> 🏠 হোম পেজে ফিরে যান</a>
+    <button class="submit-btn" id="saveBtn" onclick="saveShopData()"><div class="spinner"></div><span class="btn-text">💾 ✨ সেভ করুন ✨</span></button>
 </div>
 
-<div id="multiCatPopup" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:flex-end;">
-    <div style="background:white; border-radius:24px 24px 0 0; padding:20px; width:100%; max-height:80vh; overflow-y:auto;">
-        <div style="display:flex; justify-content:space-between; margin-bottom:16px;"><span style="font-weight:700;">🗂️ একাধিক ক্যাটাগরি বাছাই করুন</span><button onclick="closeMultiCatPopup()" style="background:#f0ebff; border:none; border-radius:30px; padding:6px 12px;">✕ বন্ধ</button></div>
+<div id="multiCatPopup" style="display:none">
+    <div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px;"><span style="font-weight:700; color:#FFD700;">🗂️ একাধিক ক্যাটাগরি বাছাই করুন</span><button onclick="closeMultiCatPopup()" style="background:rgba(255,215,0,0.2); border:1px solid gold; border-radius:30px; padding:8px 16px; color:#FFD700; cursor:pointer;">✕ বন্ধ</button></div>
         <div id="multiCatList" class="cat-popup-list"></div>
-        <div class="cat-popup-actions"><button class="popup-btn" style="background:#e0d6ff;" onclick="closeMultiCatPopup()">সেভ করুন</button></div>
+        <div class="cat-popup-actions" style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;"><button class="popup-btn" style="background:linear-gradient(135deg, #FFD700, #FFA500); border:none; padding:12px 24px; border-radius:40px; font-weight:700; cursor:pointer;">✨ সেভ করুন ✨</button></div>
     </div>
 </div>
 
@@ -549,24 +685,7 @@ const districtMap = {
 const thanaMap = {
     'ঢাকা': ['আদাবর','উত্তরা','তেজগাঁও','ধামরাই','নবাবগঞ্জ','বাড্ডা','মিরপুর','মোহাম্মদপুর','যাত্রাবাড়ী','রামপুরা','লালবাগ','শাহবাগ','সাভার','সূত্রাপুর','হাজারীবাগ'],
     'গাজীপুর': ['গাজীপুর সদর','কালিয়াকৈর','কাপাসিয়া','শ্রীপুর'], 'নারায়ণগঞ্জ': ['নারায়ণগঞ্জ সদর','আড়াইহাজার','বন্দর','রূপগঞ্জ','সোনারগাঁও'],
-    'মুন্সীগঞ্জ': ['মুন্সীগঞ্জ সদর','গজারিয়া','টংগিবাড়ী','লৌহজং','শ্রীনগর'], 'মানিকগঞ্জ': ['মানিকগঞ্জ সদর','ঘিওর','দৌলতপুর','শিবালয়','সাটুরিয়া','হরিরামপুর'],
-    'নরসিংদী': ['নরসিংদী সদর','বেলাবো','পলাশ','মনোহরদী','রায়পুরা','শিবপুর'], 'ফরিদপুর': ['ফরিদপুর সদর','আলফাডাঙ্গা','বোয়ালমারী','মধুখালী','নগরকান্দা','সদরপুর','চরভদ্রাসন','সালথা'],
-    'রাজবাড়ী': ['রাজবাড়ী সদর','গোয়ালন্দ','পাংশা','বালিয়াকান্দি','কালুখালী'], 'গোপালগঞ্জ': ['গোপালগঞ্জ সদর','কাশিয়ানী','কোটালীপাড়া','টুঙ্গিপাড়া','মুকসুদপুর'],
-    'মাদারীপুর': ['মাদারীপুর সদর','কালকিনি','ডাসার','শিবচর','রাজৈর'], 'শরীয়তপুর': ['শরীয়তপুর সদর','গোসাইরহাট','জাজিরা','নড়িয়া','ভেদরগঞ্জ','ডামুড্যা'],
-    'কিশোরগঞ্জ': ['কিশোরগঞ্জ সদর','অট্টগ্রাম','ইটনা','করিমগঞ্জ','কটিয়াদী','তাড়াইল','পাকুন্দিয়া','বাজিতপুর','ভৈরব','মিঠামইন','হোসেনপুর','নিকলী','কুলিয়ারচর'],
-    'টাঙ্গাইল': ['টাঙ্গাইল সদর','বাসাইল','দেলদুয়ার','ঘাটাইল','গোপালপুর','কালিহাতী','মধুপুর','মির্জাপুর','নাগরপুর','সখিপুর','ধনবাড়ী'],
     'চট্টগ্রাম': ['চট্টগ্রাম সদর','আনোয়ারা','বাঁশখালী','বোয়ালখালী','চন্দনাইশ','দোহাজারী','ফটিকছড়ি','হাটহাজারী','লোহাগাড়া','মিরসরাই','পটিয়া','রাঙ্গুনিয়া','রাউজান','সন্দ্বীপ','সাতকানিয়া','সীতাকুণ্ডা'],
-    'কক্সবাজার': ['কক্সবাজার সদর','চকরিয়া','কুতুবদিয়া','মহেশখালী','রামু','টেকনাফ','উখিয়া','পেকুয়া'], 'কুমিল্লা': ['কুমিল্লা সদর','বরুড়া','ব্রাহ্মণপাড়া','বুড়িচং','চান্দিনা','চৌদ্দগ্রাম','দাউদকান্দি','দেবিদ্বার','হোমনা','লাকসাম','মনোহরগঞ্জ','মুরাদনগর','নাঙ্গলকোট','তিতাস'],
-    'চাঁদপুর': ['চাঁদপুর সদর','ফরিদগঞ্জ','হাইমচর','হাজীগঞ্জ','কচুয়া','মতলব উত্তর','মতলব দক্ষিণ','শাহরাস্তি'], 'ব্রাহ্মণবাড়িয়া': ['ব্রাহ্মণবাড়িয়া সদর','আখাউড়া','বাঞ্ছারামপুর','বিজয়নগর','কসবা','নবীনগর','নাসিরনগর','সরাইল'],
-    'নোয়াখালী': ['নোয়াখালী সদর','বেগমগঞ্জ','চাটখিল','কবিরহাট','সেনবাগ','সোনাইমুড়ি','সুবর্ণচর','কোম্পানীগঞ্জ'], 'ফেনী': ['ফেনী সদর','ছাগলনাইয়া','দাগনভূঁইয়া','পরশুরাম','সোনাগাজী'],
-    'লক্ষ্মীপুর': ['লক্ষ্মীপুর সদর','রামগঞ্জ','রামগতি','রায়পুর'], 'রাজশাহী': ['রাজশাহী সদর','বাঘা','বাগমারা','চারঘাট','দুর্গাপুর','গোদাগাড়ী','মোহনপুর','পবা','পুঠিয়া','তানোর'],
-    'নাটোর': ['নাটোর সদর','বাগাতিপাড়া','বড়াইগ্রাম','গুরুদাসপুর','লালপুর','নলডাঙ্গা','সিংড়া'], 'নওগাঁ': ['নওগাঁ সদর','আত্রাই','বাদলগাছী','ধামইরহাট','মহাদেবপুর','মান্দা','নিয়ামতপুর','পত্নীতলা','পোরশা','রাণীনগর','সাপাহার'],
-    'খুলনা': ['খুলনা সদর','বটিয়াঘাটা','দাকোপ','ডুমুরিয়া','দিঘলিয়া','কয়রা','পাইকগাছা','রূপসা','তেরখাদা'], 'বাগেরহাট': ['বাগেরহাট সদর','ফকিরহাট','কচুয়া','মোল্লাহাট','মোড়েলগঞ্জ','রামপাল','শরণখোলা','চিতলমারী','মোংলা'],
-    'সাতক্ষীরা': ['সাতক্ষীরা সদর','আশাশুনি','দেবহাটা','কালীগঞ্জ','কলারোয়া','শ্যামনগর','তালা'], 'যশোর': ['যশোর সদর','অভয়নগর','বাঘারপাড়া','চৌগাছা','ঝিকরগাছা','কেশবপুর','মনিরামপুর','শার্শা'],
-    'সিলেট': ['সিলেট সদর','বালাগঞ্জ','বিয়ানীবাজার','বিশ্বনাথ','ফেঞ্চুগঞ্জ','গোলাপগঞ্জ','গোয়াইনঘাট','জৈন্তাপুর','কানাইঘাট','কোম্পানীগঞ্জ','জকিগঞ্জ','দক্ষিণ সুরমা','মোগলাবাজার'],
-    'মৌলভীবাজার': ['মৌলভীবাজার সদর','বড়লেখা','জুড়ী','কমলগঞ্জ','কুলাউড়া','রাজনগর','শ্রীমঙ্গল'], 'হবিগঞ্জ': ['হবিগঞ্জ সদর','আজমিরীগঞ্জ','বাহুবল','বানিয়াচং','চুনারুঘাট','কালাউক','লাখাই','মাধবপুর','নবীগঞ্জ','শায়েস্তাগঞ্জ'],
-    'রংপুর': ['রংপুর সদর','বদরগঞ্জ','গঙ্গাচড়া','কাউনিয়া','মিঠাপুকুর','পীরগাছা','পীরগঞ্জ','তারাগঞ্জ'], 'দিনাজপুর': ['দিনাজপুর সদর','বিরামপুর','বীরগঞ্জ','বোচাগঞ্জ','চিরিরবন্দর','ফুলবাড়ী','ঘোড়াঘাট','হাকিমপুর','খানসামা','নবাবগঞ্জ','পার্বতীপুর','সেতাবগঞ্জ'],
-    'ময়মনসিংহ': ['ময়মনসিংহ সদর','ভালুকা','ধোবাউড়া','ফুলবাড়িয়া','গফরগাঁও','গৌরীপুর','হালুয়াঘাট','ঈশ্বরগঞ্জ','মুক্তাগাছা','নান্দাইল','ফুলপুর','ত্রিশাল']
 };
 
 function onDivisionChange() { const div=document.getElementById('division').value; const dSel=document.getElementById('district'); dSel.innerHTML='<option value="">— জেলা বাছাই করুন —</option>'; document.getElementById('districtGroup').style.display='none'; document.getElementById('thanaGroup').style.display='none'; document.getElementById('areaGroup').style.display='none'; document.getElementById('categorySection').style.display='none'; if(div && districtMap[div]){ districtMap[div].forEach(d=>{ let opt=new Option(d,d); dSel.add(opt);}); document.getElementById('districtGroup').style.display='block';} }
@@ -586,16 +705,6 @@ function renderChips() {
         container.appendChild(chip); 
     }); 
     document.getElementById('categoriesHidden').value = selectedCategories.join(','); 
-    updatePreviewCategories(); 
-}
-
-function updatePreviewCategories() { 
-    const container = document.getElementById('selectedCategoriesDisplay'); 
-    if (selectedCategories.length > 0) { 
-        container.innerHTML = selectedCategories.map(cat => `<span class="selected-cat-tag-mini">${cat}</span>`).join(''); 
-    } else { 
-        container.innerHTML = '<span class="no-categories-msg">কোন ক্যাটাগরি নির্বাচন করা হয়নি</span>'; 
-    } 
 }
 
 function removeCategory(cat){ selectedCategories=selectedCategories.filter(c=>c!==cat); renderChips();}
@@ -606,7 +715,7 @@ function openMultiCategoryPopup(){
         const isSelected = selectedCategories.includes(cat); 
         const div = document.createElement('div'); 
         div.className = `cat-item-multi ${isSelected ? 'selected' : ''}`; 
-        div.innerHTML = `${cat} ${isSelected ? '<i class="fas fa-check-circle"></i>' : ''}`; 
+        div.innerHTML = `${cat}`; 
         div.onclick = () => { 
             if(selectedCategories.includes(cat)) { 
                 selectedCategories = selectedCategories.filter(c => c !== cat); 
@@ -622,10 +731,10 @@ function openMultiCategoryPopup(){
 }
 function closeMultiCatPopup(){ document.getElementById('multiCatPopup').style.display='none'; renderChips(); }
 
-function toggleEditForm(){ const formDiv=document.getElementById('editFormContainer'); formDiv.classList.toggle('show'); if(formDiv.classList.contains('show')){ setTimeout(()=>{ document.getElementById('editToggleBtn').scrollIntoView({ behavior:'smooth', block:'center' }); }, 100); } }
+function toggleEditForm(){ const formDiv=document.getElementById('editFormContainer'); formDiv.classList.toggle('show'); }
 
 let firstApprovalFlagShown=false;
-function showConfettiAndToast(){ canvasConfetti({particleCount:150,spread:70,origin:{y:0.6},startVelocity:20,colors:['#6c2bd9','#f0c040','#2ecc71']}); let end=Date.now()+2000; const frame=()=>{ canvasConfetti({particleCount:3,angle:60,spread:55,origin:{x:0,y:0.7},startVelocity:25}); canvasConfetti({particleCount:3,angle:120,spread:55,origin:{x:1,y:0.7},startVelocity:25}); if(Date.now()<end) requestAnimationFrame(frame);}; frame(); const toastDiv=document.createElement('div'); toastDiv.className='toast-congrats'; toastDiv.innerHTML='<i class="fas fa-trophy"></i> অভিনন্দন! আপনার দোকান Approved হয়েছে 🎉'; document.body.appendChild(toastDiv); setTimeout(()=>toastDiv.remove(),4500); localStorage.setItem('congratsShown_'+auth.currentUser?.uid,'true');}
+function showConfettiAndToast(){ canvasConfetti({particleCount:200,spread:80,origin:{y:0.6},startVelocity:25,colors:['#FFD700','#FFA500','#C0C0C0']}); let end=Date.now()+2000; const frame=()=>{ canvasConfetti({particleCount:5,angle:60,spread:55,origin:{x:0,y:0.7},startVelocity:25,colors:['#FFD700']}); canvasConfetti({particleCount:5,angle:120,spread:55,origin:{x:1,y:0.7},startVelocity:25,colors:['#FFA500']}); if(Date.now()<end) requestAnimationFrame(frame);}; frame(); const toastDiv=document.createElement('div'); toastDiv.className='toast-congrats'; toastDiv.innerHTML='<i class="fas fa-trophy"></i> 🎉 অভিনন্দন! আপনার দোকান Approved হয়েছে 🎉 ✨'; document.body.appendChild(toastDiv); setTimeout(()=>toastDiv.remove(),5000); localStorage.setItem('congratsShown_'+auth.currentUser?.uid,'true');}
 function showFloatyToast(msg,isError=false){ let toast=document.createElement('div'); toast.className='custom-toast'+(isError?' error':''); toast.innerHTML=`<i class="fas ${isError?'fa-exclamation-circle':'fa-check-circle'}"></i> ${msg}`; document.body.appendChild(toast); setTimeout(()=>toast.remove(),4000);}
 
 auth.onAuthStateChanged(async user=>{ 
@@ -644,7 +753,7 @@ auth.onAuthStateChanged(async user=>{
         const cardBadge = document.getElementById('cardStatusBadge'); 
         if(data.status === 'approved'){ 
             cardBadge.className = 'small-status-badge approved'; 
-            cardBadge.innerHTML = '✅ Approved'; 
+            cardBadge.innerHTML = '✅ Approved ✨'; 
             const alreadyShown = localStorage.getItem('congratsShown_'+user.uid); 
             if(!alreadyShown && !firstApprovalFlagShown){ 
                 firstApprovalFlagShown = true; 
@@ -676,7 +785,6 @@ auth.onAuthStateChanged(async user=>{
             selectedCategories = []; 
         }
         renderChips();
-        updatePreviewCategories();
         
         if(data.division){ 
             document.getElementById('division').value = data.division; 
@@ -699,7 +807,6 @@ auth.onAuthStateChanged(async user=>{
     } else { 
         selectedCategories = [];
         renderChips();
-        updatePreviewCategories();
     } 
 });
 
@@ -712,13 +819,13 @@ async function saveShopData(){
     const thana=document.getElementById('thana').value; 
     const area=document.getElementById('area').value.trim(); 
     const phone=document.getElementById('phone').value.trim(); 
-    if(!shopName) return showFloatyToast('দোকানের নাম দিন!',true); 
-    if(!ownerName) return showFloatyToast('মালিকের নাম দিন!',true); 
-    if(!division) return showFloatyToast('বিভাগ বাছাই করুন!',true); 
-    if(!district) return showFloatyToast('জেলা বাছাই করুন!',true); 
-    if(!thana) return showFloatyToast('উপজেলা নির্বাচন করুন!',true); 
-    if(!area) return showFloatyToast('পূর্ণাঙ্গ ঠিকানা দিন!',true); 
-    if(!phone) return showFloatyToast('মোবাইল নম্বর দিন!',true); 
+    if(!shopName) return showFloatyToast('✨ দোকানের নাম দিন! ✨',true); 
+    if(!ownerName) return showFloatyToast('👑 মালিকের নাম দিন! 👑',true); 
+    if(!division) return showFloatyToast('🗺️ বিভাগ বাছাই করুন!',true); 
+    if(!district) return showFloatyToast('📌 জেলা বাছাই করুন!',true); 
+    if(!thana) return showFloatyToast('🏘️ উপজেলা নির্বাচন করুন!',true); 
+    if(!area) return showFloatyToast('🏠 পূর্ণাঙ্গ ঠিকানা দিন!',true); 
+    if(!phone) return showFloatyToast('📱 মোবাইল নম্বর দিন!',true); 
     const btn=document.getElementById('saveBtn'); btn.classList.add('loading'); 
     try{ 
         await db.ref('shops/'+user.uid).update({ 
@@ -732,12 +839,11 @@ async function saveShopData(){
         }); 
         document.getElementById('previewCardShopName').innerHTML = `${shopName}`; 
         document.getElementById('previewCardAddress').innerHTML = `${area}`; 
-        updatePreviewCategories(); 
-        showFloatyToast('✅ তথ্য সফলভাবে সংরক্ষণ হয়েছে!'); 
+        showFloatyToast('✅ ✨ তথ্য সফলভাবে সংরক্ষণ হয়েছে! ✨'); 
         btn.classList.remove('loading'); 
     } catch(e){ 
         btn.classList.remove('loading'); 
-        showFloatyToast('সংরক্ষণ ব্যর্থ! আবার চেষ্টা করুন।',true); 
+        showFloatyToast('❌ সংরক্ষণ ব্যর্থ! আবার চেষ্টা করুন।',true); 
     }
 }
 function viewProfile(){ if(auth.currentUser) window.location.href=`profile.html?id=${auth.currentUser.uid}`;}
