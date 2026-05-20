@@ -54,13 +54,13 @@ body {
     padding: 20px 16px 120px; 
 }
 
-/* 3D কার্ড - সেভ বাটনের কালার (বেগুনি গ্রেডিয়েন্ট) */
+/* 3D কার্ড - সাইজ অর্ধেক করা হয়েছে (উপরে ও নিচে কমিয়ে) */
 .shop-preview-card {
     background: linear-gradient(135deg, var(--primary), var(--primary-light));
-    border-radius: 28px;
-    padding: 30px 20px;
+    border-radius: 24px;
+    padding: 16px 16px;
     margin-bottom: 24px;
-    box-shadow: 0 20px 35px -12px rgba(108,43,217,0.4);
+    box-shadow: 0 15px 25px -10px rgba(108,43,217,0.4);
     border: none;
     transform-style: preserve-3d;
     transition: transform 0.3s ease, box-shadow 0.3s;
@@ -68,79 +68,72 @@ body {
     text-align: center;
 }
 @keyframes floatCard {
-    0% { transform: translateY(0px) rotateX(2deg); }
-    50% { transform: translateY(-8px) rotateX(4deg); }
-    100% { transform: translateY(0px) rotateX(2deg); }
+    0% { transform: translateY(0px) rotateX(1deg); }
+    50% { transform: translateY(-4px) rotateX(2deg); }
+    100% { transform: translateY(0px) rotateX(1deg); }
 }
 
-/* দোকানের নাম - অ্যানিমেশন ভিউ */
+/* দোকানের নাম - ট্রান্সপারেন্ট ব্যাকগ্রাউন্ড, অ্যানিমেশন */
 .card-shop-name {
-    font-size: 26px;
+    font-size: 22px;
     font-weight: 800;
     color: white;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
     display: inline-block;
-    padding: 10px 24px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 60px;
-    backdrop-filter: blur(5px);
-    margin-bottom: 20px;
-    letter-spacing: 1px;
-    animation: glowPulse 2s ease-in-out infinite, textPop 0.5s ease-out;
-}
-@keyframes glowPulse {
-    0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
-    70% { box-shadow: 0 0 0 12px rgba(255,255,255,0); }
-    100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+    padding: 6px 16px;
+    background: transparent;
+    backdrop-filter: none;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+    animation: textPop 0.5s ease-out;
 }
 @keyframes textPop {
     0% { transform: scale(0.8); opacity: 0; }
     100% { transform: scale(1); opacity: 1; }
 }
 
+/* ঠিকানা - ট্রান্সপারেন্ট ব্যাকগ্রাউন্ড */
 .card-shop-address {
-    font-size: 14px;
+    font-size: 12px;
     color: rgba(255,255,255,0.9);
-    margin-top: 6px;
-    padding: 8px 16px;
-    background: rgba(0,0,0,0.15);
+    margin-top: 4px;
+    padding: 5px 12px;
+    background: transparent;
     border-radius: 30px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    max-width: 90%;
+    gap: 6px;
+    max-width: 95%;
     margin-left: auto;
     margin-right: auto;
-    backdrop-filter: blur(4px);
 }
 .card-shop-address i { 
     color: white; 
-    font-size: 13px;
+    font-size: 11px;
 }
 
-/* সিলেক্টেড ক্যাটাগরি - দোকানের নামের নিচে */
+/* সিলেক্টেড ক্যাটাগরি - দোকানের নামের নিচে (এখন অবশ্যই নিচে যাবে) */
 .selected-categories-display {
-    margin: 18px auto 0;
-    padding: 10px 15px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 40px;
+    margin: 10px auto 0;
+    padding: 6px 10px;
+    background: transparent;
+    border-radius: 30px;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
     justify-content: center;
-    max-width: 95%;
-    min-height: 45px;
-    backdrop-filter: blur(4px);
+    max-width: 100%;
+    min-height: 35px;
 }
 .selected-cat-tag-mini {
-    background: white;
-    color: var(--primary);
-    padding: 5px 14px;
-    border-radius: 30px;
-    font-size: 12px;
-    font-weight: 600;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    background: rgba(255,255,255,0.25);
+    color: white;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 500;
+    backdrop-filter: blur(2px);
     animation: tagFadeIn 0.3s ease-out;
 }
 @keyframes tagFadeIn {
@@ -149,28 +142,28 @@ body {
 }
 .no-categories-msg {
     color: rgba(255,255,255,0.7);
-    font-size: 12px;
-    padding: 4px 0;
+    font-size: 11px;
+    padding: 2px 0;
 }
 
-/* ছোট স্ট্যাটাস ব্যাজ */
+/* স্ট্যাটাস ব্যাজ - ট্রান্সপারেন্ট ব্যাকগ্রাউন্ড */
 .small-status-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 5px;
-    padding: 6px 20px;
+    gap: 4px;
+    padding: 4px 14px;
     border-radius: 99px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
-    margin-top: 18px;
-    background: rgba(255,255,255,0.25);
+    margin-top: 10px;
+    background: rgba(255,255,255,0.2);
     color: white;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(2px);
 }
-.small-status-badge.approved { background: rgba(46,204,113,0.8); color: white; }
-.small-status-badge.pending { background: rgba(240,192,64,0.8); color: white; }
-.small-status-badge.rejected { background: rgba(231,76,60,0.8); color: white; }
+.small-status-badge.approved { background: rgba(46,204,113,0.5); color: white; }
+.small-status-badge.pending { background: rgba(240,192,64,0.5); color: white; }
+.small-status-badge.rejected { background: rgba(231,76,60,0.5); color: white; }
 
 .toast-congrats {
     position: fixed;
@@ -352,7 +345,6 @@ select.input-field { cursor: pointer; appearance: none; }
     align-items: center;
     justify-content: center;
 }
-/* সমস্ত চোখের আইকন সরানো হয়েছে */
 .view-profile-btn i { display: none; }
 
 .edit-toggle-btn {
@@ -373,7 +365,6 @@ select.input-field { cursor: pointer; appearance: none; }
 }
 .edit-toggle-btn i { color: white; }
 
-/* এডিট ফর্ম ডিফল্ট লুকানো */
 #editFormContainer {
     display: none;
     transition: all 0.3s ease;
@@ -388,7 +379,6 @@ select.input-field { cursor: pointer; appearance: none; }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* সেভ বাটন সেকশন */
 .submit-wrap {
     position: fixed;
     bottom: 0;
@@ -447,14 +437,14 @@ select.input-field { cursor: pointer; appearance: none; }
 <div id="loadingScreen"><div class="loading-spinner"></div><div class="loading-text">লোড হচ্ছে...</div></div>
 
 <div class="content" id="mainContent" style="display:none">
-    <!-- 3D প্রিভিউ কার্ড - সেভ বাটনের কালার (বেগুনি) -->
+    <!-- 3D প্রিভিউ কার্ড - সাইজ অর্ধেক, ট্রান্সপারেন্ট ব্যাকগ্রাউন্ডের উপাদান -->
     <div class="shop-preview-card" id="shopPreviewCard">
         <div class="card-shop-name" id="previewCardShopName">দোকানের নাম</div>
         <div class="card-shop-address">
             <i class="fas fa-map-marker-alt"></i> 
             <span id="previewCardAddress">ঠিকানা প্রদর্শিত হবে</span>
         </div>
-        <!-- সিলেক্টেড ক্যাটাগরি - দোকানের নামের নিচে -->
+        <!-- সিলেক্টেড ক্যাটাগরি - দোকানের নামের ঠিক নিচে -->
         <div id="selectedCategoriesDisplay" class="selected-categories-display">
             <span class="no-categories-msg">কোন ক্যাটাগরি নির্বাচন করা হয়নি</span>
         </div>
