@@ -107,7 +107,7 @@
             color: #0f402c;
             font-size: 1rem;
         }
-        .loading, .error-msg {
+        .loading, .error-msg, .debug-info {
             padding: 12px;
             border-radius: 16px;
             margin-bottom: 20px;
@@ -121,6 +121,14 @@
             background: #ffe6e5;
             color: #a1221a;
             border-left: 5px solid #c7362b;
+        }
+        .debug-info {
+            background: #fef9e0;
+            color: #856404;
+            border-left: 5px solid #ffc107;
+            font-size: 12px;
+            text-align: left;
+            display: none;
         }
         .items-list {
             display: flex;
@@ -149,6 +157,7 @@
         </div>
         <div class="card-body">
             <div id="loadStatus" class="loading">⏳ JSON ফাইল লোড হচ্ছে...</div>
+            <div id="debugInfo" class="debug-info"></div>
 
             <div class="form-grid">
                 <div class="form-group">
@@ -218,20 +227,30 @@
     const selectionDisplay = document.getElementById('selectionDisplay');
     const loadStatusDiv = document.getElementById('loadStatus');
     const listContainer = document.getElementById('listContainer');
+    const debugInfo = document.getElementById('debugInfo');
+
+    function showDebug(msg) {
+        debugInfo.style.display = 'block';
+        debugInfo.innerHTML += `<div>${new Date().toLocaleTimeString()} - ${msg}</div>`;
+        console.log(msg);
+    }
 
     // JSON ফাইল লোড ফাংশন
     async function loadJSON(url, fileName) {
         try {
+            showDebug(`${fileName} লোড শুরু...`);
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}`);
             }
             const data = await response.json();
+            showDebug(`${fileName} লোড সফল - ${Array.isArray(data) ? data.length : data.data?.length || 'unknown'} টি আইটেম`);
             // আপনার JSON ফাইলের ফরম্যাট অনুযায়ী
             if (Array.isArray(data)) return data;
             if (data && Array.isArray(data.data)) return data.data;
             return data;
         } catch (err) {
+            showDebug(`${fileName} লোড ব্যর্থ: ${err.message}`);
             throw new Error(`${fileName}: ${err.message}`);
         }
     }
@@ -239,17 +258,23 @@
     // সব ডাটা লোড করুন
     async function loadAllData() {
         try {
-            loadStatusDiv.innerHTML = '⏳ divisions.json লোড হচ্ছে...';
             divisionsData = await loadJSON('divisions.json', 'divisions.json');
-            
-            loadStatusDiv.innerHTML = '⏳ districts.json লোড হচ্ছে...';
             districtsData = await loadJSON('districts.json', 'districts.json');
-            
-            loadStatusDiv.innerHTML = '⏳ upazilas.json লোড হচ্ছে...';
             upazilasData = await loadJSON('upazilas.json', 'upazilas.json');
-            
-            loadStatusDiv.innerHTML = '⏳ unions.json লোড হচ্ছে...';
             unionsData = await loadJSON('unions.json', 'unions.json');
+
+            // ডাটা ভ্যালিডেশন
+            showDebug(`divisions: ${divisionsData.length}`);
+            showDebug(`districts: ${districtsData.length}`);
+            showDebug(`upazilas: ${upazilasData.length}`);
+            showDebug(`unions: ${unionsData.length}`);
+            
+            // প্রথম কয়টি upazila দেখান
+            if (upazilasData.length > 0) {
+                showDebug(`upazilas sample: ${JSON.stringify(upazilasData.slice(0, 3))}`);
+            } else {
+                showDebug(`সতর্কতা: upazilasData খালি!`);
+            }
 
             loadStatusDiv.innerHTML = `✅ সফল! ${divisionsData.length} বিভাগ, ${districtsData.length} জেলা, ${upazilasData.length} উপজেলা, ${unionsData.length} ইউনিয়ন লোড হয়েছে।`;
             loadStatusDiv.style.background = '#e0f7ea';
@@ -277,17 +302,22 @@
         document.getElementById('divisionCount').innerText = `মোট ${divisionsData.length}টি বিভাগ`;
     }
 
-    // ফিল্টার ফাংশন
+    // ফিল্টার ফাংশন - স্ট্রিং হিসেবে তুলনা নিশ্চিত
     function getDistrictsByDivision(divisionId) {
-        return districtsData.filter(d => d.division_id == divisionId);
+        const divIdStr = String(divisionId);
+        return districtsData.filter(d => String(d.division_id) === divIdStr);
     }
 
     function getUpazilasByDistrict(districtId) {
-        return upazilasData.filter(u => u.district_id == districtId);
+        const distIdStr = String(districtId);
+        const filtered = upazilasData.filter(u => String(u.district_id) === distIdStr);
+        showDebug(`getUpazilasByDistrict(${districtId}) -> পাওয়া গেছে: ${filtered.length}টি উপজেলা`);
+        return filtered;
     }
 
     function getUnionsByUpazila(upazilaId) {
-        return unionsData.filter(u => u.upazila_id == upazilaId);
+        const upIdStr = String(upazilaId);
+        return unionsData.filter(u => String(u.upazila_id) === upIdStr);
     }
 
     // জেলা আপডেট
@@ -354,7 +384,7 @@
             option.textContent = up.name;
             upazilaSelect.appendChild(option);
         });
-        upazilaSelect.disabled = false;
+        upazilaSelect.disabled = filtered.length === 0;
         document.getElementById('upazilaCount').innerText = `মোট ${filtered.length}টি উপজেলা`;
         
         // উপজেলার তালিকা দেখান
@@ -362,7 +392,7 @@
             const tags = filtered.map(u => `<span class="item-tag">${u.name}</span>`).join('');
             listContainer.innerHTML = `<div class="items-list">${tags}</div>`;
         } else {
-            listContainer.innerHTML = `<div class="items-list"><span class="item-tag">কোন উপজেলা নেই</span></div>`;
+            listContainer.innerHTML = `<div class="items-list"><span class="item-tag">⚠️ এই জেলায় কোন উপজেলা নেই! upazilas.json ফাইলে district_id = ${districtId} চেক করুন</span></div>`;
         }
         
         // রিসেট ইউনিয়ন
@@ -388,7 +418,7 @@
             option.textContent = u.name;
             unionSelect.appendChild(option);
         });
-        unionSelect.disabled = false;
+        unionSelect.disabled = filtered.length === 0;
         document.getElementById('unionCount').innerText = `মোট ${filtered.length}টি ইউনিয়ন`;
         
         // ইউনিয়নের তালিকা দেখান
@@ -396,7 +426,7 @@
             const tags = filtered.map(u => `<span class="item-tag">${u.name}</span>`).join('');
             listContainer.innerHTML = `<div class="items-list">${tags}</div>`;
         } else {
-            listContainer.innerHTML = `<div class="items-list"><span class="item-tag">কোন ইউনিয়ন নেই</span></div>`;
+            listContainer.innerHTML = `<div class="items-list"><span class="item-tag">⚠️ এই উপজেলায় কোন ইউনিয়ন নেই!</span></div>`;
         }
     }
 
@@ -407,10 +437,10 @@
         const upazilaId = upazilaSelect.value;
         const unionId = unionSelect.value;
         
-        const division = divisionsData.find(d => d.id == divisionId);
-        const district = districtsData.find(d => d.id == districtId);
-        const upazila = upazilasData.find(u => u.id == upazilaId);
-        const union = unionsData.find(u => u.id == unionId);
+        const division = divisionsData.find(d => String(d.id) === divisionId);
+        const district = districtsData.find(d => String(d.id) === districtId);
+        const upazila = upazilasData.find(u => String(u.id) === upazilaId);
+        const union = unionsData.find(u => String(u.id) === unionId);
         
         let text = '';
         if (division) text = `বিভাগ: ${division.name}`;
