@@ -142,43 +142,61 @@ marquee {
 .hidden { display:none; }
 .reset-btn { width:100%; padding:8px; background:#f0ebff; color:var(--primary); border:none; border-radius:12px; font-size:13px; font-weight:600; font-family:'Hind Siliguri',sans-serif; cursor:pointer; margin-bottom:8px; display:none; }
 
-/* বিভাগ ভিডিও কার্ড (নতুন) */
-.division-video-card {
-    margin: 0 16px 12px;
-    background: transparent;
+/* ========== একাধিক ভিডিও গ্রিড (এডমিনের ভিডিও) ========== */
+.video-grid-section {
+    margin: 0 16px 20px;
+}
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+.video-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
     animation: tileIn 0.4s ease both;
 }
-.division-video-player {
-    position: relative;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 18px rgba(108,43,217,0.18);
-    background: linear-gradient(135deg, #ffffff, #f8f6ff);
-    border: 1px solid rgba(108,43,217,0.1);
+.video-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(108,43,217,0.2);
 }
-.division-video {
+.video-card video {
     width: 100%;
     aspect-ratio: 16 / 9;
-    border: none;
-    background: #000;
+    object-fit: cover;
     display: block;
+    background: #000;
 }
-.division-video-info {
-    padding: 12px 12px;
-    background: linear-gradient(135deg, #ffffff, #f8f6ff);
-    text-align: center;
+.video-card-info {
+    padding: 12px 14px;
 }
-.division-video-title {
+.video-card-title {
     font-size: 16px;
     font-weight: 700;
     color: var(--primary);
     margin-bottom: 4px;
 }
-.division-video-desc {
+.video-card-desc {
     font-size: 12px;
     color: var(--text-light);
+    line-height: 1.4;
+}
+.video-grid-empty {
+    text-align: center;
+    padding: 40px;
+    background: white;
+    border-radius: 20px;
+    color: var(--text-light);
+}
+.video-grid-empty-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
 }
 
+/* দোকানের ভিডিও কার্ড */
 .shop-video-card {
     margin: 0 16px 12px;
     background: transparent;
@@ -459,19 +477,6 @@ marquee {
         <div class="ab-arrow">→</div>
     </a>
 
-    <!-- 🎬 বিভাগ ভিডিও কার্ড (এডমিন প্যানেল থেকে কন্ট্রোল) -->
-    <div id="divisionVideoCard" class="division-video-card" style="display: none;">
-        <div class="division-video-player">
-            <video id="divisionVideo" class="division-video" autoplay muted loop playsinline>
-                <source src="" type="video/mp4">
-            </video>
-            <div class="division-video-info">
-                <div class="division-video-title" id="divisionVideoTitle"></div>
-                <div class="division-video-desc" id="divisionVideoDesc"></div>
-            </div>
-        </div>
-    </div>
-
     <!-- FILTERS -->
     <div class="filter-wrap">
         <button class="reset-btn" id="resetBtn" onclick="window.resetFilters()">🔄 ফিল্টার রিসেট করুন</button>
@@ -483,7 +488,7 @@ marquee {
                 <div class="fs-sel" id="sel1"></div>
             </div>
             <div class="chip-scroll" id="divisionChips">
-                <!-- বিভাগের চিপ JS দিয়ে লোড হবে -->
+                <!-- বিভাগ JS দিয়ে লোড হবে -->
             </div>
         </div>
 
@@ -515,6 +520,12 @@ marquee {
         </div>
     </div>
 
+    <!-- 🎬 এডমিনের ভিডিও গ্রিড (থানা ও ক্যাটাগরির নিচে) -->
+    <div class="video-grid-section" id="videoGridSection">
+        <div class="video-grid" id="videoGrid"></div>
+    </div>
+
+    <!-- দোকানের লিস্ট -->
     <div id="shopList"></div>
 
 </div>
@@ -550,6 +561,7 @@ let selectedDivision = '';
 let selectedDistrict = '';
 let selectedThana = '';
 let selectedCategories = [];
+let allVideos = [];
 
 let videoObservers = [];
 let curSlide = 0;
@@ -574,29 +586,47 @@ function shuffleArray(array) {
     return array;
 }
 
-// ========== বিভাগ ভিডিও লোড (Firebase থেকে) ==========
-function loadDivisionVideo() {
-    db.ref('divisionVideo').on('value', (snap) => {
-        const videoCard = document.getElementById('divisionVideoCard');
-        const videoElement = document.getElementById('divisionVideo');
-        const titleEl = document.getElementById('divisionVideoTitle');
-        const descEl = document.getElementById('divisionVideoDesc');
-        
-        if (snap.exists() && snap.val().enabled === true && snap.val().videoUrl) {
-            const data = snap.val();
-            videoCard.style.display = 'block';
-            videoElement.src = data.videoUrl;
-            videoElement.load();
-            videoElement.play().catch(e => console.log('Auto-play prevented:', e));
-            titleEl.textContent = data.title || 'প্রোমো ভিডিও';
-            descEl.textContent = data.description || '';
-        } else {
-            videoCard.style.display = 'none';
+// ========== একাধিক ভিডিও লোড (Firebase থেকে) ==========
+function loadAdminVideos() {
+    db.ref('adminVideos').orderByChild('order').on('value', (snap) => {
+        allVideos = [];
+        if (snap.exists()) {
+            snap.forEach(child => {
+                const video = child.val();
+                if (video.enabled !== false) {
+                    allVideos.push({ id: child.key, ...video });
+                }
+            });
         }
+        renderVideoGrid();
     });
 }
 
-// ========== JSON লোড ফাংশন ==========
+function renderVideoGrid() {
+    const container = document.getElementById('videoGrid');
+    if (!container) return;
+    
+    if (allVideos.length === 0) {
+        container.innerHTML = `<div class="video-grid-empty">
+            <div class="video-grid-empty-icon">🎬</div>
+            <div>কোনো ভিডিও নেই</div>
+            <div style="font-size: 11px; margin-top: 5px;">এডমিন প্যানেল থেকে ভিডিও যোগ করুন</div>
+        </div>`;
+        return;
+    }
+    
+    container.innerHTML = allVideos.map(video => `
+        <div class="video-card">
+            <video src="${video.videoUrl}" poster="${video.thumbnail || ''}" controls preload="metadata"></video>
+            <div class="video-card-info">
+                <div class="video-card-title">${escapeHtml(video.title || 'ভিডিও')}</div>
+                <div class="video-card-desc">${escapeHtml(video.description || '')}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ========== JSON লোড ==========
 async function loadGeoData() {
     try {
         const res = await fetch(JSON_URL);
@@ -881,9 +911,9 @@ window.renderShops = function(shops) {
                 ${videoEmbed}
             </div>
             <div class="shop-video-info">
-                <h3 class="shop-video-name" onclick="window.viewShop('${shop.id}')">${window.escapeHtml(shop.shopName) || 'নাম নেই'}</h3>
-                <p class="shop-video-desc">${window.escapeHtml(description)}</p>
-                <p class="shop-video-address">${window.escapeHtml(addressText)}</p>
+                <h3 class="shop-video-name" onclick="window.viewShop('${shop.id}')">${escapeHtml(shop.shopName) || 'নাম নেই'}</h3>
+                <p class="shop-video-desc">${escapeHtml(description)}</p>
+                <p class="shop-video-address">${escapeHtml(addressText)}</p>
             </div>
         </div>`;
     }).join('');
@@ -891,7 +921,7 @@ window.renderShops = function(shops) {
     window.initVideoObservers();
 };
 
-window.escapeHtml = function(str) {
+function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/[&<>]/g, function(m) {
         if (m === '&') return '&amp;';
@@ -899,7 +929,7 @@ window.escapeHtml = function(str) {
         if (m === '>') return '&gt;';
         return m;
     });
-};
+}
 
 window.viewShop = function(shopId) {
     if (shopId) window.location.href = `profile.html?id=${shopId}`;
@@ -1011,7 +1041,7 @@ window.checkNet = function() {
         if (noInternetDiv) noInternetDiv.style.display = 'none';
         loadGeoData();
         loadCategoryChips();
-        loadDivisionVideo();
+        loadAdminVideos();
         window.loadMarquee();
         window.loadSlider();
         window.loadShops();
@@ -1182,7 +1212,6 @@ window.onYouTubeIframeAPIReady = function() {
     window.initVideoObservers();
 };
 
-// পেজ লোডে
 window.addEventListener('load', () => {
     window.checkNet();
 });
