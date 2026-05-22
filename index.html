@@ -142,7 +142,7 @@ marquee {
 .hidden { display:none; }
 .reset-btn { width:100%; padding:8px; background:#f0ebff; color:var(--primary); border:none; border-radius:12px; font-size:13px; font-weight:600; font-family:'Hind Siliguri',sans-serif; cursor:pointer; margin-bottom:8px; display:none; }
 
-/* ========== একাধিক ভিডিও গ্রিড (এডমিনের ভিডিও) ========== */
+/* এডমিনের ভিডিও গ্রিড */
 .video-grid-section {
     margin: 0 16px 20px;
 }
@@ -196,7 +196,7 @@ marquee {
     margin-bottom: 12px;
 }
 
-/* দোকানের ভিডিও কার্ড */
+/* দোকানের কার্ড */
 .shop-video-card {
     margin: 0 16px 12px;
     background: transparent;
@@ -254,14 +254,10 @@ marquee {
 }
 .shop-video-category {
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--primary-light);
     margin-bottom: 8px;
     text-align: center;
-    background: #f0ebff;
-    display: inline-block;
-    padding: 4px 16px;
-    border-radius: 99px;
 }
 .shop-video-address {
     font-size: 12px;
@@ -521,7 +517,7 @@ marquee {
         </div>
     </div>
 
-    <!-- 🎬 এডমিনের ভিডিও গ্রিড (থানা ও ক্যাটাগরির নিচে) -->
+    <!-- এডমিনের ভিডিও গ্রিড -->
     <div class="video-grid-section" id="videoGridSection">
         <div class="video-grid" id="videoGrid"></div>
     </div>
@@ -553,10 +549,12 @@ firebase.initializeApp({
 const auth = firebase.auth();
 const db = firebase.database();
 
-// ========== JSON ডাটা লোড ==========
-const JSON_URL = 'https://raw.githubusercontent.com/kamalkakuj3-spec/my-app/main/divisions.json';
+// ========== JSON URL ==========
+const DIVISIONS_JSON_URL = 'https://raw.githubusercontent.com/kamalkakuj3-spec/my-app/main/divisions.json';
+const CATEGORIES_JSON_URL = 'https://raw.githubusercontent.com/kamalkakuj3-spec/my-app/main/categories.json';
 
 let geoData = [];
+let categoriesList = [];
 let allShops = [];
 let selectedDivision = '';
 let selectedDistrict = '';
@@ -569,16 +567,6 @@ let curSlide = 0;
 let slTimer = null;
 let slData = [];
 
-// ক্যাটাগরি লিস্ট
-const allCategories = [
-    'পোশাক ও বস্ত্র', 'খাদ্যপণ্য ও মসলা', 'ইলেকট্রনিক্স', 'গৃহস্থালি পণ্য',
-    'হার্ডওয়্যার ও নির্মাণ', 'ওষুধ ও স্বাস্থ্য', 'সৌন্দর্য ও কসমেটিক্স', 'ব্যাগ ও জুতা',
-    'কৃষি ও সার', 'স্টেশনারি ও অফিস', 'অটোমোবাইল', 'খেলনা ও শিশু পণ্য',
-    'উপহার ও সাজসজ্জা', 'প্যাকেজিং সামগ্রী', 'শিল্প ও কারখানা', 'মাছ ও মাংস',
-    'নার্সারি ও বাগান', 'খেলাধুলা সামগ্রী', 'বই ও শিক্ষা সামগ্রী', 'সোলার ও বিদ্যুৎ',
-    'সেলাই ও কারুকাজ', 'যানবাহন যন্ত্রাংশ', 'অন্যান্য'
-];
-
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -587,7 +575,19 @@ function shuffleArray(array) {
     return array;
 }
 
-// ========== একাধিক ভিডিও লোড (Firebase থেকে) ==========
+// ========== ক্যাটাগরি JSON লোড ==========
+async function loadCategories() {
+    try {
+        const res = await fetch(CATEGORIES_JSON_URL);
+        categoriesList = await res.json();
+        console.log('ক্যাটাগরি লোড সফল!', categoriesList.length, 'টি ক্যাটাগরি');
+    } catch (error) {
+        console.error('ক্যাটাগরি লোড ব্যর্থ:', error);
+        categoriesList = [];
+    }
+}
+
+// ========== একাধিক ভিডিও লোড ==========
 function loadAdminVideos() {
     db.ref('adminVideos').orderByChild('order').on('value', (snap) => {
         allVideos = [];
@@ -630,7 +630,7 @@ function renderVideoGrid() {
 // ========== JSON লোড ==========
 async function loadGeoData() {
     try {
-        const res = await fetch(JSON_URL);
+        const res = await fetch(DIVISIONS_JSON_URL);
         const data = await res.json();
         geoData = data.divisions;
         
@@ -651,13 +651,19 @@ async function loadGeoData() {
     }
 }
 
-function loadCategoryChips() {
+// ========== ক্যাটাগরি চিপ লোড (JSON থেকে) ==========
+async function loadCategoryChips() {
     const container = document.getElementById('categoryChips');
     container.innerHTML = '<div class="f-chip active" onclick="window.selectCategory(\'\')">সব</div>';
-    allCategories.forEach(cat => {
+    
+    if (categoriesList.length === 0) {
+        await loadCategories();
+    }
+    
+    categoriesList.forEach(cat => {
         const chip = document.createElement('div');
         chip.className = 'f-chip';
-        chip.innerHTML = cat;
+        chip.textContent = cat;
         chip.onclick = () => window.selectCategory(cat);
         container.appendChild(chip);
     });
@@ -872,7 +878,7 @@ window.applyFilters = function() {
     window.renderShops(filtered);
 };
 
-// ========== রেন্ডার শপস (আপডেটেড - ক্যাটাগরি দেখাবে) ==========
+// ========== রেন্ডার শপস (ক্যাটাগরি দেখানো) ==========
 window.renderShops = function(shops) {
     const container = document.getElementById('shopList');
     if (!container) return;
@@ -904,12 +910,8 @@ window.renderShops = function(shops) {
             ? `<iframe class="shop-video" src="https://www.youtube.com/embed/${videoId}?enablejsapi=1" frameborder="0" allowfullscreen></iframe>`
             : `<div class="no-video">🎬 কোন ভিডিও নেই</div>`;
         
-        // ✅ পরিবর্তন: এখানে ক্যাটাগরি দেখানো হচ্ছে
         const categoryName = shop.category || 'পাইকারি দোকান';
         const addressText = shop.thana ? `${shop.thana}, ${shop.district}` : `${shop.area || ''}, ${shop.district || ''}`;
-        
-        // ক্যাটাগরি অনুযায়ী আইকন
-        const categoryIcon = getCategoryIcon(categoryName);
         
         return `
         <div class="shop-video-card">
@@ -918,7 +920,7 @@ window.renderShops = function(shops) {
             </div>
             <div class="shop-video-info">
                 <h3 class="shop-video-name" onclick="window.viewShop('${shop.id}')">${escapeHtml(shop.shopName) || 'নাম নেই'}</h3>
-                <div class="shop-video-category">${categoryIcon} ${escapeHtml(categoryName)}</div>
+                <div class="shop-video-category">${escapeHtml(categoryName)}</div>
                 <p class="shop-video-address">📍 ${escapeHtml(addressText)}</p>
             </div>
         </div>`;
@@ -926,35 +928,6 @@ window.renderShops = function(shops) {
     
     window.initVideoObservers();
 };
-
-// ক্যাটাগরি অনুযায়ী আইকন ফাংশন
-function getCategoryIcon(category) {
-    const icons = {
-        'পোশাক ও বস্ত্র': '👗',
-        'খাদ্যপণ্য ও মসলা': '🛒',
-        'ইলেকট্রনিক্স': '📱',
-        'গৃহস্থালি পণ্য': '🏠',
-        'হার্ডওয়্যার ও নির্মাণ': '🔧',
-        'ওষুধ ও স্বাস্থ্য': '💊',
-        'সৌন্দর্য ও কসমেটিক্স': '🧴',
-        'ব্যাগ ও জুতা': '🎒',
-        'কৃষি ও সার': '🌾',
-        'স্টেশনারি ও অফিস': '🖨️',
-        'অটোমোবাইল': '🚗',
-        'খেলনা ও শিশু পণ্য': '🧸',
-        'উপহার ও সাজসজ্জা': '🎉',
-        'প্যাকেজিং সামগ্রী': '📦',
-        'শিল্প ও কারখানা': '🔬',
-        'মাছ ও মাংস': '🐟',
-        'নার্সারি ও বাগান': '🪴',
-        'খেলাধুলা সামগ্রী': '⚽',
-        'বই ও শিক্ষা সামগ্রী': '📚',
-        'সোলার ও বিদ্যুৎ': '🔌',
-        'সেলাই ও কারুকাজ': '🧵',
-        'যানবাহন যন্ত্রাংশ': '🛺'
-    };
-    return icons[category] || '📂';
-}
 
 function escapeHtml(str) {
     if (!str) return '';
@@ -1075,6 +1048,7 @@ window.checkNet = function() {
     if (navigator.onLine) {
         if (noInternetDiv) noInternetDiv.style.display = 'none';
         loadGeoData();
+        loadCategories();
         loadCategoryChips();
         loadAdminVideos();
         window.loadMarquee();
@@ -1114,7 +1088,7 @@ window.navigateTo = function(page, event) {
     }
 };
 
-// ক্যাটাগরি পপআপ
+// ক্যাটাগরি পপআপ (JSON থেকে লোড করা ক্যাটাগরি দেখাবে)
 window.openCategoryPopup = function() {
     const existingPopup = document.querySelector('.category-popup-overlay');
     if (existingPopup) existingPopup.remove();
@@ -1122,7 +1096,7 @@ window.openCategoryPopup = function() {
     const overlay = document.createElement('div');
     overlay.className = 'category-popup-overlay';
     
-    const categoriesHTML = allCategories.map(cat => {
+    const categoriesHTML = categoriesList.map(cat => {
         const isSelected = selectedCategories.includes(cat);
         return `
             <div class="cat-check ${isSelected ? 'selected' : ''}" onclick="window.toggleCategory('${cat.replace(/'/g, "\\'")}', this)">
