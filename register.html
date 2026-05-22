@@ -46,8 +46,6 @@ body {
     z-index: 10000;
     opacity: 0;
     transition: all 0.3s ease;
-    white-space: nowrap;
-    max-width: 90%;
     white-space: normal;
     text-align: center;
     line-height: 1.5;
@@ -705,14 +703,14 @@ textarea.input-field {
         </div>
     </div>
 
-    <!-- ২. ঠিকানা — Step by Step -->
+    <!-- ২. ঠিকানা — JSON থেকে লোড -->
     <div class="tile-section">
         <div class="tile-card">
             <div class="tile-header">
                 <div class="tile-icon">📍</div>
                 <div>
                     <div class="tile-title">দোকানের ঠিকানা</div>
-                    <div class="tile-subtitle">বিভাগ → জেলা → থানা → এলাকা</div>
+                    <div class="tile-subtitle">বিভাগ → জেলা → থানা → এলাকা (JSON থেকে লোড)</div>
                 </div>
             </div>
 
@@ -722,14 +720,6 @@ textarea.input-field {
                     <span class="input-icon">🗺️</span>
                     <select class="input-field" id="division" onchange="onDivisionChange()">
                         <option value="">— বিভাগ বাছাই করুন —</option>
-                        <option value="ঢাকা">ঢাকা</option>
-                        <option value="চট্টগ্রাম">চট্টগ্রাম</option>
-                        <option value="রাজশাহী">রাজশাহী</option>
-                        <option value="খুলনা">খুলনা</option>
-                        <option value="বরিশাল">বরিশাল</option>
-                        <option value="সিলেট">সিলেট</option>
-                        <option value="রংপুর">রংপুর</option>
-                        <option value="ময়মনসিংহ">ময়মনসিংহ</option>
                     </select>
                     <span class="select-arrow">▼</span>
                 </div>
@@ -768,14 +758,14 @@ textarea.input-field {
         </div>
     </div>
 
-    <!-- ৩. ক্যাটাগরি — Multiple Selection -->
+    <!-- ৩. ক্যাটাগরি — JSON থেকে লোড -->
     <div class="tile-section" id="categorySection" style="display:none">
         <div class="tile-card">
             <div class="tile-header">
                 <div class="tile-icon">🗂️</div>
                 <div>
                     <div class="tile-title">ক্যাটাগরি</div>
-                    <div class="tile-subtitle">আপনার পণ্যের ধরন বাছাই করুন (একাধিক সিলেক্ট করতে পারেন)</div>
+                    <div class="tile-subtitle">আপনার পণ্যের ধরন বাছাই করুন (JSON থেকে লোড)</div>
                 </div>
             </div>
 
@@ -790,7 +780,7 @@ textarea.input-field {
         </div>
     </div>
 
-    <!-- ৪. যোগাযোগ (Facebook বাদ, Telegram যোগ) -->
+    <!-- ৪. যোগাযোগ -->
     <div class="tile-section">
         <div class="tile-card">
             <div class="tile-header">
@@ -906,76 +896,58 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
-// ========== জেলা ও থানার ডাটা ==========
-const districtMap = {
-    'ঢাকা': ['ঢাকা', 'গাজীপুর', 'নারায়ণগঞ্জ', 'মুন্সীগঞ্জ', 'মানিকগঞ্জ', 'নরসিংদী', 'ফরিদপুর', 'রাজবাড়ী', 'গোপালগঞ্জ', 'মাদারীপুর', 'শরীয়তপুর', 'কিশোরগঞ্জ', 'টাঙ্গাইল'],
-    'চট্টগ্রাম': ['চট্টগ্রাম', 'কক্সবাজার', 'কুমিল্লা', 'চাঁদপুর', 'ব্রাহ্মণবাড়িয়া', 'নোয়াখালী', 'ফেনী', 'লক্ষ্মীপুর', 'রাঙামাটি', 'খাগড়াছড়ি', 'বান্দরবান'],
-    'রাজশাহী': ['রাজশাহী', 'নাটোর', 'নওগাঁ', 'চাঁপাইনবাবগঞ্জ', 'পাবনা', 'সিরাজগঞ্জ', 'বগুড়া', 'জয়পুরহাট'],
-    'খুলনা': ['খুলনা', 'বাগেরহাট', 'সাতক্ষীরা', 'যশোর', 'মাগুরা', 'নড়াইল', 'কুষ্টিয়া', 'মেহেরপুর', 'চুয়াডাঙ্গা', 'ঝিনাইদহ'],
-    'বরিশাল': ['বরিশাল', 'ভোলা', 'পটুয়াখালী', 'বরগুনা', 'পিরোজপুর', 'ঝালকাঠি'],
-    'সিলেট': ['সিলেট', 'মৌলভীবাজার', 'হবিগঞ্জ', 'সুনামগঞ্জ'],
-    'রংপুর': ['রংপুর', 'গাইবান্ধা', 'কুড়িগ্রাম', 'লালমনিরহাট', 'নীলফামারী', 'দিনাজপুর', 'ঠাকুরগাঁও', 'পঞ্চগড়'],
-    'ময়মনসিংহ': ['ময়মনসিংহ', 'জামালপুর', 'শেরপুর', 'নেত্রকোণা']
-};
+// ========== JSON URL ==========
+const DIVISIONS_JSON_URL = 'https://raw.githubusercontent.com/kamalkakuj3-spec/my-app/main/divisions.json';
+const CATEGORIES_JSON_URL = 'https://raw.githubusercontent.com/kamalkakuj3-spec/my-app/main/categories.json';
 
-const thanaMap = {
-    'ঢাকা': ['আদাবর', 'উত্তরা', 'তেজগাঁও', 'ধামরাই', 'নবাবগঞ্জ', 'বাড্ডা', 'মিরপুর', 'মোহাম্মদপুর', 'যাত্রাবাড়ী', 'রামপুরা', 'লালবাগ', 'শাহবাগ', 'সাভার', 'সূত্রাপুর', 'হাজারীবাগ'],
-    'গাজীপুর': ['গাজীপুর সদর', 'কালিয়াকৈর', 'কাপাসিয়া', 'শ্রীপুর'],
-    'নারায়ণগঞ্জ': ['নারায়ণগঞ্জ সদর', 'আড়াইহাজার', 'বন্দর', 'রূপগঞ্জ', 'সোনারগাঁও'],
-    'মুন্সীগঞ্জ': ['মুন্সীগঞ্জ সদর', 'গজারিয়া', 'টংগিবাড়ী', 'লৌহজং', 'শ্রীনগর'],
-    'মানিকগঞ্জ': ['মানিকগঞ্জ সদর', 'ঘিওর', 'দৌলতপুর', 'শিবালয়', 'সাটুরিয়া', 'হরিরামপুর'],
-    'নরসিংদী': ['নরসিংদী সদর', 'বেলাবো', 'পলাশ', 'মনোহরদী', 'রায়পুরা', 'শিবপুর'],
-    'ফরিদপুর': ['ফরিদপুর সদর', 'আলফাডাঙ্গা', 'বোয়ালমারী', 'মধুখালী', 'নগরকান্দা', 'সদরপুর', 'চরভদ্রাসন', 'সালথা'],
-    'রাজবাড়ী': ['রাজবাড়ী সদর', 'গোয়ালন্দ', 'পাংশা', 'বালিয়াকান্দি', 'কালুখালী'],
-    'গোপালগঞ্জ': ['গোপালগঞ্জ সদর', 'কাশিয়ানী', 'কোটালীপাড়া', 'টুঙ্গিপাড়া', 'মুকসুদপুর'],
-    'মাদারীপুর': ['মাদারীপুর সদর', 'কালকিনি', 'ডাসার', 'শিবচর', 'রাজৈর'],
-    'শরীয়তপুর': ['শরীয়তপুর সদর', 'গোসাইরহাট', 'জাজিরা', 'নড়িয়া', 'ভেদরগঞ্জ', 'ডামুড্যা'],
-    'কিশোরগঞ্জ': ['কিশোরগঞ্জ সদর', 'অট্টগ্রাম', 'ইটনা', 'করিমগঞ্জ', 'কটিয়াদী', 'তাড়াইল', 'পাকুন্দিয়া', 'বাজিতপুর', 'ভৈরব', 'মিঠামইন', 'হোসেনপুর', 'নিকলী', 'কুলিয়ারচর'],
-    'টাঙ্গাইল': ['টাঙ্গাইল সদর', 'বাসাইল', 'দেলদুয়ার', 'ঘাটাইল', 'গোপালপুর', 'কালিহাতী', 'মধুপুর', 'মির্জাপুর', 'নাগরপুর', 'সখিপুর', 'ধনবাড়ী'],
-    'চট্টগ্রাম': ['চট্টগ্রাম সদর', 'আনোয়ারা', 'বাঁশখালী', 'বোয়ালখালী', 'চন্দনাইশ', 'দোহাজারী', 'ফটিকছড়ি', 'হাটহাজারী', 'লোহাগাড়া', 'মিরসরাই', 'পটিয়া', 'রাঙ্গুনিয়া', 'রাউজান', 'সন্দ্বীপ', 'সাতকানিয়া', 'সীতাকুণ্ডা'],
-    'কক্সবাজার': ['কক্সবাজার সদর', 'চকরিয়া', 'কুতুবদিয়া', 'মহেশখালী', 'রামু', 'টেকনাফ', 'উখিয়া', 'পেকুয়া'],
-    'কুমিল্লা': ['কুমিল্লা সদর', 'বরুড়া', 'ব্রাহ্মণপাড়া', 'বুড়িচং', 'চান্দিনা', 'চৌদ্দগ্রাম', 'দাউদকান্দি', 'দেবিদ্বার', 'হোমনা', 'লাকসাম', 'মনোহরগঞ্জ', 'মুরাদনগর', 'নাঙ্গলকোট', 'তিতাস'],
-    'চাঁদপুর': ['চাঁদপুর সদর', 'ফরিদগঞ্জ', 'হাইমচর', 'হাজীগঞ্জ', 'কচুয়া', 'মতলব উত্তর', 'মতলব দক্ষিণ', 'শাহরাস্তি'],
-    'ব্রাহ্মণবাড়িয়া': ['ব্রাহ্মণবাড়িয়া সদর', 'আখাউড়া', 'বাঞ্ছারামপুর', 'বিজয়নগর', 'কসবা', 'নবীনগর', 'নাসিরনগর', 'সরাইল'],
-    'নোয়াখালী': ['নোয়াখালী সদর', 'বেগমগঞ্জ', 'চাটখিল', 'কবিরহাট', 'সেনবাগ', 'সোনাইমুড়ি', 'সুবর্ণচর', 'কোম্পানীগঞ্জ'],
-    'ফেনী': ['ফেনী সদর', 'ছাগলনাইয়া', 'দাগনভূঁইয়া', 'পরশুরাম', 'সোনাগাজী'],
-    'লক্ষ্মীপুর': ['লক্ষ্মীপুর সদর', 'রামগঞ্জ', 'রামগতি', 'রায়পুর'],
-    'রাজশাহী': ['রাজশাহী সদর', 'বাঘা', 'বাগমারা', 'চারঘাট', 'দুর্গাপুর', 'গোদাগাড়ী', 'মোহনপুর', 'পবা', 'পুঠিয়া', 'তানোর'],
-    'নাটোর': ['নাটোর সদর', 'বাগাতিপাড়া', 'বড়াইগ্রাম', 'গুরুদাসপুর', 'লালপুর', 'নলডাঙ্গা', 'সিংড়া'],
-    'নওগাঁ': ['নওগাঁ সদর', 'আত্রাই', 'বাদলগাছী', 'ধামইরহাট', 'মহাদেবপুর', 'মান্দা', 'নিয়ামতপুর', 'পত্নীতলা', 'পোরশা', 'রাণীনগর', 'সাপাহার'],
-    'খুলনা': ['খুলনা সদর', 'বটিয়াঘাটা', 'দাকোপ', 'ডুমুরিয়া', 'দিঘলিয়া', 'কয়রা', 'পাইকগাছা', 'রূপসা', 'তেরখাদা'],
-    'বাগেরহাট': ['বাগেরহাট সদর', 'ফকিরহাট', 'কচুয়া', 'মোল্লাহাট', 'মোড়েলগঞ্জ', 'রামপাল', 'শরণখোলা', 'চিতলমারী', 'মোংলা'],
-    'সাতক্ষীরা': ['সাতক্ষীরা সদর', 'আশাশুনি', 'দেবহাটা', 'কালীগঞ্জ', 'কলারোয়া', 'শ্যামনগর', 'তালা'],
-    'যশোর': ['যশোর সদর', 'অভয়নগর', 'বাঘারপাড়া', 'চৌগাছা', 'ঝিকরগাছা', 'কেশবপুর', 'মনিরামপুর', 'শার্শা'],
-    'সিলেট': ['সিলেট সদর', 'বালাগঞ্জ', 'বিয়ানীবাজার', 'বিশ্বনাথ', 'ফেঞ্চুগঞ্জ', 'গোলাপগঞ্জ', 'গোয়াইনঘাট', 'জৈন্তাপুর', 'কানাইঘাট', 'কোম্পানীগঞ্জ', 'জকিগঞ্জ', 'দক্ষিণ সুরমা', 'মোগলাবাজার'],
-    'মৌলভীবাজার': ['মৌলভীবাজার সদর', 'বড়লেখা', 'জুড়ী', 'কমলগঞ্জ', 'কুলাউড়া', 'রাজনগর', 'শ্রীমঙ্গল'],
-    'হবিগঞ্জ': ['হবিগঞ্জ সদর', 'আজমিরীগঞ্জ', 'বাহুবল', 'বানিয়াচং', 'চুনারুঘাট', 'কালাউক', 'লাখাই', 'মাধবপুর', 'নবীগঞ্জ', 'শায়েস্তাগঞ্জ'],
-    'রংপুর': ['রংপুর সদর', 'বদরগঞ্জ', 'গঙ্গাচড়া', 'কাউনিয়া', 'মিঠাপুকুর', 'পীরগাছা', 'পীরগঞ্জ', 'তারাগঞ্জ'],
-    'দিনাজপুর': ['দিনাজপুর সদর', 'বিরামপুর', 'বীরগঞ্জ', 'বোচাগঞ্জ', 'চিরিরবন্দর', 'ফুলবাড়ী', 'ঘোড়াঘাট', 'হাকিমপুর', 'খানসামা', 'নবাবগঞ্জ', 'পার্বতীপুর', 'সেতাবগঞ্জ'],
-    'ময়মনসিংহ': ['ময়মনসিংহ সদর', 'ভালুকা', 'ধোবাউড়া', 'ফুলবাড়িয়া', 'গফরগাঁও', 'গৌরীপুর', 'হালুয়াঘাট', 'ঈশ্বরগঞ্জ', 'মুক্তাগাছা', 'নান্দাইল', 'ফুলপুর', 'ত্রিশাল']
-};
-
-// ক্যাটাগরি লিস্ট
-const categoriesList = [
-    '👗 পোশাক ও বস্ত্র', '🛒 খাদ্যপণ্য ও মসলা', '📱 ইলেকট্রনিক্স',
-    '🏠 গৃহস্থালি পণ্য', '🔧 হার্ডওয়্যার ও নির্মাণ', '💊 ওষুধ ও স্বাস্থ্য',
-    '🧴 সৌন্দর্য ও কসমেটিক্স', '🎒 ব্যাগ ও জুতা', '🌾 কৃষি ও সার',
-    '🖨️ স্টেশনারি ও অফিস', '🚗 অটোমোবাইল', '🧸 খেলনা ও শিশু পণ্য',
-    '🎉 উপহার ও সাজসজ্জা', '📦 প্যাকেজিং সামগ্রী', '🔬 শিল্প ও কারখানা',
-    '🐟 মাছ ও মাংস', '🪴 নার্সারি ও বাগান', '⚽ খেলাধুলা সামগ্রী',
-    '📚 বই ও শিক্ষা সামগ্রী', '🔌 সোলার ও বিদ্যুৎ', '🧵 সেলাই ও কারুকাজ',
-    '🛺 যানবাহন যন্ত্রাংশ', '🔹 অন্যান্য'
-];
-
+// ========== গ্লোবাল ভেরিয়েবল ==========
+let divisionsData = [];
+let categoriesList = [];
 let selectedCategories = [];
 
-function loadCategories() {
+// ========== JSON লোড ফাংশন ==========
+async function loadDivisionsFromJSON() {
+    try {
+        const res = await fetch(DIVISIONS_JSON_URL);
+        const data = await res.json();
+        divisionsData = data.divisions;
+        console.log('বিভাগ JSON লোড সফল!', divisionsData.length, 'টি বিভাগ');
+        
+        // বিভাগ সিলেক্ট বক্স পপুলেট
+        const divisionSelect = document.getElementById('division');
+        divisionSelect.innerHTML = '<option value="">— বিভাগ বাছাই করুন —</option>';
+        divisionsData.forEach(div => {
+            const option = document.createElement('option');
+            option.value = div.name;
+            option.textContent = div.name;
+            divisionSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error('বিভাগ JSON লোড ব্যর্থ:', error);
+        showError('বিভাগের তথ্য লোড করতে ব্যর্থ! নেটওয়ার্ক চেক করুন।');
+    }
+}
+
+async function loadCategoriesFromJSON() {
+    try {
+        const res = await fetch(CATEGORIES_JSON_URL);
+        categoriesList = await res.json();
+        console.log('ক্যাটাগরি JSON লোড সফল!', categoriesList.length, 'টি ক্যাটাগরি');
+        loadCategoryGrid();
+    } catch (error) {
+        console.error('ক্যাটাগরি JSON লোড ব্যর্থ:', error);
+        // ব্যাকআপ ক্যাটাগরি
+        categoriesList = ["পোশাক ও বস্ত্র", "খাদ্যপণ্য ও মসলা", "ইলেকট্রনিক্স", "গৃহস্থালি পণ্য", "হার্ডওয়্যার ও নির্মাণ", "ওষুধ ও স্বাস্থ্য", "সৌন্দর্য ও কসমেটিক্স", "ব্যাগ ও জুতা", "কৃষি ও সার", "স্টেশনারি ও অফিস", "অটোমোবাইল", "খেলনা ও শিশু পণ্য", "উপহার ও সাজসজ্জা", "প্যাকেজিং সামগ্রী", "শিল্প ও কারখানা", "মাছ ও মাংস", "নার্সারি ও বাগান", "খেলাধুলা সামগ্রী", "বই ও শিক্ষা সামগ্রী", "সোলার ও বিদ্যুৎ", "সেলাই ও কারুকাজ", "যানবাহন যন্ত্রাংশ", "অন্যান্য"];
+        loadCategoryGrid();
+    }
+}
+
+function loadCategoryGrid() {
     const grid = document.getElementById('catGrid');
     grid.innerHTML = categoriesList.map((cat, index) => {
-        const catName = cat.replace(/^[\S]+ /, '');
         return `
-            <div class="cat-checkbox-item" onclick="toggleCategory('${catName}', this)">
-                <input type="checkbox" id="cat_${index}" value="${catName}">
+            <div class="cat-checkbox-item" onclick="toggleCategory('${cat.replace(/'/g, "\\'")}', this)">
+                <input type="checkbox" id="cat_${index}" value="${cat.replace(/'/g, "\\'")}">
                 <span>${cat}</span>
             </div>
         `;
@@ -1008,7 +980,7 @@ function updateSelectedCatsDisplay() {
         selectedDiv.innerHTML = selectedCategories.map(cat => `
             <div class="selected-cat-tag">
                 ${cat}
-                <span class="remove" onclick="removeCategory('${cat}')">✕</span>
+                <span class="remove" onclick="removeCategory('${cat.replace(/'/g, "\\'")}')">✕</span>
             </div>
         `).join('');
         hiddenInput.value = selectedCategories.join(',');
@@ -1030,14 +1002,16 @@ function removeCategory(catName) {
     updateSelectedCatsDisplay();
 }
 
+// ========== বিভাগ পরিবর্তন (JSON থেকে) ==========
 function onDivisionChange() {
-    const div = document.getElementById('division').value;
+    const divisionName = document.getElementById('division').value;
     const districtSelect = document.getElementById('district');
     const districtGroup = document.getElementById('districtGroup');
     const thanaGroup = document.getElementById('thanaGroup');
     const areaGroup = document.getElementById('areaGroup');
     const categorySection = document.getElementById('categorySection');
 
+    // রিসেট
     districtSelect.innerHTML = '<option value="">— জেলা বাছাই করুন —</option>';
     document.getElementById('thana').innerHTML = '<option value="">— থানা বাছাই করুন —</option>';
     
@@ -1045,11 +1019,17 @@ function onDivisionChange() {
     areaGroup.style.display = 'none';
     categorySection.style.display = 'none';
 
-    if (div && districtMap[div]) {
-        districtMap[div].forEach(d => {
+    if (!divisionName) {
+        districtGroup.style.display = 'none';
+        return;
+    }
+    
+    const division = divisionsData.find(d => d.name === divisionName);
+    if (division && division.districts) {
+        division.districts.forEach(dist => {
             const opt = document.createElement('option');
-            opt.value = d;
-            opt.textContent = d;
+            opt.value = dist.name;
+            opt.textContent = dist.name;
             districtSelect.appendChild(opt);
         });
         districtGroup.style.display = 'block';
@@ -1058,36 +1038,55 @@ function onDivisionChange() {
     }
 }
 
+// ========== জেলা পরিবর্তন (JSON থেকে) ==========
 function onDistrictChange() {
-    const district = document.getElementById('district').value;
+    const divisionName = document.getElementById('division').value;
+    const districtName = document.getElementById('district').value;
     const thanaSelect = document.getElementById('thana');
     const thanaGroup = document.getElementById('thanaGroup');
     const areaGroup = document.getElementById('areaGroup');
     const categorySection = document.getElementById('categorySection');
 
+    // রিসেট
     thanaSelect.innerHTML = '<option value="">— থানা বাছাই করুন —</option>';
     areaGroup.style.display = 'none';
     categorySection.style.display = 'none';
 
-    if (district && thanaMap[district]) {
-        thanaMap[district].forEach(t => {
+    if (!divisionName || !districtName) {
+        thanaGroup.style.display = 'none';
+        return;
+    }
+    
+    const division = divisionsData.find(d => d.name === divisionName);
+    const district = division?.districts.find(d => d.name === districtName);
+    
+    if (district && district.upazilas) {
+        district.upazilas.forEach(upazila => {
             const opt = document.createElement('option');
-            opt.value = t;
-            opt.textContent = t;
+            opt.value = upazila;
+            opt.textContent = upazila;
             thanaSelect.appendChild(opt);
         });
+        thanaGroup.style.display = 'block';
+    } else if (districtName) {
+        // যদি উপজেলা না থাকে, ডিফল্ট
+        const opt = document.createElement('option');
+        opt.value = "সদর";
+        opt.textContent = "সদর উপজেলা";
+        thanaSelect.appendChild(opt);
         thanaGroup.style.display = 'block';
     } else {
         thanaGroup.style.display = 'none';
     }
 }
 
+// ========== থানা পরিবর্তন ==========
 function onThanaChange() {
     const thana = document.getElementById('thana').value;
     const areaGroup = document.getElementById('areaGroup');
     const categorySection = document.getElementById('categorySection');
     
-    if (thana) {
+    if (thana && thana !== "") {
         areaGroup.style.display = 'block';
         categorySection.style.display = 'block';
     } else {
@@ -1096,6 +1095,7 @@ function onThanaChange() {
     }
 }
 
+// ========== পাসওয়ার্ড স্ট্রেংথ ==========
 function checkStrength(pass) {
     const b1 = document.getElementById('bar1');
     const b2 = document.getElementById('bar2');
@@ -1124,6 +1124,7 @@ function checkStrength(pass) {
     }
 }
 
+// ========== UI ফাংশন ==========
 function showError(msg) {
     const box = document.getElementById('errorMsg');
     document.getElementById('errorText').textContent = msg;
@@ -1148,6 +1149,7 @@ function goToLogin() {
     window.location.href = 'login.html';
 }
 
+// ========== রেজিস্ট্রেশন ==========
 async function registerShop() {
     const shopName = document.getElementById('shopName').value.trim();
     const ownerName = document.getElementById('ownerName').value.trim();
@@ -1221,10 +1223,8 @@ async function registerShop() {
 
         await auth.signOut();
         
-        // টোস্ট দেখান
         showToast();
         
-        // ১ সেকেন্ড পর মডাল দেখান
         setTimeout(() => {
             showConfirmationModal();
         }, 1000);
@@ -1244,8 +1244,10 @@ async function registerShop() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadCategories();
+// ========== পেজ লোড ==========
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadDivisionsFromJSON();
+    await loadCategoriesFromJSON();
 });
 </script>
 
