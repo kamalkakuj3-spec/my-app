@@ -87,6 +87,7 @@
             text-decoration: none;
             font-weight: 500;
             transition: 0.2s;
+            cursor: pointer;
         }
 
         .nav-links a:hover {
@@ -216,7 +217,7 @@
             background: rgba(15, 15, 25, 0.6);
             backdrop-filter: blur(16px);
             border-radius: 48px;
-            padding: 20px;
+            padding: 28px;
             border: 1px solid rgba(162,89,247,0.3);
             transition: 0.3s;
         }
@@ -303,7 +304,7 @@
 
         .not-found {
             text-align: center;
-            padding: 60px;
+            padding: 40px;
             background: rgba(0,0,0,0.5);
             border-radius: 48px;
         }
@@ -331,6 +332,12 @@
             font-size: 1.2rem;
             grid-column: span 2;
         }
+
+        .error-message {
+            color: #ff6b6b;
+            text-align: center;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
@@ -343,8 +350,8 @@
         <h1><i class="fas fa-crown"></i> PROVISION <span style="font-size:0.9rem;">| 3D বাজার</span></h1>
     </div>
     <div class="nav-links">
-        <a href="#" onclick="scrollToProducts()"><i class="fas fa-store"></i> পণ্য</a>
-        <a href="#" onclick="scrollToProfile()"><i class="fas fa-id-card"></i> প্রোফাইল</a>
+        <a onclick="scrollToProducts()"><i class="fas fa-store"></i> পণ্য</a>
+        <a onclick="scrollToProfile()"><i class="fas fa-id-card"></i> প্রোফাইল</a>
     </div>
 </header>
 
@@ -411,6 +418,8 @@
             if(m === '<') return '&lt;';
             if(m === '>') return '&gt;';
             return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
         });
     }
 
@@ -452,32 +461,43 @@
     async function loadShopProfile(uid) {
         const profileDiv = document.getElementById('profileContent');
         const loadingIndicator = document.getElementById('profileLoadingIndicator');
+        
         if(!uid) {
             profileDiv.innerHTML = `<div class="not-found">
                 <i class="fas fa-store-slash" style="font-size:48px;"></i>
                 <h3>কোন দোকান আইডি দেওয়া হয়নি</h3>
                 <p>URL এ ?id=shopId যোগ করুন অথবা দোকানের লিংকে ক্লিক করুন</p>
+                <p style="margin-top:12px;"><small>উদাহরণ: ?id=নাম</small></p>
                 </div>`;
             loadingIndicator.style.display = 'none';
             profileDiv.style.display = 'block';
             return;
         }
+        
         try {
             const snap = await db.ref('shops/' + uid).once('value');
             const shop = snap.val();
-            if(!shop || shop.status !== 'approved') {
+            
+            if(!shop) {
                 profileDiv.innerHTML = `<div class="not-found">
-                    <i class="fas fa-ban"></i>
-                    <h3>দোকানটি অনুমোদিত হয়নি বা পাওয়া যায়নি</h3>
-                    <p>শুধুমাত্র অনুমোদিত দোকান প্রোফাইল দেখা যাবে</p>
+                    <i class="fas fa-search"></i>
+                    <h3>দোকানটি পাওয়া যায়নি</h3>
+                    <p>এই আইডি দিয়ে কোনো দোকান রেজিস্টার নেই</p>
+                    <p><strong>আইডি:</strong> ${escapeHtml(uid)}</p>
                     </div>`;
                 loadingIndicator.style.display = 'none';
                 profileDiv.style.display = 'block';
                 return;
             }
-            // render premium profile
+            
+            // যদি status approved না হয় তবুও দেখান, কিন্তু সতর্কতা দেখান
+            const isApproved = (shop.status === 'approved');
+            const statusHtml = isApproved ? 
+                '<div class="status-badge"><i class="fas fa-check-circle"></i> ভেরিফাইড স্টোর</div>' : 
+                '<div class="status-badge" style="background:rgba(240,192,64,0.2);color:#f0c040;"><i class="fas fa-clock"></i> পেন্ডিং (অনুমোদিত হয়নি)</div>';
+            
             const avatarChar = (shop.shopName?.charAt(0) || '?').toUpperCase();
-            const addressLine = shop.thana ? `${shop.thana}, ${shop.district}` : (shop.area ? `${shop.area}, ${shop.district}` : shop.district || '');
+            const addressLine = shop.thana ? `${shop.thana}, ${shop.district}` : (shop.area ? `${shop.area}, ${shop.district}` : (shop.district || 'ঠিকানা নেই'));
             
             let contactsHtml = '';
             if(shop.phone) contactsHtml += `<a href="tel:${shop.phone}" class="contact-btn call"><i class="fas fa-phone-alt"></i> কল করুন</a>`;
@@ -493,32 +513,47 @@
             }
             if(contactsHtml === '') contactsHtml = `<p style="color:#aaa;">কোন যোগাযোগের তথ্য নেই</p>`;
 
+            // ক্যাটাগরি ফরম্যাট
+            let categoriesDisplay = 'সাধারণ পণ্য';
+            if(shop.categories) {
+                if(typeof shop.categories === 'string') categoriesDisplay = shop.categories;
+                else if(Array.isArray(shop.categories)) categoriesDisplay = shop.categories.join(', ');
+            }
+
             const fullProfileHtml = `
                 <div class="profile-header">
-                    <div class="profile-avatar">${avatarChar}</div>
+                    <div class="profile-avatar">${escapeHtml(avatarChar)}</div>
                     <div class="shop-title">
-                        <h2>${escapeHtml(shop.shopName)}</h2>
-                        <div class="status-badge"><i class="fas fa-check-circle"></i> ভেরিফাইড স্টোর</div>
-                        <p style="margin-top: 8px;"><i class="fas fa-user"></i> ${escapeHtml(shop.ownerName)}</p>
+                        <h2>${escapeHtml(shop.shopName || 'দোকানের নাম নেই')}</h2>
+                        ${statusHtml}
+                        <p style="margin-top: 8px;"><i class="fas fa-user"></i> ${escapeHtml(shop.ownerName || 'মালিকের নাম নেই')}</p>
                     </div>
                 </div>
                 <div class="info-grid">
                     <div class="info-item"><i class="fas fa-map-marker-alt"></i> <strong>ঠিকানা</strong><br>${escapeHtml(addressLine)}</div>
                     <div class="info-item"><i class="fas fa-phone"></i> <strong>মোবাইল</strong><br>${escapeHtml(shop.phone || '—')}</div>
-                    <div class="info-item"><i class="fas fa-layer-group"></i> <strong>ক্যাটাগরি</strong><br>${escapeHtml(shop.categories || 'সাধারণ পণ্য')}</div>
+                    <div class="info-item"><i class="fas fa-layer-group"></i> <strong>ক্যাটাগরি</strong><br>${escapeHtml(categoriesDisplay)}</div>
                 </div>
                 ${shop.description ? `<div style="background:rgba(255,255,255,0.05); border-radius:24px; padding:16px; margin:20px 0"><i class="fas fa-align-left"></i> <strong>দোকানের বিবরণ</strong><br>${escapeHtml(shop.description)}</div>` : ''}
                 <div class="contact-buttons">
                     ${contactsHtml}
                 </div>
                 ${shop.youtube ? `<div style="margin-top:20px;"><a href="${shop.youtube}" target="_blank" style="color:#f0c040;"><i class="fab fa-youtube"></i> ভিডিও ট্যুর দেখুন</a></div>` : ''}
+                <div style="margin-top:20px; font-size:12px; color:#666; text-align:center;">
+                    <i class="fas fa-id-card"></i> দোকান আইডি: ${escapeHtml(uid)}
+                </div>
             `;
             profileDiv.innerHTML = fullProfileHtml;
             loadingIndicator.style.display = 'none';
             profileDiv.style.display = 'block';
         } catch(err) {
-            console.error(err);
-            profileDiv.innerHTML = `<div class="not-found"><i class="fas fa-exclamation-triangle"></i> ত্রুটি: প্রোফাইল লোড করা যায়নি</div>`;
+            console.error('Profile load error:', err);
+            profileDiv.innerHTML = `<div class="not-found">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>প্রোফাইল লোড করতে ত্রুটি</h3>
+                <p>${escapeHtml(err.message)}</p>
+                <p>নেটওয়ার্ক কানেকশন চেক করুন</p>
+                </div>`;
             loadingIndicator.style.display = 'none';
             profileDiv.style.display = 'block';
         }
@@ -534,21 +569,25 @@
 
     // initialize both
     loadProducts();
-    if(shopId) {
-        loadShopProfile(shopId);
-    } else {
-        // show demo preview if no id
-        const loadingInd = document.getElementById('profileLoadingIndicator');
-        const contentDiv = document.getElementById('profileContent');
-        loadingInd.style.display = 'none';
-        contentDiv.style.display = 'block';
-        contentDiv.innerHTML = `<div class="not-found">
-            <i class="fas fa-link"></i>
-            <h3>দোকানের প্রোফাইল দেখুন</h3>
-            <p>প্রোফাইল দেখতে URL এ যুক্ত করুন: <code>?id=দোকানের_আইডি</code></p>
-            <p style="margin-top:12px;">উদাহরণ: ?id=abc123xyz</p>
-            </div>`;
-    }
+    
+    // প্রোফাইল লোড করার জন্য একটু delay (নিশ্চিত করার জন্য)
+    setTimeout(() => {
+        if(shopId) {
+            loadShopProfile(shopId);
+        } else {
+            const loadingInd = document.getElementById('profileLoadingIndicator');
+            const contentDiv = document.getElementById('profileContent');
+            loadingInd.style.display = 'none';
+            contentDiv.style.display = 'block';
+            contentDiv.innerHTML = `<div class="not-found">
+                <i class="fas fa-link"></i>
+                <h3>দোকানের প্রোফাইল দেখুন</h3>
+                <p>প্রোফাইল দেখতে URL এ যুক্ত করুন: <code style="background:#222;padding:4px 8px;border-radius:8px;">?id=দোকানের_আইডি</code></p>
+                <p style="margin-top:12px;">উদাহরণ: <code>?id=abc123xyz</code></p>
+                <p style="margin-top:20px;"><small>⚠️ দোকানের আইডি হলো Firebase ডাটাবেসে shops এর নিচে যেই key আছে</small></p>
+                </div>`;
+        }
+    }, 100);
 </script>
 </body>
 </html>
