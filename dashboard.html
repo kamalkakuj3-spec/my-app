@@ -65,6 +65,11 @@
             color: transparent;
         }
 
+        .logo-area p {
+            font-size: 0.75rem;
+            color: #475569;
+        }
+
         .action-buttons {
             display: flex;
             gap: 12px;
@@ -85,6 +90,17 @@
         .btn-outline-light:hover {
             background: #f1f5f9;
             border-color: #cbd5e1;
+        }
+
+        /* logout button specific */
+        .logout-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border: none;
+            color: white;
+        }
+        .logout-btn:hover {
+            background: linear-gradient(135deg, #c0392b, #a93226);
+            color: white;
         }
 
         /* shop banner */
@@ -187,7 +203,7 @@
         }
 
         .card-body-collapsible.open {
-            max-height: 2000px; /* enough for content */
+            max-height: 2000px;
             padding: 0 28px 28px 28px;
         }
 
@@ -404,7 +420,6 @@
             .container {
                 padding: 16px 16px 120px;
             }
-
             .card-body-collapsible.open {
                 padding: 0 20px 20px 20px;
             }
@@ -422,7 +437,7 @@
         </div>
         <div class="action-buttons">
             <button class="btn-outline-light" id="viewProfileBtn"><i class="fas fa-id-card"></i> প্রোফাইল দেখুন</button>
-            <button class="btn-outline-light" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> লগআউট</button>
+            <button class="btn-outline-light logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> লগআউট</button>
         </div>
     </div>
 
@@ -445,7 +460,6 @@
             <i class="fas fa-chevron-down toggle-icon" id="profileToggleIcon"></i>
         </div>
         <div class="card-body-collapsible" id="profileBody">
-            <!-- full profile edit fields -->
             <div class="input-group">
                 <label class="input-label">দোকানের নাম *</label>
                 <input class="input-field" id="shopName" placeholder="মেসার্স উদয়ন">
@@ -487,8 +501,9 @@
                 <input class="input-field" id="telegram" placeholder="ঐচ্ছিক">
             </div>
             <div class="input-group">
-                <label class="input-label">ভিডিও লিংক</label>
-                <input class="input-field" id="youtube" placeholder="YouTube URL">
+                <label class="input-label"><i class="fab fa-youtube" style="color:#ff0000;"></i> ইউটিউব ভিডিও লিংক</label>
+                <input class="input-field" id="youtube" placeholder="https://www.youtube.com/watch?v=xxxxxx">
+                <small style="color:#6c2bd9; display:block; margin-top:5px;">🔹 এই ভিডিওটি হোমপেজে দেখানো হবে</small>
             </div>
             <div class="input-group">
                 <label class="input-label">পণ্যের ক্যাটাগরি (একাধিক)</label>
@@ -521,6 +536,7 @@
             <div class="input-group">
                 <label class="input-label">Google Drive ছবির লিংক</label>
                 <input class="input-field" id="productImage" placeholder="https://drive.google.com/file/d/...">
+                <small style="color:#6c2bd9; display:block; margin-top:5px;">🔹 গুগল ড্রাইভের শেয়ার লিংক দিন</small>
             </div>
             <div class="input-group">
                 <label class="input-label">পণ্য বিবরণ</label>
@@ -603,7 +619,6 @@
                 icon.style.transform = 'rotate(180deg)';
             }
         });
-        // initially both closed (clean interface), but you can keep one open optionally. We'll keep both closed.
         body.classList.remove('open');
         icon.style.transform = 'rotate(0deg)';
     }
@@ -617,7 +632,7 @@
             const divisionSel = document.getElementById('division');
             divisionSel.innerHTML = '<option value="">বিভাগ নির্বাচন করুন</option>';
             divisionsData.forEach(d => { divisionSel.innerHTML += `<option value="${d.name}">${d.name}</option>`; });
-        } catch (e) { console.warn(e); showToast("বিভাগ লোড ব্যর্থ, ডিফল্ট ব্যবহার", true); }
+        } catch (e) { console.warn(e); showToast("বিভাগ লোড ব্যর্থ", true); }
     }
 
     async function loadCategories() {
