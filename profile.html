@@ -50,19 +50,34 @@
   .search-input { flex:1; padding:8px 6px; border:none; font-size:0.8rem; outline:none; background:transparent; }
   .search-clear { background:none; border:none; cursor:pointer; font-size:0.9rem; color:#9b4dff; padding:4px; }
   
-  /* ========== DRAWER / SIDEBAR ========== */
-  .drawer-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; display:none; backdrop-filter:blur(3px); }
-  .drawer { position:fixed; top:0; left:-320px; width:320px; height:100%; background:white; box-shadow:4px 0 25px rgba(0,0,0,0.2); z-index:1001; transition:left 0.3s ease; overflow-y:auto; border-radius:0 20px 20px 0; }
-  .drawer.open { left:0; }
+  /* ========== 3D ANIMATED DRAWER ========== */
+  .drawer-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0); z-index:1000; display:none; backdrop-filter:blur(0px); transition:all 0.3s ease; }
+  .drawer-overlay.show { background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); }
+  .drawer { position:fixed; top:0; left:-360px; width:340px; height:100%; background:white; box-shadow:4px 0 30px rgba(0,0,0,0.3); z-index:1001; transition:left 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1); overflow-y:auto; border-radius:0 24px 24px 0; transform:skewX(0deg); }
+  .drawer.open { left:0; animation:drawerPopIn 0.4s cubic-bezier(0.34, 1.2, 0.64, 1); }
+  .drawer.closing { animation:drawerPopOut 0.3s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards; }
+  @keyframes drawerPopIn {
+    0% { left: -360px; opacity: 0; transform: scale(0.95) rotateY(-10deg); }
+    100% { left: 0; opacity: 1; transform: scale(1) rotateY(0deg); }
+  }
+  @keyframes drawerPopOut {
+    0% { left: 0; opacity: 1; transform: scale(1) rotateY(0deg); }
+    100% { left: -360px; opacity: 0; transform: scale(0.9) rotateY(10deg); }
+  }
   .drawer-header { background:linear-gradient(135deg, var(--primary), var(--primary-light)); padding:20px; color:white; display:flex; justify-content:space-between; align-items:center; }
   .drawer-header h3 { font-size:18px; font-weight:700; }
   .drawer-close { background:none; border:none; color:white; font-size:24px; cursor:pointer; width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:50%; transition:all 0.2s; }
-  .drawer-close:hover { background:rgba(255,255,255,0.2); transform:scale(1.1); }
+  .drawer-close:hover { background:rgba(255,255,255,0.2); transform:scale(1.1) rotate(90deg); }
   .drawer-content { padding:20px; }
   .drawer-info-item { margin-bottom:20px; border-bottom:1px solid #f0ebff; padding-bottom:12px; }
   .drawer-info-label { font-size:12px; font-weight:600; color:var(--primary-light); margin-bottom:5px; display:block; }
   .drawer-info-value { font-size:14px; color:var(--text); font-weight:500; line-height:1.4; }
   .drawer-divider { height:1px; background:linear-gradient(90deg, transparent, var(--primary-light), transparent); margin:15px 0; }
+  
+  /* Center Close Button at Bottom */
+  .drawer-close-bottom { display:flex; justify-content:center; margin-top:20px; margin-bottom:10px; }
+  .close-bottom-btn { background:linear-gradient(135deg, #dc2626, #b91c1c); border:none; color:white; width:50px; height:50px; border-radius:50%; cursor:pointer; font-size:22px; transition:all 0.3s; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 15px rgba(220,38,38,0.3); }
+  .close-bottom-btn:hover { transform:scale(1.1) rotate(90deg); background:linear-gradient(135deg, #ef4444, #dc2626); box-shadow:0 6px 20px rgba(220,38,38,0.5); }
   
   /* Slider */
   .slider-section { max-width:1200px; margin:15px auto 5px auto; padding:0 15px; perspective:1000px; }
@@ -107,7 +122,7 @@
   .scroll-top { position:fixed; bottom:25px; right:25px; width:48px; height:48px; background:linear-gradient(135deg,var(--primary),var(--primary-light)); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:20px; opacity:0; transition:all 0.3s; box-shadow:var(--glow-purple); color:white; border:none; z-index:99; }
   .scroll-top.show { opacity:1; }
   
-  @media (max-width:768px) { .slider-container { height:170px; } .grid { gap:10px; } .drawer { width:280px; left:-280px; } }
+  @media (max-width:768px) { .slider-container { height:170px; } .grid { gap:10px; } .drawer { width:300px; left:-300px; } }
 </style>
 </head>
 <body>
@@ -134,7 +149,7 @@
     </div>
   </div>
 
-  <!-- DRAWER / SIDEBAR -->
+  <!-- 3D ANIMATED DRAWER -->
   <div class="drawer-overlay" id="drawerOverlay"></div>
   <div class="drawer" id="drawer">
     <div class="drawer-header">
@@ -143,6 +158,9 @@
     </div>
     <div class="drawer-content" id="drawerContent">
       <div style="text-align:center; padding:20px;">🌀 লোড হচ্ছে...</div>
+    </div>
+    <div class="drawer-close-bottom">
+      <button class="close-bottom-btn" id="drawerCloseBottomBtn"><i class="fas fa-times"></i></button>
     </div>
   </div>
 
@@ -216,7 +234,7 @@ function showNotFound() {
 
 function escapeHtml(s) { if(!s) return ''; return s.replace(/[&<>]/g, m=> m==='&'?'&amp;': m==='<'?'&lt;':'&gt;'); }
 
-// ========== DRAWER FUNCTIONS ==========
+// ========== DRAWER FUNCTIONS (Address above Description) ==========
 function renderDrawerContent(shop) {
   const container = document.getElementById('drawerContent');
   if(!shop) { container.innerHTML = '<div style="text-align:center; padding:20px;">তথ্য পাওয়া যায়নি</div>'; return; }
@@ -230,45 +248,58 @@ function renderDrawerContent(shop) {
       <span class="drawer-info-label"><i class="fas fa-user-circle"></i> মালিকের নাম</span>
       <span class="drawer-info-value">${escapeHtml(shop.ownerName || '—')}</span>
     </div>
+    <div class="drawer-divider"></div>
     <div class="drawer-info-item">
-      <span class="drawer-info-label"><i class="fas fa-map-marker-alt"></i> দোকানের ঠিকানা</span>
+      <span class="drawer-info-label"><i class="fas fa-map-marker-alt"></i> 🏪 দোকানের ঠিকানা</span>
       <span class="drawer-info-value">${escapeHtml(shop.area || shop.district || '—')}</span>
+    </div>
+    <div class="drawer-info-item">
+      <span class="drawer-info-label"><i class="fas fa-align-left"></i> 📋 দোকানের বিবরণ</span>
+      <span class="drawer-info-value">${escapeHtml(shop.description || 'কোনো বিবরণ নেই')}</span>
     </div>
     <div class="drawer-divider"></div>
     <div class="drawer-info-item">
-      <span class="drawer-info-label"><i class="fas fa-phone-alt"></i> মোবাইল নম্বর</span>
+      <span class="drawer-info-label"><i class="fas fa-phone-alt"></i> 📞 মোবাইল নম্বর</span>
       <span class="drawer-info-value">${escapeHtml(shop.phone || '—')}</span>
     </div>
     <div class="drawer-info-item">
-      <span class="drawer-info-label"><i class="fab fa-whatsapp"></i> WhatsApp</span>
+      <span class="drawer-info-label"><i class="fab fa-whatsapp"></i> 💬 WhatsApp</span>
       <span class="drawer-info-value">${escapeHtml(shop.whatsapp || '—')}</span>
     </div>
     <div class="drawer-info-item">
-      <span class="drawer-info-label"><i class="fab fa-telegram"></i> টেলিগ্রাম</span>
+      <span class="drawer-info-label"><i class="fab fa-telegram"></i> 📡 টেলিগ্রাম</span>
       <span class="drawer-info-value">${escapeHtml(shop.telegram || '—')}</span>
-    </div>
-    <div class="drawer-divider"></div>
-    <div class="drawer-info-item">
-      <span class="drawer-info-label"><i class="fas fa-align-left"></i> দোকানের বিবরণ</span>
-      <span class="drawer-info-value">${escapeHtml(shop.description || 'কোনো বিবরণ নেই')}</span>
     </div>
   `;
 }
 
-// Drawer Open/Close
+// Drawer Open/Close with 3D Animation
 function openDrawer() {
-  document.getElementById('drawer').classList.add('open');
-  document.getElementById('drawerOverlay').style.display = 'block';
+  const drawer = document.getElementById('drawer');
+  const overlay = document.getElementById('drawerOverlay');
+  drawer.classList.remove('closing');
+  drawer.classList.add('open');
+  overlay.classList.add('show');
+  overlay.style.display = 'block';
   document.body.style.overflow = 'hidden';
 }
+
 function closeDrawer() {
-  document.getElementById('drawer').classList.remove('open');
-  document.getElementById('drawerOverlay').style.display = 'none';
-  document.body.style.overflow = '';
+  const drawer = document.getElementById('drawer');
+  const overlay = document.getElementById('drawerOverlay');
+  drawer.classList.remove('open');
+  drawer.classList.add('closing');
+  overlay.classList.remove('show');
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    drawer.classList.remove('closing');
+    document.body.style.overflow = '';
+  }, 300);
 }
 
 document.getElementById('menuIconBtn').addEventListener('click', openDrawer);
 document.getElementById('drawerCloseBtn').addEventListener('click', closeDrawer);
+document.getElementById('drawerCloseBottomBtn').addEventListener('click', closeDrawer);
 document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
 
 // ========== TICKER (দোকান ভিত্তিক) ==========
