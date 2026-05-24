@@ -3,18 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>BizNest | ড্যাশবোর্ড & পণ্য প্যানেল</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <title>BizNest | ড্যাশবোর্ড + পণ্য ব্যবস্থাপনা</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background: #f7f9fc;
+            background: #f8fafc;
             color: #0f172a;
             overflow-x: hidden;
         }
+
         .bg-glow {
             position: fixed;
             top: 0;
@@ -25,6 +31,7 @@
             pointer-events: none;
             z-index: 0;
         }
+
         .container {
             max-width: 1280px;
             margin: 0 auto;
@@ -32,6 +39,8 @@
             position: relative;
             z-index: 2;
         }
+
+        /* Header */
         .header-modern {
             display: flex;
             justify-content: space-between;
@@ -46,6 +55,7 @@
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.02);
             border: 1px solid rgba(108, 43, 217, 0.2);
         }
+
         .logo-area h1 {
             font-size: 1.6rem;
             font-weight: 800;
@@ -54,8 +64,12 @@
             background-clip: text;
             color: transparent;
         }
-        .logo-area p { font-size: 0.75rem; color: #475569; }
-        .action-buttons { display: flex; gap: 12px; }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
         .btn-outline-light {
             background: white;
             border: 1px solid #e2e8f0;
@@ -67,13 +81,13 @@
             transition: all 0.2s;
             color: #1e293b;
         }
-        .btn-outline-light:hover { background: #f1f5f9; border-color: #cbd5e1; }
-        .logout-btn {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            border: none;
-            color: white;
+
+        .btn-outline-light:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
         }
-        .logout-btn:hover { background: linear-gradient(135deg, #c0392b, #a93226); color: white; }
+
+        /* Shop Banner */
         .shop-banner {
             background: linear-gradient(105deg, #faf5ff, #ffffff);
             border-radius: 32px;
@@ -82,8 +96,23 @@
             border-left: 6px solid #6c2bd9;
             box-shadow: 0 10px 25px -12px rgba(0, 0, 0, 0.05);
         }
-        .flex-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-        .shop-banner h3 { font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .shop-banner h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .status-badge {
             display: inline-flex;
             align-items: center;
@@ -94,9 +123,12 @@
             font-size: 0.75rem;
             font-weight: 600;
         }
+
         .status-badge.approved { background: #e0f7e8; color: #2e7d32; }
         .status-badge.pending { background: #fff3e0; color: #b95b0d; }
         .status-badge.rejected { background: #ffe8e6; color: #c62828; }
+
+        /* Collapsible Cards */
         .collapsible-card {
             background: white;
             border-radius: 32px;
@@ -105,6 +137,7 @@
             overflow: hidden;
             border: 1px solid rgba(108, 43, 217, 0.08);
         }
+
         .card-header-clickable {
             padding: 22px 28px;
             display: flex;
@@ -113,9 +146,19 @@
             cursor: pointer;
             background: white;
             transition: background 0.2s;
+            user-select: none;
         }
-        .card-header-clickable:hover { background: #fcfaff; }
-        .card-title-section { display: flex; align-items: center; gap: 14px; }
+
+        .card-header-clickable:hover {
+            background: #fcfaff;
+        }
+
+        .card-title-section {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
         .card-title-section i {
             font-size: 28px;
             color: #6c2bd9;
@@ -123,23 +166,35 @@
             padding: 12px;
             border-radius: 24px;
         }
-        .card-title-section h2 { font-size: 1.45rem; font-weight: 700; }
+
+        .card-title-section h2 {
+            font-size: 1.45rem;
+            font-weight: 700;
+        }
+
         .toggle-icon {
             font-size: 1.4rem;
             color: #6c2bd9;
             transition: transform 0.3s ease;
         }
+
         .card-body-collapsible {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s cubic-bezier(0.33, 1, 0.68, 1);
             padding: 0 28px;
         }
+
         .card-body-collapsible.open {
-            max-height: 2000px;
+            max-height: 2500px; /* enough for all content */
             padding: 0 28px 28px 28px;
         }
-        .input-group { margin-bottom: 20px; }
+
+        /* Form Elements */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
         .input-label {
             font-size: 0.8rem;
             font-weight: 600;
@@ -149,6 +204,7 @@
             margin-bottom: 6px;
             display: block;
         }
+
         .input-field, select.input-field {
             width: 100%;
             padding: 12px 16px;
@@ -159,13 +215,25 @@
             transition: all 0.2s;
             background: #ffffff;
         }
+
         .input-field:focus, select:focus {
             border-color: #6c2bd9;
             outline: none;
             box-shadow: 0 0 0 3px rgba(108, 43, 217, 0.1);
         }
-        textarea.input-field { resize: vertical; min-height: 85px; }
-        .cat-chips-wrap { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
+
+        textarea.input-field {
+            resize: vertical;
+            min-height: 85px;
+        }
+
+        .cat-chips-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 12px 0;
+        }
+
         .cat-chip {
             background: #f0ebff;
             border-radius: 40px;
@@ -177,7 +245,12 @@
             gap: 8px;
             color: #4a1a9e;
         }
-        .cat-chip i { cursor: pointer; font-size: 12px; }
+
+        .cat-chip i {
+            cursor: pointer;
+            font-size: 12px;
+        }
+
         .cat-select-btn {
             width: 100%;
             padding: 12px;
@@ -189,6 +262,7 @@
             cursor: pointer;
             margin-top: 6px;
         }
+
         .btn-primary {
             background: linear-gradient(95deg, #6c2bd9, #8b4df2);
             border: none;
@@ -205,7 +279,12 @@
             justify-content: center;
             gap: 10px;
         }
-        .btn-primary:hover { transform: scale(0.98); background: #5b21b6; }
+
+        .btn-primary:hover {
+            transform: scale(0.98);
+            background: #5b21b6;
+        }
+
         .btn-secondary {
             background: #f1f5f9;
             color: #1e293b;
@@ -217,6 +296,7 @@
             cursor: pointer;
             margin-top: 12px;
         }
+
         .product-item {
             background: #faf9fe;
             border-radius: 20px;
@@ -224,6 +304,7 @@
             margin-bottom: 10px;
             border: 1px solid #ede9fe;
         }
+
         .toast-message {
             position: fixed;
             bottom: 30px;
@@ -240,10 +321,12 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             animation: slideUp 0.3s ease forwards;
         }
+
         @keyframes slideUp {
             from { transform: translateY(40px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
+
         .loading-spinner-sm {
             width: 18px;
             height: 18px;
@@ -253,7 +336,11 @@
             animation: spin 0.6s linear infinite;
             display: inline-block;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         .popup-modal {
             position: fixed;
             inset: 0;
@@ -263,6 +350,7 @@
             align-items: flex-end;
             z-index: 10000;
         }
+
         .popup-content {
             background: white;
             width: 100%;
@@ -271,7 +359,14 @@
             max-height: 75vh;
             overflow-y: auto;
         }
-        .grid-cats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 20px 0; }
+
+        .grid-cats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+
         .cat-option {
             padding: 12px;
             background: #f8fafc;
@@ -281,7 +376,13 @@
             border: 1px solid #e2e8f0;
             cursor: pointer;
         }
-        .cat-option.selected { background: #6c2bd9; color: white; border-color: #6c2bd9; }
+
+        .cat-option.selected {
+            background: #6c2bd9;
+            color: white;
+            border-color: #6c2bd9;
+        }
+
         .footer-fixed {
             position: fixed;
             bottom: 0;
@@ -297,24 +398,21 @@
             justify-content: space-between;
             flex-wrap: wrap;
         }
-        .error-banner {
-            background: #fee2e2;
-            border: 1px solid #fecaca;
-            color: #dc2626;
-            padding: 12px 20px;
-            border-radius: 24px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
+
         @media (max-width: 640px) {
-            .container { padding: 16px 16px 120px; }
-            .card-body-collapsible.open { padding: 0 20px 20px 20px; }
+            .container {
+                padding: 16px 16px 120px;
+            }
+            .card-body-collapsible.open {
+                padding: 0 20px 20px 20px;
+            }
         }
     </style>
 </head>
 <body>
 <div class="bg-glow"></div>
 <div class="container">
+    <!-- Header -->
     <div class="header-modern">
         <div class="logo-area">
             <h1><i class="fas fa-store"></i> BizNest Hub</h1>
@@ -322,16 +420,11 @@
         </div>
         <div class="action-buttons">
             <button class="btn-outline-light" id="viewProfileBtn"><i class="fas fa-id-card"></i> প্রোফাইল দেখুন</button>
-            <button class="btn-outline-light logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> লগআউট</button>
+            <button class="btn-outline-light" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> লগআউট</button>
         </div>
     </div>
 
-    <!-- JSON Error Message -->
-    <div id="jsonError" class="error-banner" style="display:none;">
-        <i class="fas fa-exclamation-triangle"></i> ⚠️ divisions.json ফাইল লোড করা সম্ভব হয়নি! 
-        ফাইলটি সঠিক লিংকে আছে কিনা চেক করুন।
-    </div>
-
+    <!-- Shop Preview Banner -->
     <div class="shop-banner">
         <div class="flex-between">
             <h3><i class="fas fa-crown" style="color:#6c2bd9"></i> <span id="shopNamePreview">দোকানের নাম</span></h3>
@@ -340,26 +433,61 @@
         <p id="shopAddressPreview" style="margin-top: 12px; color: #334155;"><i class="fas fa-map-marker-alt"></i> ঠিকানা প্রদর্শিত হবে</p>
     </div>
 
-    <!-- প্রোফাইল এডিট -->
+    <!-- ========== প্রোফাইল এডিট সেকশন ========== -->
     <div class="collapsible-card" id="profileCard">
         <div class="card-header-clickable" id="profileHeader">
-            <div class="card-title-section"><i class="fas fa-user-edit"></i><h2>📝 প্রোফাইল এডিট</h2></div>
+            <div class="card-title-section">
+                <i class="fas fa-user-edit"></i>
+                <h2>📝 প্রোফাইল এডিট</h2>
+            </div>
             <i class="fas fa-chevron-down toggle-icon" id="profileToggleIcon"></i>
         </div>
         <div class="card-body-collapsible" id="profileBody">
-            <div class="input-group"><label class="input-label">দোকানের নাম *</label><input class="input-field" id="shopName" placeholder="মেসার্স উদয়ন"></div>
-            <div class="input-group"><label class="input-label">মালিকের নাম *</label><input class="input-field" id="ownerName" placeholder="আব্দুল করিম"></div>
-            <div class="input-group"><label class="input-label">দোকান বিবরণ</label><textarea class="input-field" id="description" placeholder="দোকানের বৈশিষ্ট্য ও সেবা..."></textarea></div>
-            
-            <div class="input-group"><label class="input-label">বিভাগ *</label><select class="input-field" id="division"></select></div>
-            <div class="input-group" id="districtGroup" style="display:none"><label class="input-label">জেলা *</label><select class="input-field" id="district"></select></div>
-            <div class="input-group" id="thanaGroup" style="display:none"><label class="input-label">উপজেলা/থানা *</label><select class="input-field" id="thana"></select></div>
-            <div class="input-group" id="areaGroup" style="display:none"><label class="input-label">পূর্ণাঙ্গ ঠিকানা *</label><textarea class="input-field" id="area" placeholder="রোড, বাজার, হোল্ডিং নং..."></textarea></div>
-            
-            <div class="input-group"><label class="input-label">মোবাইল নম্বর *</label><input class="input-field" id="phone" placeholder="01xxxxxxxxx"></div>
-            <div class="input-group"><label class="input-label">WhatsApp</label><input class="input-field" id="whatsapp" placeholder="ঐচ্ছিক"></div>
-            <div class="input-group"><label class="input-label">টেলিগ্রাম</label><input class="input-field" id="telegram" placeholder="ঐচ্ছিক"></div>
-            <div class="input-group"><label class="input-label"><i class="fab fa-youtube" style="color:#ff0000;"></i> ইউটিউব ভিডিও লিংক</label><input class="input-field" id="youtube" placeholder="https://www.youtube.com/watch?v=xxxxxx"></div>
+            <!-- সম্পূর্ণ প্রোফাইল এডিট ফিল্ডস -->
+            <div class="input-group">
+                <label class="input-label">দোকানের নাম *</label>
+                <input class="input-field" id="shopName" placeholder="মেসার্স উদয়ন">
+            </div>
+            <div class="input-group">
+                <label class="input-label">মালিকের নাম *</label>
+                <input class="input-field" id="ownerName" placeholder="আব্দুল করিম">
+            </div>
+            <div class="input-group">
+                <label class="input-label">দোকান বিবরণ</label>
+                <textarea class="input-field" id="description" placeholder="দোকানের বৈশিষ্ট্য ও সেবা..."></textarea>
+            </div>
+            <div class="input-group">
+                <label class="input-label">বিভাগ *</label>
+                <select class="input-field" id="division"></select>
+            </div>
+            <div class="input-group" id="districtGroup" style="display:none">
+                <label class="input-label">জেলা *</label>
+                <select class="input-field" id="district"></select>
+            </div>
+            <div class="input-group" id="thanaGroup" style="display:none">
+                <label class="input-label">উপজেলা/থানা *</label>
+                <select class="input-field" id="thana"></select>
+            </div>
+            <div class="input-group" id="areaGroup" style="display:none">
+                <label class="input-label">পূর্ণাঙ্গ ঠিকানা *</label>
+                <textarea class="input-field" id="area" placeholder="রোড, বাজার, হোল্ডিং নং..."></textarea>
+            </div>
+            <div class="input-group">
+                <label class="input-label">মোবাইল নম্বর *</label>
+                <input class="input-field" id="phone" placeholder="01xxxxxxxxx">
+            </div>
+            <div class="input-group">
+                <label class="input-label">WhatsApp</label>
+                <input class="input-field" id="whatsapp" placeholder="ঐচ্ছিক">
+            </div>
+            <div class="input-group">
+                <label class="input-label">টেলিগ্রাম</label>
+                <input class="input-field" id="telegram" placeholder="ঐচ্ছিক">
+            </div>
+            <div class="input-group">
+                <label class="input-label">ভিডিও লিংক</label>
+                <input class="input-field" id="youtube" placeholder="YouTube URL">
+            </div>
             <div class="input-group">
                 <label class="input-label">পণ্যের ক্যাটাগরি (একাধিক)</label>
                 <div id="selectedChips" class="cat-chips-wrap"></div>
@@ -370,17 +498,32 @@
         </div>
     </div>
 
-    <!-- পণ্য ব্যবস্থাপনা -->
+    <!-- ========== পণ্য ব্যবস্থাপনা সেকশন ========== -->
     <div class="collapsible-card" id="productCard">
         <div class="card-header-clickable" id="productHeader">
-            <div class="card-title-section"><i class="fas fa-boxes"></i><h2>📦 পণ্য ব্যবস্থাপনা</h2></div>
+            <div class="card-title-section">
+                <i class="fas fa-boxes"></i>
+                <h2>📦 পণ্য ব্যবস্থাপনা</h2>
+            </div>
             <i class="fas fa-chevron-down toggle-icon" id="productToggleIcon"></i>
         </div>
         <div class="card-body-collapsible" id="productBody">
-            <div class="input-group"><label class="input-label">পণ্যের নাম</label><input class="input-field" id="productName" placeholder="যেমন: প্রিমিয়াম শার্ট"></div>
-            <div class="input-group"><label class="input-label">মূল্য (৳)</label><input class="input-field" id="productPrice" placeholder="১২৫০"></div>
-            <div class="input-group"><label class="input-label">Google Drive ছবির লিংক</label><input class="input-field" id="productImage" placeholder="https://drive.google.com/file/d/..."></div>
-            <div class="input-group"><label class="input-label">পণ্য বিবরণ</label><textarea class="input-field" id="productDesc" rows="2" placeholder="বিস্তারিত..."></textarea></div>
+            <div class="input-group">
+                <label class="input-label">পণ্যের নাম</label>
+                <input class="input-field" id="productName" placeholder="যেমন: প্রিমিয়াম শার্ট">
+            </div>
+            <div class="input-group">
+                <label class="input-label">মূল্য (৳)</label>
+                <input class="input-field" id="productPrice" placeholder="১২৫০">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Google Drive ছবির লিংক</label>
+                <input class="input-field" id="productImage" placeholder="https://drive.google.com/file/d/...">
+            </div>
+            <div class="input-group">
+                <label class="input-label">পণ্য বিবরণ</label>
+                <textarea class="input-field" id="productDesc" rows="2" placeholder="বিস্তারিত..."></textarea>
+            </div>
             <button class="btn-primary" id="addProductBtn"><i class="fas fa-plus-circle"></i> পণ্য যোগ করুন</button>
             <button class="btn-secondary" id="viewProductsBtn"><i class="fas fa-list-ul"></i> সমস্ত পণ্য দেখুন</button>
             <div id="productListContainer" style="margin-top: 20px; display: none;">
@@ -392,11 +535,13 @@
     </div>
 </div>
 
+<!-- fixed footer -->
 <div class="footer-fixed">
     <a href="index.html" style="text-decoration:none;" class="btn-outline-light"><i class="fas fa-home"></i> হোমপেজ</a>
     <button id="saveBottomBtn" class="btn-primary" style="width: auto; padding: 10px 26px;"><i class="fas fa-save"></i> সংরক্ষণ</button>
 </div>
 
+<!-- Category Modal -->
 <div id="categoryModal" style="display:none;" class="popup-modal">
     <div class="popup-content">
         <div class="flex-between"><h3><i class="fas fa-layer-group"></i> ক্যাটাগরি নির্বাচন করুন</h3><button id="closeModalBtn" style="background:none; border:none; font-size:24px;">&times;</button></div>
@@ -409,6 +554,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script>
+    // ---------- Firebase Config ----------
     const firebaseConfig = {
         apiKey: "AIzaSyA1CzQX9tgbLd46QfvCK6Rwqa0z9CRWoMs",
         authDomain: "agls-5bd4c.firebaseapp.com",
@@ -420,17 +566,15 @@
     const db = firebase.database();
     const productsRef = db.ref("products");
 
-    // ============================================================
-    // ⚠️ IMPORTANT: আপনার নিজের GitHub ফাইলের লিংক দিন
-    // ============================================================
-    const DIVISIONS_JSON_URL = 'https://raw.githubusercontent.com/kamalkakuj3-spec/my-app/main/divisions.json';
-    const CATEGORIES_JSON_URL = 'https://raw.githubusercontent.com/kamalkakuj3-spec/my-app/main/categories.json';
+    // JSON URLs
+    const DIVISIONS_JSON = 'https://raw.githubusercontent.com/kamalkakuj3-spec/my-app/main/divisions.json';
+    const CATEGORIES_JSON = 'https://raw.githubusercontent.com/kamalkakuj3-spec/my-app/main/categories.json';
 
-    let divisionsData = null;  // null মানে এখনো লোড হয়নি
-    let globalCategories = [];
+    let divisionsData = [];
+    let globalCategories = ["পোশাক ও বস্ত্র", "ইলেকট্রনিক্স", "গৃহস্থালি পণ্য", "খাদ্যপণ্য ও মসলা", "ওষুধ ও স্বাস্থ্য", "সৌন্দর্য", "অন্যান্য"];
     let selectedCategories = [];
-    let jsonLoadSuccess = false;
 
+    // Helper: Toast
     function showToast(msg, isError = false) {
         let toast = document.createElement('div');
         toast.className = 'toast-message';
@@ -440,67 +584,47 @@
         setTimeout(() => toast.remove(), 3500);
     }
 
+    // Collapsible control (start closed)
     function setupCollapsible(headerId, bodyId, iconId) {
         const header = document.getElementById(headerId);
         const body = document.getElementById(bodyId);
         const icon = document.getElementById(iconId);
         if (!header || !body) return;
+        // Initially closed
+        body.classList.remove('open');
+        if (icon) icon.style.transform = 'rotate(0deg)';
+        
         header.addEventListener('click', (e) => {
             e.stopPropagation();
             const isOpen = body.classList.contains('open');
             if (isOpen) {
                 body.classList.remove('open');
-                icon.style.transform = 'rotate(0deg)';
+                if (icon) icon.style.transform = 'rotate(0deg)';
             } else {
                 body.classList.add('open');
-                icon.style.transform = 'rotate(180deg)';
+                if (icon) icon.style.transform = 'rotate(180deg)';
             }
         });
-        body.classList.remove('open');
-        icon.style.transform = 'rotate(0deg)';
     }
 
-    // divisions.json লোড করা - ব্যর্থ হলে error দেখাবে
+    // Load divisions from json
     async function loadDivisions() {
         try {
-            const res = await fetch(DIVISIONS_JSON_URL);
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const res = await fetch(DIVISIONS_JSON);
             const json = await res.json();
-            
-            if (!json.divisions || !Array.isArray(json.divisions) || json.divisions.length === 0) {
-                throw new Error('Invalid JSON structure');
-            }
-            
             divisionsData = json.divisions;
             const divisionSel = document.getElementById('division');
             divisionSel.innerHTML = '<option value="">বিভাগ নির্বাচন করুন</option>';
-            divisionsData.forEach(d => { 
-                divisionSel.innerHTML += `<option value="${d.name}">${d.name}</option>`; 
-            });
-            jsonLoadSuccess = true;
-            document.getElementById('jsonError').style.display = 'none';
-            console.log('✅ divisions.json loaded successfully');
-            return true;
-        } catch (e) { 
-            console.error('❌ divisions.json load failed:', e);
-            jsonLoadSuccess = false;
-            document.getElementById('jsonError').style.display = 'block';
-            showToast("divisions.json লোড ব্যর্থ! ফাইলের লিংক চেক করুন", true);
-            return false;
-        }
+            divisionsData.forEach(d => { divisionSel.innerHTML += `<option value="${d.name}">${d.name}</option>`; });
+        } catch (e) { console.warn(e); showToast("বিভাগ লোড ব্যর্থ, ডিফল্ট ব্যবহার", true); }
     }
 
     async function loadCategories() {
         try {
-            const res = await fetch(CATEGORIES_JSON_URL);
-            if (res.ok) {
-                const cats = await res.json();
-                if (Array.isArray(cats) && cats.length) globalCategories = cats;
-            }
-        } catch (e) { console.warn("categories load failed, using default"); }
-        if (globalCategories.length === 0) {
-            globalCategories = ["পোশাক ও বস্ত্র", "ইলেকট্রনিক্স", "গৃহস্থালি পণ্য", "খাদ্যপণ্য ও মসলা", "ওষুধ ও স্বাস্থ্য", "সৌন্দর্য", "অন্যান্য"];
-        }
+            const res = await fetch(CATEGORIES_JSON);
+            const cats = await res.json();
+            if (Array.isArray(cats) && cats.length) globalCategories = cats;
+        } catch (e) { console.warn("local cat fallback"); }
         renderCategoryModal();
     }
 
@@ -541,15 +665,11 @@
         if (document.getElementById('categoryModal').style.display === 'flex') renderCategoryModal();
     };
 
-    // ক্যাসকেডিং ফাংশন (শুধু divisionsData loaded থাকলেই কাজ করবে)
+    // Division / District / Thana cascade
     window.onDivisionChange = function () {
-        if (!divisionsData) {
-            showToast("বিভাগের তথ্য লোড হয়নি, একটু পরে আবার চেষ্টা করুন", true);
-            return;
-        }
         const divName = document.getElementById('division').value;
         const districtSel = document.getElementById('district');
-        districtSel.innerHTML = '<option value="">জেলা নির্বাচন করুন</option>';
+        districtSel.innerHTML = '<option value="">জেলা বাছাই করুন</option>';
         document.getElementById('districtGroup').style.display = 'none';
         document.getElementById('thanaGroup').style.display = 'none';
         document.getElementById('areaGroup').style.display = 'none';
@@ -560,35 +680,27 @@
             document.getElementById('districtGroup').style.display = 'block';
         }
     };
-
     window.onDistrictChange = function () {
-        if (!divisionsData) return;
         const divName = document.getElementById('division').value;
         const distName = document.getElementById('district').value;
         const thanaSel = document.getElementById('thana');
-        thanaSel.innerHTML = '<option value="">উপজেলা নির্বাচন করুন</option>';
+        thanaSel.innerHTML = '<option value="">উপজেলা বাছাই করুন</option>';
         document.getElementById('thanaGroup').style.display = 'none';
         document.getElementById('areaGroup').style.display = 'none';
         if (!divName || !distName) return;
         const division = divisionsData.find(d => d.name === divName);
         const district = division?.districts.find(d => d.name === distName);
-        if (district && district.upazilas && district.upazilas.length > 0) {
+        if (district && district.upazilas) {
             district.upazilas.forEach(up => { thanaSel.innerHTML += `<option value="${up}">${up}</option>`; });
             document.getElementById('thanaGroup').style.display = 'block';
-        } else if (distName) { 
-            thanaSel.innerHTML += `<option value="সদর">সদর উপজেলা</option>`; 
-            document.getElementById('thanaGroup').style.display = 'block'; 
-        }
+        } else if (distName) { thanaSel.innerHTML += `<option value="সদর">সদর উপজেলা</option>`; document.getElementById('thanaGroup').style.display = 'block'; }
     };
-
     window.onThanaChange = function () {
-        if (document.getElementById('thana').value) {
-            document.getElementById('areaGroup').style.display = 'block';
-        } else {
-            document.getElementById('areaGroup').style.display = 'none';
-        }
+        if (document.getElementById('thana').value) document.getElementById('areaGroup').style.display = 'block';
+        else document.getElementById('areaGroup').style.display = 'none';
     };
 
+    // Product functions
     async function addProduct() {
         const name = document.getElementById('productName').value.trim();
         const price = document.getElementById('productPrice').value.trim();
@@ -625,6 +737,7 @@
     }
     function hideProducts() { document.getElementById('productListContainer').style.display = 'none'; }
 
+    // Save shop data
     async function saveShopData() {
         const user = auth.currentUser;
         if (!user) return;
@@ -661,24 +774,11 @@
     function viewProfile() { const u = auth.currentUser; if (u) window.location.href = `profile.html?id=${u.uid}`; else window.location.href = 'login.html'; }
     function logout() { auth.signOut().then(() => { showToast("লগআউট সম্পন্ন"); setTimeout(() => window.location.href = 'index.html', 1200); }); }
 
-    // main initialization
+    // Auth state & data load
     auth.onAuthStateChanged(async (user) => {
         if (!user) { window.location.href = 'login.html'; return; }
-        
-        // প্রথমে divisions.json লোড করতে হবে - এটা ব্যর্থ হলে পরবর্তী কাজ বন্ধ থাকবে
-        const divLoaded = await loadDivisions();
-        if (!divLoaded) {
-            // JSON লোড না হলে ইউজারকে বলুন এবং ফর্ম ডিজেবল রাখুন
-            document.getElementById('division').disabled = true;
-            document.getElementById('district').disabled = true;
-            document.getElementById('thana').disabled = true;
-            return;
-        }
-        
-        // divisions লোড হলে বাকি কাজ করুন
-        document.getElementById('division').disabled = false;
+        await loadDivisions();
         await loadCategories();
-        
         const snap = await db.ref('shops/' + user.uid).get();
         const data = snap.val();
         if (data) {
@@ -718,6 +818,7 @@
         } else { renderChips(); }
     });
 
+    // Event Listeners
     document.getElementById('addProductBtn')?.addEventListener('click', addProduct);
     document.getElementById('viewProductsBtn')?.addEventListener('click', viewProducts);
     document.getElementById('closeProductListBtn')?.addEventListener('click', hideProducts);
@@ -725,14 +826,19 @@
     document.getElementById('saveBottomBtn')?.addEventListener('click', saveShopData);
     document.getElementById('viewProfileBtn')?.addEventListener('click', viewProfile);
     document.getElementById('logoutBtn')?.addEventListener('click', logout);
-    document.getElementById('openCatBtn')?.addEventListener('click', () => { renderCategoryModal(); document.getElementById('categoryModal').style.display = 'flex'; });
-    document.getElementById('confirmCatBtn')?.addEventListener('click', () => { document.getElementById('categoryModal').style.display = 'none'; renderChips(); });
+    document.getElementById('openCatBtn')?.addEventListener('click', () => {
+        renderCategoryModal();
+        document.getElementById('categoryModal').style.display = 'flex';
+    });
+    document.getElementById('confirmCatBtn')?.addEventListener('click', () => {
+        document.getElementById('categoryModal').style.display = 'none';
+        renderChips();
+    });
     document.getElementById('closeModalBtn')?.addEventListener('click', () => document.getElementById('categoryModal').style.display = 'none');
 
+    // Initialize collapsible (both closed by default)
     setupCollapsible('profileHeader', 'profileBody', 'profileToggleIcon');
     setupCollapsible('productHeader', 'productBody', 'productToggleIcon');
-    document.getElementById('profileBody')?.classList.remove('open');
-    document.getElementById('productBody')?.classList.remove('open');
 </script>
 </body>
 </html>
