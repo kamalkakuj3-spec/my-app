@@ -280,11 +280,11 @@
   /* Moving Ticker */
   .ticker-section {
     padding: 0 15px;
-    margin: 5px 0 20px 0;
+    margin: 5px 0 15px 0;
   }
   .ticker-wrap {
     background: #1f0a3b;
-    padding: 10px 0;
+    padding: 8px 0;
     overflow: hidden;
     border-radius: 40px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -296,7 +296,7 @@
     gap: 1.5rem;
   }
   .ticker-item {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 600;
     color: #f0eaff;
     background: rgba(160, 120, 255, 0.2);
@@ -308,8 +308,139 @@
     100% { transform: translateX(-50%); }
   }
 
+  /* Product Grid */
+  .container {
+    max-width: 1200px;
+    margin: 20px auto 30px;
+    padding: 0 15px;
+  }
+  .section-title {
+    font-size: 22px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 20px;
+    display: inline-block;
+    border-left: 5px solid var(--accent);
+    padding-left: 15px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .product {
+    background: white;
+    overflow: hidden;
+    transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(108,43,217,0.1);
+    border: 1px solid rgba(108,43,217,0.1);
+  }
+  .product:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 35px rgba(108,43,217,0.2);
+  }
+  .product-img-wrapper { padding: 8px; }
+  .product img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+    border-radius: 16px;
+    background: #f3edff;
+  }
+  .product-info {
+    padding: 8px 12px 14px 12px;
+    background: white;
+  }
+  .product-price {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 5px;
+  }
+  .name-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+  }
+  .product-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+    flex: 1;
+  }
+  .three-dots {
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--primary-light);
+    background: none;
+    border: none;
+    padding: 5px 8px;
+    border-radius: 50%;
+    transition: all 0.2s;
+  }
+  .three-dots:hover {
+    background: #f0ebff;
+    color: var(--primary);
+  }
+  .product-desc {
+    font-size: 12px;
+    color: var(--text-light);
+    line-height: 1.4;
+    margin-top: 8px;
+    padding-top: 6px;
+    border-top: 1px dashed #e2d5ff;
+    display: none;
+  }
+  .product-desc.show { display: block; }
+  .loading, .no-products, .no-results {
+    text-align: center;
+    padding: 40px;
+    font-size: 14px;
+    color: var(--primary);
+    grid-column: span 2;
+    background: white;
+    border-radius: 20px;
+  }
+
+  /* Scroll Top */
+  .scroll-top {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 22px;
+    opacity: 0;
+    transition: all 0.3s;
+    box-shadow: var(--glow-purple);
+    z-index: 99;
+    color: white;
+    border: none;
+  }
+  .scroll-top.show { opacity: 1; }
+  .scroll-top:hover {
+    transform: translateY(-5px) scale(1.1);
+  }
+
   @media (max-width: 768px) {
     .slider-container { height: 180px; }
+    .grid { gap: 12px; }
+    .product-price { font-size: 14px; }
+    .product-name { font-size: 12px; }
   }
 </style>
 </head>
@@ -350,7 +481,7 @@
     <div class="search-container" id="searchContainer">
       <div class="search-input-wrapper">
         <span class="search-icon-inline">🔍</span>
-        <input type="text" id="searchInput" class="search-input" placeholder="সার্চ করুন..." autocomplete="off">
+        <input type="text" id="searchInput" class="search-input" placeholder="প্রোডাক্ট সার্চ করুন..." autocomplete="off">
         <button class="search-clear" id="searchClearBtn" style="display: none;">✕</button>
       </div>
     </div>
@@ -373,7 +504,15 @@
     </div>
   </div>
 
+  <!-- Products Section -->
+  <div class="container">
+    <div class="section-title"><i class="fas fa-fire"></i> হট ডিল</div>
+    <div class="grid" id="productGrid"></div>
+  </div>
+
 </div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -403,6 +542,7 @@ async function loadShop() {
     document.getElementById('mainContent').style.display = 'block';
     loadTickerFromStorage();
     loadSlider();
+    loadProducts();
   } catch(e) { showNotFound(); }
 }
 
@@ -463,6 +603,79 @@ function prevSlide() { if(slidesData.length) { currentSlideIndex=(currentSlideIn
 function goToSlide(i) { if(i>=0&&i<slidesData.length) { currentSlideIndex=i; updateSliderPosition(); resetAutoSlide(); } }
 function resetAutoSlide() { if(slideInterval) clearInterval(slideInterval); slideInterval=setInterval(()=>nextSlide(),5000); }
 function loadSlider() { loadSliderFromStorage(); document.getElementById('prevBtn').addEventListener('click',prevSlide); document.getElementById('nextBtn').addEventListener('click',nextSlide); const sc=document.getElementById('sliderContainer'); sc.addEventListener('mouseenter',()=>{ if(slideInterval) clearInterval(slideInterval); }); sc.addEventListener('mouseleave',()=>resetAutoSlide()); }
+
+// PRODUCTS
+let allProducts = [];
+function getProductImageUrl(url) {
+  if(!url) return "https://via.placeholder.com/400x400/ede6ff/a855f7?text=No+Image";
+  let f=null,m=url.match(/\/d\/([a-zA-Z0-9_-]+)/); if(m) f=m[1];
+  if(!f) { m=url.match(/id=([a-zA-Z0-9_-]+)/); if(m) f=m[1]; }
+  if(!f) { m=url.match(/file\/d\/([a-zA-Z0-9_-]+)/); if(m) f=m[1]; }
+  if(f) return `https://lh3.googleusercontent.com/d/${f}=w400`;
+  if(url.match(/\.(jpg|jpeg|png|gif|webp)/i)) return url;
+  return "https://via.placeholder.com/400x400/ede6ff/a855f7?text=Image+Error";
+}
+
+function renderProductGrid(prods) {
+  const g = document.getElementById('productGrid');
+  if(!prods || prods.length === 0) { g.innerHTML = '<div class="no-results">🔍 কোন প্রোডাক্ট খুঁজে পাওয়া যায়নি</div>'; return; }
+  g.innerHTML = '';
+  prods.forEach(p => {
+    const imgUrl = getProductImageUrl(p.image);
+    const priceDisplay = (p.price && p.price !== "") ? `৳ ${escapeHtml(p.price)}` : "মূল্য নির্ধারিত হয়নি";
+    const nameDisplay = p.name || "নামহীন প্রোডাক্ট";
+    const descDisplay = (p.desc && p.desc !== "") ? escapeHtml(p.desc) : "কোনো বিবরণ নেই।";
+    const div = document.createElement('div'); div.className = 'product';
+    div.innerHTML = `<div class="product-img-wrapper"><img src="${imgUrl}" alt="${escapeHtml(nameDisplay)}" onerror="this.src='https://via.placeholder.com/400x400/ede6ff/a855f7?text=Error'"></div><div class="product-info"><div class="product-price">${priceDisplay}</div><div class="name-row"><div class="product-name">${escapeHtml(nameDisplay)}</div><button class="three-dots" data-desc="${escapeHtml(descDisplay)}">⋮</button></div><div class="product-desc">${escapeHtml(descDisplay)}</div></div>`;
+    g.appendChild(div);
+  });
+  document.querySelectorAll('.three-dots').forEach(btn => { 
+    btn.addEventListener('click', (e) => { 
+      e.stopPropagation(); 
+      const dd = btn.closest('.product-info').querySelector('.product-desc'); 
+      if(dd) dd.classList.toggle('show'); 
+    }); 
+  });
+}
+
+function loadProducts() {
+  const ref = firebase.database().ref("products");
+  ref.once("value").then(snapshot => {
+    allProducts = []; 
+    snapshot.forEach(c => { allProducts.push({ id: c.key, ...c.val() }); });
+    allProducts.sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
+    renderProductGrid(allProducts);
+  }).catch(() => { document.getElementById('productGrid').innerHTML = '<div class="no-products">⚠️ প্রোডাক্ট লোড করতে সমস্যা হয়েছে</div>'; });
+}
+
+// SEARCH FUNCTIONALITY
+function performSearch() {
+  const term = document.getElementById('searchInput').value.trim().toLowerCase();
+  const clearBtn = document.getElementById('searchClearBtn');
+  if (term) clearBtn.style.display = 'flex';
+  else clearBtn.style.display = 'none';
+  if (!term) { renderProductGrid(allProducts); return; }
+  const filtered = allProducts.filter(p => (p.name && p.name.toLowerCase().includes(term)) || (p.price && p.price.toString().includes(term)) || (p.desc && p.desc.toLowerCase().includes(term)));
+  renderProductGrid(filtered);
+}
+
+// SEARCH BAR TOGGLE
+const searchContainer = document.getElementById('searchContainer');
+const searchIconBtn = document.getElementById('searchIconBtn');
+const searchInput = document.getElementById('searchInput');
+const searchClearBtn = document.getElementById('searchClearBtn');
+
+searchIconBtn.addEventListener('click', () => {
+  searchContainer.classList.toggle('open');
+  if (searchContainer.classList.contains('open')) searchInput.focus();
+  else { searchInput.value = ''; performSearch(); }
+});
+searchClearBtn.addEventListener('click', () => { searchInput.value = ''; performSearch(); searchInput.focus(); });
+searchInput.addEventListener('input', performSearch);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && searchContainer.classList.contains('open')) { searchContainer.classList.remove('open'); searchInput.value = ''; performSearch(); } });
+
+// SCROLL TOP
+window.addEventListener('scroll', () => { const btn = document.getElementById('scrollTop'); if(window.scrollY>300) btn.classList.add('show'); else btn.classList.remove('show'); });
 </script>
 </body>
 </html>
