@@ -49,29 +49,67 @@ body {
 #app { opacity:0; animation:appShow 0.3s ease 2.5s forwards; background:var(--bg); }
 @keyframes appShow { to{opacity:1} }
 
+/* লোডিং ওভারলে (৬ নম্বর লোডার) */
+#loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 9997;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+}
+.loader-6 {
+    width: 60px;
+    height: 60px;
+    background: var(--primary);
+    animation: squareSpin 1s ease-in-out infinite;
+    border-radius: 12px;
+}
+@keyframes squareSpin {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(90deg) scale(1.2); background: var(--primary-light); }
+    100% { transform: rotate(180deg); }
+}
+.loading-text {
+    margin-top: 20px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    display: block;
+    width: 100%;
+}
+
 .search-section {
     padding: 0 16px;
     margin-bottom: 12px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, opacity 0.3s ease;
     background: var(--bg);
     padding-top: 10px;
 }
 .search-section.hide {
-    transform: translateY(-100%);
+    transform: translateY(-120%);
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    width: 100%;
 }
 .search-wrap {
     position: relative;
 }
 .search-input {
     width: 100%;
-    padding: 9px 20px 9px 22px;
-    font-size: 15px;
+    padding: 12px 20px;
+    font-size: 16px;
     font-family: 'Hind Siliguri', sans-serif;
     border: none;
-    border-radius: 12px;
+    border-radius: 14px;
     background: white;
     color: var(--text);
     box-shadow: 0 3px 12px rgba(108,43,217,0.15);
@@ -80,10 +118,10 @@ body {
 .search-input::placeholder { color: #aaa; }
 
 .marquee-container { 
-    margin: 0 16px 16px;
-    padding: 2px 12px;
+    margin: 0 16px 20px;
+    padding: 8px 12px;
     background: linear-gradient(90deg, var(--primary), var(--primary-light));
-    border-radius: 12px;
+    border-radius: 14px;
     box-shadow: 0 3px 12px rgba(108,43,217,0.15);
     color: white;
 }
@@ -98,35 +136,36 @@ marquee {
     opacity: 0.8;
     background: #ccc;
     color: #666;
-    padding: 2px 12px;
-    border-radius: 12px;
+    padding: 8px 12px;
+    border-radius: 14px;
 }
 
-.slider-section { margin:0 16px 12px; }
+.slider-section { margin:0 16px 20px; }
 .slider-box {
     position: relative;
-    border-radius: 16px;
+    border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 4px 18px rgba(108,43,217,0.18);
     background: linear-gradient(135deg,#6c2bd9,#a259f7);
-    height: 150px;
+    height: 180px;
 }
 .slider-track { display: flex; height: 100%; transition: transform 0.45s cubic-bezier(.4,0,.2,1); }
 .slide-item { min-width: 100%; height: 100%; flex-shrink: 0; position: relative; cursor: pointer; }
 .slide-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .slide-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-size: 35px; }
-.sl-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.85); border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 18px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.2); line-height: 1; }
-.sl-prev { left: 6px; }
-.sl-next { right: 6px; }
-.sl-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 10; }
+.sl-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.85); border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 20px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+.sl-prev { left: 8px; }
+.sl-next { right: 8px; }
+.sl-dots { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
 .sl-dot { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.3s; width: 6px; }
-.sl-dot.active { width: 18px; background: white; }
+.sl-dot.active { width: 20px; background: white; }
 
-.add-banner { margin:0 16px 12px; background:linear-gradient(135deg,#1a0a3e,#6c2bd9); border-radius:16px; padding:14px; display:flex; align-items:center; gap:12px; box-shadow:var(--shadow); text-decoration:none; }
-.ab-icon  { width:42px; height:42px; background:var(--accent); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
-.ab-title { font-size:14px; font-weight:700; color:white; margin-bottom:2px; }
-.ab-sub   { font-size:11px; color:rgba(255,255,255,0.7); }
-.ab-arrow { font-size:18px; color:var(--accent); margin-left:auto; }
+.add-banner { margin:0 16px 20px; background:linear-gradient(135deg,#1a0a3e,#6c2bd9); border-radius:20px; padding:18px 16px; display:flex; align-items:center; gap:14px; box-shadow:var(--shadow); text-decoration:none; transition:transform 0.2s; }
+.add-banner:hover { transform:translateY(-3px); }
+.ab-icon  { width:50px; height:50px; background:var(--accent); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+.ab-title { font-size:18px; font-weight:800; color:white; margin-bottom:4px; }
+.ab-sub   { font-size:13px; color:rgba(255,255,255,0.8); }
+.ab-arrow { font-size:22px; color:var(--accent); margin-left:auto; }
 
 .filter-wrap { padding:0 16px; margin-bottom:6px; }
 .filter-step { background:white; border-radius:14px; padding:12px 14px; box-shadow:var(--shadow); margin-bottom:8px; border:1.5px solid rgba(108,43,217,0.06); }
@@ -168,6 +207,7 @@ marquee {
     background: #000;
     width: 100%;
     aspect-ratio: 16 / 9;
+    cursor: pointer;
 }
 .cloudinary-video {
     width: 100%;
@@ -176,13 +216,14 @@ marquee {
     display: block;
 }
 .video-card-info {
-    padding: 12px 14px;
+    padding: 14px 16px;
+    text-align: center;
 }
 .video-card-title {
     font-size: 16px;
     font-weight: 700;
     color: var(--primary);
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 .video-card-desc {
     font-size: 12px;
@@ -201,35 +242,38 @@ marquee {
     margin-bottom: 12px;
 }
 
-/* দোকানের কার্ড (ইউটিউব) */
+/* দোকানের কার্ড - নতুন কার্ড ভিউ (ইউটিউব ভিডিও সহ) */
+.shop-card-wrapper {
+    margin: 0 16px 16px;
+}
 .shop-video-card {
-    margin: 0 16px 12px;
-    background: transparent;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
     animation: tileIn 0.4s ease both;
+}
+.shop-video-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(108,43,217,0.2);
 }
 .video-player-card {
     position: relative;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 18px rgba(108,43,217,0.18);
-    background: linear-gradient(135deg, #ffffff, #f8f6ff);
-    border: 1px solid rgba(108,43,217,0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.video-player-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(108,43,217,0.25);
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
 }
 .shop-video {
     width: 100%;
-    aspect-ratio: 16 / 9;
+    height: 100%;
     border: none;
     background: #000;
     display: block;
 }
 .no-video {
     width: 100%;
-    aspect-ratio: 16 / 9;
+    height: 100%;
     background: linear-gradient(135deg, #1a0a3e, #6c2bd9);
     display: flex;
     align-items: center;
@@ -239,36 +283,34 @@ marquee {
     text-align: center;
 }
 .shop-video-info {
-    padding: 12px 0 0;
-    background: transparent;
+    padding: 14px 16px;
+    background: white;
     text-align: center;
 }
 .shop-video-name {
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 800;
     color: var(--primary);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     cursor: pointer;
     transition: color 0.2s;
     display: inline-block;
-    text-align: center;
 }
 .shop-video-name:hover {
     color: var(--primary-dark);
     text-decoration: underline;
 }
-.shop-video-category {
-    font-size: 14px;
+.shop-video-location {
+    font-size: 13px;
     font-weight: 500;
-    color: var(--primary-light);
-    margin-bottom: 8px;
-    text-align: center;
-}
-.shop-video-address {
-    font-size: 12px;
     color: var(--text-light);
-    text-align: center;
-    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+.shop-video-location i {
+    color: var(--primary-light);
 }
 @keyframes tileIn {
     from { transform: translateY(15px); opacity: 0; }
@@ -453,9 +495,17 @@ marquee {
     <div class="sp-bar-wrap"><div class="sp-bar"></div></div>
 </div>
 
+<!-- লোডিং ওভারলে (৬ নম্বর লোডার) -->
+<div id="loadingOverlay" style="display: none;">
+    <div style="text-align: center;">
+        <div class="loader-6"></div>
+        <div class="loading-text">লোড হচ্ছে...</div>
+    </div>
+</div>
+
 <div id="app">
 
-    <div class="search-section" id="searchSection">
+    <div class="search-section" id="searchSection" style="display: none;">
         <div class="search-wrap">
             <input class="search-input" type="text" id="searchInput" placeholder="দোকানের নাম বা এলাকা খুঁজুন..." oninput="window.applyFilters()">
         </div>
@@ -567,8 +617,9 @@ let selectedThana = '';
 let selectedCategories = [];
 let allVideos = [];
 
-let videoObservers = []; // for YouTube iframes
-let cloudinaryVideoElements = []; // for Cloudinary video observers
+let videoObservers = [];
+let youtubePlayers = [];
+let cloudinaryVideoElements = [];
 
 let curSlide = 0;
 let slTimer = null;
@@ -580,6 +631,15 @@ function shuffleArray(array) {
         [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
+}
+
+function showLoading() {
+    const loader = document.getElementById('loadingOverlay');
+    if (loader) loader.style.display = 'flex';
+}
+function hideLoading() {
+    const loader = document.getElementById('loadingOverlay');
+    if (loader) loader.style.display = 'none';
 }
 
 // ========== ক্যাটাগরি JSON লোড ==========
@@ -613,32 +673,26 @@ function loadAdminVideos() {
 function setupCloudinaryVideo(videoElement, videoUrl) {
     if (!videoElement) return;
     
-    // সেট ভিডিও সোর্স
     videoElement.src = videoUrl;
-    videoElement.muted = true; // মিউট অবস্থায় শুরু
-    videoElement.loop = true; // শেষ হলে পুনরায় শুরু (লুপ)
+    videoElement.muted = true;
+    videoElement.loop = true;
     videoElement.playsInline = true;
     videoElement.autoplay = true;
     
-    // অটোপ্লে করার চেষ্টা
     const playPromise = videoElement.play();
     if (playPromise !== undefined) {
         playPromise.catch(error => {
             console.log("Autoplay prevented:", error);
-            // কিছু ব্রাউজারে ম্যানুয়ালি প্লে করতে হয়, সেক্ষেত্রে মিউটেড থাকলেও কাজ করবে
             videoElement.muted = true;
             videoElement.play();
         });
     }
     
-    // স্ক্রল পজ করার জন্য ইন্টারসেকশন অবজারভার
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                // ভিডিও ভিউতে আসলে প্লে করুন (যদি পজ করা থাকে)
                 videoElement.play().catch(e => console.log("Play on view error:", e));
             } else {
-                // ভিডিও ভিউ থেকে বেরিয়ে গেলে পজ করুন
                 videoElement.pause();
             }
         });
@@ -652,7 +706,6 @@ function renderVideoGrid() {
     const container = document.getElementById('videoGrid');
     if (!container) return;
     
-    // পূর্বের অবজারভারগুলি cleanup করুন
     cloudinaryVideoElements.forEach(item => {
         if (item.observer) item.observer.disconnect();
     });
@@ -679,22 +732,15 @@ function renderVideoGrid() {
         </div>
     `).join('');
     
-    // প্রতিটি ভিডিও এলিমেন্টে সোর্স ও ইভেন্ট সেট করুন
     const videoCards = document.querySelectorAll('.video-card');
     videoCards.forEach((card, idx) => {
         const videoElement = card.querySelector('.cloudinary-video');
         if (videoElement && allVideos[idx]) {
             let videoUrl = allVideos[idx].videoUrl;
-            // Cloudinary URL চেক, যদি কিছু না থাকে তাহলে placeholder
             if (videoUrl && videoUrl.trim() !== '') {
                 setupCloudinaryVideo(videoElement, videoUrl);
             } else {
                 videoElement.style.background = "#1a0a3e";
-                videoElement.style.display = "flex";
-                videoElement.style.alignItems = "center";
-                videoElement.style.justifyContent = "center";
-                videoElement.style.color = "white";
-                videoElement.innerHTML = "🎬";
             }
         }
     });
@@ -724,7 +770,7 @@ async function loadGeoData() {
     }
 }
 
-// ========== ক্যাটাগরি চিপ লোড (JSON থেকে) ==========
+// ========== ক্যাটাগরি চিপ লোড ==========
 async function loadCategoryChips() {
     const container = document.getElementById('categoryChips');
     container.innerHTML = '<div class="f-chip active" onclick="window.selectCategory(\'\')">সব</div>';
@@ -951,7 +997,23 @@ window.applyFilters = function() {
     window.renderShops(filtered);
 };
 
-// ========== রেন্ডার শপস (ইউটিউব ভিডিও) ==========
+// ইউটিউব প্লেয়ার অবজারভার (স্ক্রল আউট হলে পজ)
+function setupYouTubeObserver(iframe, player) {
+    if (!iframe) return;
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting && player && player.pauseVideo) {
+                player.pauseVideo();
+            } else if (entry.isIntersecting && player && player.playVideo) {
+                player.playVideo();
+            }
+        });
+    }, { threshold: 0.1 });
+    observer.observe(iframe);
+    return observer;
+}
+
+// ========== রেন্ডার শপস (ইউটিউব ভিডিও - কার্ড ভিউ) ==========
 window.renderShops = function(shops) {
     const container = document.getElementById('shopList');
     if (!container) return;
@@ -980,27 +1042,57 @@ window.renderShops = function(shops) {
         }
         
         const videoEmbed = videoId 
-            ? `<iframe class="shop-video" src="https://www.youtube.com/embed/${videoId}?enablejsapi=1" frameborder="0" allowfullscreen></iframe>`
+            ? `<iframe class="shop-video" 
+                        src="https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&mute=1&playsinline=1&loop=1&playlist=${videoId}" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen></iframe>`
             : `<div class="no-video">🎬 কোন ভিডিও নেই</div>`;
         
-        const categoryName = shop.category || 'পাইকারি দোকান';
-        const addressText = shop.thana ? `${shop.thana}, ${shop.district}` : `${shop.area || ''}, ${shop.district || ''}`;
+        const locationText = shop.thana ? `${shop.thana}, ${shop.district}` : `${shop.area || ''}, ${shop.district || ''}`;
         
         return `
-        <div class="shop-video-card">
-            <div class="video-player-card">
-                ${videoEmbed}
-            </div>
-            <div class="shop-video-info">
-                <h3 class="shop-video-name" onclick="window.viewShop('${shop.id}')">${escapeHtml(shop.shopName) || 'নাম নেই'}</h3>
-                <div class="shop-video-category">${escapeHtml(categoryName)}</div>
-                <p class="shop-video-address">📍 ${escapeHtml(addressText)}</p>
+        <div class="shop-card-wrapper">
+            <div class="shop-video-card">
+                <div class="video-player-card" id="video-container-${shop.id}">
+                    ${videoEmbed}
+                </div>
+                <div class="shop-video-info">
+                    <h3 class="shop-video-name" onclick="window.viewShop('${shop.id}')">${escapeHtml(shop.shopName) || 'নাম নেই'}</h3>
+                    <div class="shop-video-location">
+                        <i class="fas fa-map-marker-alt"></i> ${escapeHtml(locationText)}
+                    </div>
+                </div>
             </div>
         </div>`;
     }).join('');
     
-    window.initVideoObservers();
+    // ইউটিউব API রেডি হলে প্লেয়ার ইনিশিয়ালাইজ করুন
+    if (typeof YT !== 'undefined' && YT.Player) {
+        initYouTubePlayers();
+    }
 };
+
+function initYouTubePlayers() {
+    const iframes = document.querySelectorAll('.shop-video');
+    youtubePlayers.forEach(p => { if(p.destroy) p.destroy(); });
+    youtubePlayers = [];
+    
+    iframes.forEach(iframe => {
+        const playerId = 'player_' + Math.random().toString(36).substr(2, 9);
+        iframe.id = playerId;
+        const player = new YT.Player(playerId, {
+            events: {
+                onReady: (event) => {
+                    event.target.mute();
+                    event.target.playVideo();
+                    const observer = setupYouTubeObserver(iframe, event.target);
+                    if (observer) youtubePlayers.push({ player: event.target, observer });
+                }
+            }
+        });
+    });
+}
 
 function escapeHtml(str) {
     if (!str) return '';
@@ -1015,27 +1107,6 @@ function escapeHtml(str) {
 window.viewShop = function(shopId) {
     if (shopId) window.location.href = `profile.html?id=${shopId}`;
     else alert('দোকানের আইডি পাওয়া যায়নি!');
-};
-
-window.initVideoObservers = function() {
-    videoObservers.forEach(observer => observer.disconnect());
-    videoObservers = [];
-    
-    const videoIframes = document.querySelectorAll('.shop-video');
-    videoIframes.forEach(iframe => {
-        if (!iframe.src) return;
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (!entry.isIntersecting) {
-                    try {
-                        iframe.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-                    } catch(e) {}
-                }
-            });
-        }, { threshold: 0, rootMargin: '0px' });
-        observer.observe(iframe);
-        videoObservers.push(observer);
-    });
 };
 
 window.loadMarquee = function() {
@@ -1073,7 +1144,7 @@ window.loadSlider = function() {
         window.goSlide(0);
         if (slData.length > 1) {
             if (slTimer) clearInterval(slTimer);
-            slTimer = setInterval(() => window.goSlide((curSlide + 1) % slData.length), 3500);
+            slTimer = setInterval(() => window.goSlide((curSlide + 1) % slData.length), 4000);
         }
     });
 };
@@ -1092,13 +1163,13 @@ window.goSlide = function(n) {
 window.prevSlide = function() {
     if (slTimer) clearInterval(slTimer);
     window.goSlide(curSlide - 1);
-    if (slData.length > 1) slTimer = setInterval(() => window.goSlide((curSlide + 1) % slData.length), 3500);
+    if (slData.length > 1) slTimer = setInterval(() => window.goSlide((curSlide + 1) % slData.length), 4000);
 };
 
 window.nextSlide = function() {
     if (slTimer) clearInterval(slTimer);
     window.goSlide(curSlide + 1);
-    if (slData.length > 1) slTimer = setInterval(() => window.goSlide((curSlide + 1) % slData.length), 3500);
+    if (slData.length > 1) slTimer = setInterval(() => window.goSlide((curSlide + 1) % slData.length), 4000);
 };
 
 window.loadShops = function() {
@@ -1120,15 +1191,18 @@ window.checkNet = function() {
     const noInternetDiv = document.getElementById('noInternet');
     if (navigator.onLine) {
         if (noInternetDiv) noInternetDiv.style.display = 'none';
-        loadGeoData();
-        loadCategories();
-        loadCategoryChips();
-        loadAdminVideos();
-        window.loadMarquee();
-        window.loadSlider();
-        window.loadShops();
+        showLoading();
+        Promise.all([loadGeoData(), loadCategories()]).then(() => {
+            loadCategoryChips();
+            loadAdminVideos();
+            window.loadMarquee();
+            window.loadSlider();
+            window.loadShops();
+            hideLoading();
+        }).catch(() => hideLoading());
     } else {
         if (noInternetDiv) noInternetDiv.style.display = 'flex';
+        hideLoading();
     }
 };
 
@@ -1143,11 +1217,12 @@ window.navigateTo = function(page, event) {
             window.openCategoryPopup();
             break;
         case 'searchFocus':
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput) {
-                searchInput.focus();
-                const searchSec = document.getElementById('searchSection');
-                if (searchSec) searchSec.classList.remove('hide');
+            const searchSec = document.getElementById('searchSection');
+            if (searchSec) {
+                searchSec.style.display = 'block';
+                searchSec.classList.remove('hide');
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput) searchInput.focus();
                 setTimeout(() => searchSec?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
             }
             break;
@@ -1161,7 +1236,22 @@ window.navigateTo = function(page, event) {
     }
 };
 
-// ক্যাটাগরি পপআপ (JSON থেকে লোড করা ক্যাটাগরি দেখাবে)
+// স্ক্রল ইভেন্ট (সার্চ সেকশন হাইড করার জন্য)
+let lastScrollTop = 0;
+const searchSectionEl = document.getElementById('searchSection');
+window.addEventListener('scroll', function() {
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    if (searchSectionEl && searchSectionEl.style.display !== 'none') {
+        if (scrollTop > lastScrollTop && scrollTop > 50) {
+            searchSectionEl.classList.add('hide');
+        } else if (scrollTop < lastScrollTop) {
+            searchSectionEl.classList.remove('hide');
+        }
+    }
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+});
+
+// ক্যাটাগরি পপআপ
 window.openCategoryPopup = function() {
     const existingPopup = document.querySelector('.category-popup-overlay');
     if (existingPopup) existingPopup.remove();
@@ -1235,17 +1325,20 @@ window.applyCategoryFilter = function() {
     window.applyFilters();
 };
 
-// স্ক্রল ইভেন্ট (শুধু সার্চ সেকশন হাইড করার জন্য)
-let lastScrollTop = 0;
-const searchSectionEl = document.getElementById('searchSection');
-window.addEventListener('scroll', function() {
-    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    if (searchSectionEl) {
-        if (scrollTop > lastScrollTop && scrollTop > 80) searchSectionEl.classList.add('hide');
-        else searchSectionEl.classList.remove('hide');
-    }
-    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-});
+// ইউটিউব API লোড
+function loadYouTubeAPI() {
+    if (document.querySelector('script[src*="youtube.com/iframe_api"]')) return;
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+}
+loadYouTubeAPI();
+
+window.onYouTubeIframeAPIReady = function() {
+    console.log('YouTube API ready');
+    initYouTubePlayers();
+};
 
 // নেভিগেশন বাটনে ইভেন্ট লিসেনার
 document.querySelectorAll('.nav-item').forEach(btn => {
@@ -1279,21 +1372,6 @@ auth.onAuthStateChanged((user) => {
     }
 });
 
-// ইউটিউব API লোড
-function loadYouTubeAPI() {
-    if (document.querySelector('script[src*="youtube.com/iframe_api"]')) return;
-    const tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/iframe_api';
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-}
-loadYouTubeAPI();
-
-window.onYouTubeIframeAPIReady = function() {
-    console.log('YouTube API ready');
-    window.initVideoObservers();
-};
-
 window.addEventListener('load', () => {
     window.checkNet();
 });
@@ -1301,6 +1379,7 @@ window.addEventListener('load', () => {
 window.addEventListener('offline', () => {
     const noInternetDiv = document.getElementById('noInternet');
     if (noInternetDiv) noInternetDiv.style.display = 'flex';
+    hideLoading();
 });
 
 window.addEventListener('online', () => {
