@@ -105,7 +105,6 @@
         .video-card:hover { transform: translateY(-4px); }
         .cloudinary-video { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
         
-        /* ইউটিউব কার্ড */
         .shop-video-card { 
             margin: 16px; 
             background: white; 
@@ -116,21 +115,9 @@
             position: relative;
         }
         .shop-video-card:hover { transform: translateY(-3px); }
-        .shop-video { 
-            width: 100%; 
-            aspect-ratio: 16/9; 
-            border: none;
-        }
-        .shop-info { 
-            padding: 16px; 
-            text-align: center; 
-        }
-        .shop-name { 
-            font-size: 1.3rem; 
-            font-weight: 700; 
-            color: #1e293b; 
-            cursor: pointer; 
-        }
+        .shop-video { width: 100%; aspect-ratio: 16/9; border: none; }
+        .shop-info { padding: 16px; text-align: center; }
+        .shop-name { font-size: 1.3rem; font-weight: 700; color: #1e293b; cursor: pointer; }
         .shop-name:hover { color: #6c2bd9; }
         .empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; }
         .bottom-nav {
@@ -147,7 +134,6 @@
         .nav-item.active { background: #6c2bd9; color: white; }
         .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #2ecc71; color: white; padding: 10px 20px; border-radius: 40px; z-index: 9999; display: none; }
         
-        /* সাউন্ড ইন্ডিকেটর */
         .sound-indicator {
             position: absolute;
             bottom: 70px;
@@ -165,8 +151,8 @@
             pointer-events: none;
             transition: 0.3s;
         }
-        .sound-indicator.muted { background: rgba(0,0,0,0.7); }
-        .sound-indicator.unmuted { background: #6c2bd9; }
+        .sound-indicator.unmuted { background: #2ecc71; }
+        .sound-indicator.muted { background: rgba(0,0,0,0.6); }
         
         @media (max-width:640px){ .video-grid{ gap:12px; margin:12px; } .bottom-nav{ gap:4px; padding:4px 12px; } .nav-item{ padding:6px 12px; font-size:12px; } .sound-indicator { bottom: 65px; right: 8px; padding: 4px 10px; font-size: 10px; } }
     </style>
@@ -192,88 +178,118 @@
 firebase.initializeApp({apiKey:"AIzaSyA1CzQX9tgbLd46QfvCK6Rwqa0z9CRWoMs",authDomain:"agls-5bd4c.firebaseapp.com",databaseURL:"https://agls-5bd4c-default-rtdb.firebaseio.com/",projectId:"agls-5bd4c"});
 const auth=firebase.auth(), db=firebase.database();
 let allShops=[], divisions=[], categories=[], selectedDiv='', selectedDist='', selectedThana='', selectedCats=[], slData=[], curSlide=0, slTimer;
-let scrollDirection = { lastScrollY: 0, direction: 'down' };
+let lastScrollY = window.scrollY;
+let scrollTimeout = null;
 const DIVISIONS_URL='https://raw.githubusercontent.com/kamalkakuj3-spec/my-app/main/divisions.json';
 const CATEGORIES_URL='https://raw.githubusercontent.com/kamalkakuj3-spec/my-app/main/categories.json';
+
+// ভিডিও কন্ট্রোল ফাংশন
+function controlVideo(iframe, action) {
+    if (!iframe || !iframe.contentWindow) return;
+    try {
+        let command = '';
+        if (action === 'play') command = 'playVideo';
+        else if (action === 'pause') command = 'pauseVideo';
+        else if (action === 'unmute') command = 'unMute';
+        else if (action === 'mute') command = 'mute';
+        if (command) {
+            iframe.contentWindow.postMessage('{"event":"command","func":"' + command + '","args":""}', '*');
+        }
+    } catch(e) { console.log("Video control error:", e); }
+}
 
 // ইউটিউব API লোড
 function loadYouTubeAPI() {
     if (window.YT && YT.Player) return;
     const tag = document.createElement('script');
     tag.src = 'https://www.youtube.com/iframe_api';
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    document.head.appendChild(tag);
 }
 
-// ভিডিও আনমিউট করার ফাংশন
-function unMuteVideo(iframeElement) {
-    if (!iframeElement) return;
-    try {
-        const iframeWindow = iframeElement.contentWindow;
-        if (iframeWindow) {
-            iframeWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
-            iframeWindow.postMessage('{"event":"command","func":"setVolume","args":[100]}', '*');
-        }
-    } catch(e) { console.log("Unmute error:", e); }
-}
-
-// ভিডিও মিউট করার ফাংশন
-function muteVideo(iframeElement) {
-    if (!iframeElement) return;
-    try {
-        const iframeWindow = iframeElement.contentWindow;
-        if (iframeWindow) {
-            iframeWindow.postMessage('{"event":"command","func":"mute","args":""}', '*');
-        }
-    } catch(e) { console.log("Mute error:", e); }
-}
-
-// স্ক্রল দিক ট্র্যাক করা
-function trackScrollDirection() {
-    window.addEventListener('scroll', () => {
-        const currentScrollY = window.scrollY;
-        if (currentScrollY > scrollDirection.lastScrollY) {
-            scrollDirection.direction = 'down';
-        } else if (currentScrollY < scrollDirection.lastScrollY) {
-            scrollDirection.direction = 'up';
-        }
-        scrollDirection.lastScrollY = currentScrollY;
-    });
-}
-
-// কার্ডের অবস্থান চেক করে আনমিউট/মিউট করা
-function checkAndUpdateVideoSound() {
-    const cards = document.querySelectorAll('.shop-video-card');
-    const isScrollingUp = scrollDirection.direction === 'up';
-    const windowHeight = window.innerHeight;
+// স্ক্রল ইভেন্ট হ্যান্ডলার - উপরের দিকে স্ক্রল করলে আনমিউট
+function handleScroll() {
+    const currentScrollY = window.scrollY;
+    const isScrollingUp = currentScrollY < lastScrollY;
     
-    cards.forEach(card => {
-        const rect = card.getBoundingClientRect();
-        const cardTop = rect.top;
-        const cardBottom = rect.bottom;
-        const isVisible = cardTop < windowHeight - 100 && cardBottom > 100;
-        
-        const iframe = card.querySelector('.shop-video');
-        const indicator = card.querySelector('.sound-indicator');
-        
-        if (iframe && isVisible && isScrollingUp) {
-            // কার্ড ভিউতে আছে এবং উপরের দিকে স্ক্রল করছে → আনমিউট
-            unMuteVideo(iframe);
-            if (indicator) {
-                indicator.innerHTML = '🔊 সাউন্ড চালু';
-                indicator.classList.add('unmuted');
-                indicator.classList.remove('muted');
+    if (isScrollingUp) {
+        // উপরের দিকে স্ক্রল করছে → দৃশ্যমান ভিডিওগুলো আনমিউট করো
+        document.querySelectorAll('.shop-video-card').forEach(card => {
+            const rect = card.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+            const isVisible = rect.top < windowHeight - 100 && rect.bottom > 100;
+            const iframe = card.querySelector('.shop-video');
+            const indicator = card.querySelector('.sound-indicator');
+            
+            if (iframe && isVisible) {
+                controlVideo(iframe, 'unmute');
+                if (indicator) {
+                    indicator.innerHTML = '🔊 সাউন্ড চালু';
+                    indicator.classList.add('unmuted');
+                    indicator.classList.remove('muted');
+                }
             }
-        } else if (iframe && (!isVisible || !isScrollingUp)) {
-            // উপরের দিকে না স্ক্রল করলে বা ভিউতে না থাকলে মিউট
-            muteVideo(iframe);
-            if (indicator) {
-                indicator.innerHTML = '🔇 মিউটেড';
-                indicator.classList.add('muted');
-                indicator.classList.remove('unmuted');
+        });
+    } else {
+        // নিচের দিকে স্ক্রল করছে → দৃশ্যমান ভিডিওগুলো মিউট করো
+        document.querySelectorAll('.shop-video-card').forEach(card => {
+            const rect = card.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+            const isVisible = rect.top < windowHeight - 100 && rect.bottom > 100;
+            const iframe = card.querySelector('.shop-video');
+            const indicator = card.querySelector('.sound-indicator');
+            
+            if (iframe && isVisible) {
+                controlVideo(iframe, 'mute');
+                if (indicator) {
+                    indicator.innerHTML = '🔇 মিউটেড';
+                    indicator.classList.add('muted');
+                    indicator.classList.remove('unmuted');
+                }
             }
-        }
+        });
+    }
+    
+    lastScrollY = currentScrollY;
+}
+
+// থ্রোটল সহ স্ক্রল লিসেনার (পারফরম্যান্সের জন্য)
+function initScrollListener() {
+    window.addEventListener('scroll', () => {
+        if (scrollTimeout) clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            handleScroll();
+        }, 50);
     });
+}
+
+// ইন্টারসেকশন অবজার্ভার - ভিডিও ভিউতে আসলে প্লে করবে
+function setupIntersectionObservers() {
+    const observers = [];
+    document.querySelectorAll('.shop-video-card').forEach(card => {
+        const iframe = card.querySelector('.shop-video');
+        if (!iframe) return;
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    controlVideo(iframe, 'play');
+                } else {
+                    controlVideo(iframe, 'pause');
+                    controlVideo(iframe, 'mute');
+                    const indicator = card.querySelector('.sound-indicator');
+                    if (indicator) {
+                        indicator.innerHTML = '🔇 মিউটেড';
+                        indicator.classList.add('muted');
+                        indicator.classList.remove('unmuted');
+                    }
+                }
+            });
+        }, { threshold: 0.3 });
+        
+        observer.observe(card);
+        observers.push(observer);
+    });
+    return observers;
 }
 
 async function loadDivisions(){ try{ const res=await fetch(DIVISIONS_URL); const data=await res.json(); divisions=data.divisions; renderFilters(); }catch(e){ console.error(e); } }
@@ -327,7 +343,7 @@ function renderShops(shops){
         }
     }).join('');
     
-    // ভিডিও কন্টেইনারগুলোর জন্য ইফ্রেম তৈরি করা
+    // ইফ্রেম তৈরি
     setTimeout(() => {
         shops.forEach((shop, index) => {
             let videoId=''; 
@@ -338,9 +354,9 @@ function renderShops(shops){
             }
             if(videoId){
                 const uniqueId = `video-container-${shop.id}-${index}`;
-                const container = document.getElementById(uniqueId);
-                if(container && !container.hasAttribute('data-player-initialized')){
-                    container.setAttribute('data-player-initialized', 'true');
+                const wrapper = document.getElementById(uniqueId);
+                if(wrapper && !wrapper.hasAttribute('data-initialized')){
+                    wrapper.setAttribute('data-initialized', 'true');
                     
                     const iframe = document.createElement('iframe');
                     iframe.className = 'shop-video';
@@ -349,47 +365,19 @@ function renderShops(shops){
                     iframe.setAttribute('allowfullscreen', 'true');
                     iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&mute=1&playsinline=1&rel=0`;
                     
-                    container.innerHTML = '';
-                    container.appendChild(iframe);
-                    
-                    // কার্ডে ইনডিকেটর আপডেট
-                    const card = container.closest('.shop-video-card');
-                    const indicator = card?.querySelector('.sound-indicator');
-                    
-                    // স্ক্রল অডিটর সেটআপ (ভিডিও প্লে/পজের জন্য)
-                    setupScrollObserver(iframe, container);
+                    wrapper.innerHTML = '';
+                    wrapper.appendChild(iframe);
                 }
             }
         });
         
-        // প্রথমবার চেক করুন
-        setTimeout(() => checkAndUpdateVideoSound(), 500);
-    }, 150);
-}
-
-// স্ক্রল পজ/প্লে সিস্টেম (ভিডিও চালু/বন্ধের জন্য)
-function setupScrollObserver(iframe, container) {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                try {
-                    const iframeWindow = iframe.contentWindow;
-                    if (iframeWindow) {
-                        iframeWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-                    }
-                } catch(e) { }
-            } else {
-                try {
-                    const iframeWindow = iframe.contentWindow;
-                    if (iframeWindow) {
-                        iframeWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-                    }
-                } catch(e) { }
-            }
-        });
-    }, { threshold: 0.3 });
-    
-    observer.observe(container);
+        // Intersection Observer সেটআপ
+        setTimeout(() => {
+            setupIntersectionObservers();
+            // প্রথমবার স্ক্রল অবস্থা চেক
+            setTimeout(() => handleScroll(), 500);
+        }, 200);
+    }, 100);
 }
 
 function loadSlider(){ db.ref('slider').on('value',snap=>{ slData=[]; snap.forEach(c=>{if(c.val().image) slData.push(c.val());}); if(!slData.length){document.getElementById('sliderSection').style.display='none'; return;} document.getElementById('sliderSection').style.display='block'; const track=document.getElementById('sliderTrack'); track.innerHTML=slData.map(s=>`<img class="slide-item" src="${s.image}" onclick="window.open('${s.link||''}','_blank')">`).join(''); if(slData.length>1){ if(slTimer) clearInterval(slTimer); slTimer=setInterval(()=>nextSlide(),4000); } }); }
@@ -405,19 +393,15 @@ document.querySelectorAll('.nav-item').forEach(btn=>btn.addEventListener('click'
 
 auth.onAuthStateChanged(user=>{ if(user) document.getElementById('userStatus').innerHTML=`<i class="fas fa-user-circle"></i>`; else document.getElementById('userStatus').innerHTML='<a href="login.html" style="color:#6c2bd9">লগইন</a>'; });
 
-// স্ক্রল দিক ট্র্যাক করা শুরু করুন
-trackScrollDirection();
-
-// স্ক্রল ইভেন্টে ভিডিও সাউন্ড চেক করুন
-window.addEventListener('scroll', () => {
-    requestAnimationFrame(() => {
-        checkAndUpdateVideoSound();
-    });
-});
-
-// ইউটিউব API লোড
+// ইনিশিয়ালাইজ
 loadYouTubeAPI();
-loadDivisions(); loadCategories(); loadShops(); loadSlider(); loadMarquee(); loadAdminVideos();
+initScrollListener();
+loadDivisions(); 
+loadCategories(); 
+loadShops(); 
+loadSlider(); 
+loadMarquee(); 
+loadAdminVideos();
 </script>
 </body>
 </html>
