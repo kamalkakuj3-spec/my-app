@@ -373,22 +373,21 @@ marquee {
     transition: color 0.2s;
     display: inline-block;
 }
-.shop-video-name:hover {
-    color: var(--primary-dark);
-    text-decoration: underline;
-}
+/* ড্রপডাউন আইকন - নির্দিষ্ট প্রস্থ ও উচ্চতা */
 .dropdown-icon {
     background: none;
     border: none;
     font-size: 16px;
     color: var(--primary-light);
     cursor: pointer;
-    padding: 4px 8px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     transition: all 0.2s;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 .dropdown-icon:hover {
     background: #f0ebff;
@@ -396,7 +395,7 @@ marquee {
     transform: scale(1.1);
 }
 .shop-video-location {
-    font-size: 13px;  /* আগের সাইজে ফিরিয়ে দেওয়া হয়েছে */
+    font-size: 13px;
     font-weight: 500;
     color: var(--text-light);
     display: flex;
@@ -1423,6 +1422,12 @@ window.toggleCategoriesDropdown = function(shopId, event) {
     event.stopPropagation();
     const dropdown = document.getElementById(`categories-dropdown-${shopId}`);
     if (dropdown) {
+        // অন্য সব ড্রপডাউন বন্ধ করে দিন
+        document.querySelectorAll('.categories-dropdown').forEach(d => {
+            if (d.id !== `categories-dropdown-${shopId}`) {
+                d.classList.remove('show');
+            }
+        });
         dropdown.classList.toggle('show');
     }
 };
@@ -1792,8 +1797,8 @@ document.addEventListener('click', function(e) {
     if (suggestionsBox && !suggestionsBox.contains(e.target) && e.target !== searchInput) {
         suggestionsBox.classList.remove('show');
     }
-    // ড্রপডাউনের বাইরে ক্লিক করলে বন্ধ হবে
-    if (!e.target.classList.contains('dropdown-icon')) {
+    // ড্রপডাউনের বাইরে ক্লিক করলে বন্ধ হবে (কিন্তু আইকনে ক্লিক করলে বন্ধ হবে না)
+    if (!e.target.classList.contains('dropdown-icon') && !e.target.closest('.categories-dropdown')) {
         document.querySelectorAll('.categories-dropdown').forEach(dropdown => {
             dropdown.classList.remove('show');
         });
