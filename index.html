@@ -662,6 +662,7 @@ let selectedCategories = [];
 let allVideos = [];
 
 let youtubePlayers = [];
+let youtubeObservers = [];
 let cloudinaryVideoElements = [];
 
 let curSlide = 0;
@@ -722,7 +723,7 @@ async function loadCategories() {
     }
 }
 
-// ========== Cloudinary ভিডিও লোড (অটোপ্লে, মিউট, লুপ, স্ক্রল পজ + মিউট স্টেট সংরক্ষণ) ==========
+// ========== Cloudinary ভিডিও লোড ==========
 function loadAdminVideos() {
     db.ref('adminVideos').orderByChild('order').on('value', (snap) => {
         allVideos = [];
@@ -1095,23 +1096,40 @@ window.applyFilters = function() {
 };
 
 // ========== ইউটিউব প্লেয়ার তৈরি (মিউট স্টেট সংরক্ষণ সহ) ==========
-function createYouTubePlayer(container, videoId, placeholderDiv) {
-    let isMuted = true;
-    let player = null;
-    
-    // আনমিউট বাটন তৈরি
-    let muteButton = container.querySelector('.youtube-mute-btn');
-    if (!muteButton) {
-        muteButton = document.createElement('div');
-        muteButton.className = 'youtube-mute-btn';
-        muteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
-        container.appendChild(muteButton);
+function createYouTubePlayer(container, videoId) {
+    // আগের প্লেয়ার থাকলে রিমুভ করুন
+    const existingPlayer = container.querySelector('.youtube-player-container');
+    if (existingPlayer) {
+        existingPlayer.remove();
     }
     
-    const playerId = 'player_' + Math.random().toString(36).substr(2, 9);
-    placeholderDiv.id = playerId;
+    // প্লেয়ার কন্টেইনার তৈরি
+    const playerContainer = document.createElement('div');
+    playerContainer.className = 'youtube-player-container';
+    playerContainer.style.width = '100%';
+    playerContainer.style.height = '100%';
+    playerContainer.style.position = 'relative';
     
-    player = new YT.Player(playerId, {
+    // আনমিউট বাটন তৈরি
+    let isMuted = true;
+    const muteButton = document.createElement('div');
+    muteButton.className = 'youtube-mute-btn';
+    muteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
+    
+    // প্লেয়ার আইডি
+    const playerId = 'player_' + Math.random().toString(36).substr(2, 9);
+    const iframe = document.createElement('div');
+    iframe.id = playerId;
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    
+    playerContainer.appendChild(iframe);
+    playerContainer.appendChild(muteButton);
+    container.innerHTML = '';
+    container.appendChild(playerContainer);
+    
+    // প্লেয়ার তৈরি
+    const player = new YT.Player(playerId, {
         videoId: videoId,
         playerVars: {
             autoplay: 1,
@@ -1126,7 +1144,7 @@ function createYouTubePlayer(container, videoId, placeholderDiv) {
                 event.target.mute();
                 event.target.playVideo();
                 
-                // আনমিউট বাটনের ইভেন্ট
+                // আনমিউট বাটনের ক্লিক ইভেন্ট
                 muteButton.onclick = (e) => {
                     e.stopPropagation();
                     if (event.target.isMuted()) {
@@ -1147,6 +1165,7 @@ function createYouTubePlayer(container, videoId, placeholderDiv) {
                             event.target.pauseVideo();
                         } else if (entry.isIntersecting) {
                             event.target.playVideo();
+                            // আগের মিউট স্টেট রিস্টোর করা
                             if (isMuted) {
                                 event.target.mute();
                                 muteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
@@ -1157,8 +1176,9 @@ function createYouTubePlayer(container, videoId, placeholderDiv) {
                         }
                     });
                 }, { threshold: 0.1 });
-                observer.observe(placeholderDiv);
-                youtubePlayers.push(observer);
+                observer.observe(container);
+                youtubeObservers.push(observer);
+                youtubePlayers.push({ player: event.target, observer, isMuted });
             }
         }
     });
@@ -1170,6 +1190,11 @@ function createYouTubePlayer(container, videoId, placeholderDiv) {
 window.renderShops = function(shops) {
     const container = document.getElementById('shopList');
     if (!container) return;
+    
+    // আগের অবজারভার গুলো ক্লিনআপ
+    youtubeObservers.forEach(obs => obs.disconnect());
+    youtubeObservers = [];
+    youtubePlayers = [];
     
     if (shops.length === 0) {
         container.innerHTML = `<div class="empty"><div class="empty-icon">🏪</div><div class="empty-title">কোনো দোকান নেই</div><div class="empty-sub">অন্য ফিল্টার চেষ্টা করুন</div></div>`;
@@ -1184,19 +1209,17 @@ window.renderShops = function(shops) {
             videoId = shop.youtubeVideoId;
         } else if (shop.youtube) {
             videoId = extractYouTubeId(shop.youtube);
+            // ডিবাগিং জন্য কনসোল লগ
+            console.log(`Shop: ${shop.shopName}, YouTube URL: ${shop.youtube}, Extracted ID: ${videoId}`);
         }
-        
-        const videoEmbed = videoId 
-            ? `<div class="shop-video youtube-placeholder" data-video-id="${videoId}"></div>`
-            : `<div class="no-video">🎬 কোন ভিডিও নেই</div>`;
         
         const locationText = shop.thana ? `${shop.thana}, ${shop.district}` : `${shop.area || ''}, ${shop.district || ''}`;
         
         return `
         <div class="shop-card-wrapper">
             <div class="shop-video-card">
-                <div class="video-player-card" id="video-container-${shop.id}">
-                    ${videoEmbed}
+                <div class="video-player-card" id="video-container-${shop.id}" data-video-id="${videoId || ''}">
+                    ${!videoId ? `<div class="no-video">🎬 কোন ভিডিও নেই</div>` : ''}
                 </div>
                 <div class="shop-video-info">
                     <h3 class="shop-video-name" onclick="window.viewShop('${shop.id}')">${escapeHtml(shop.shopName) || 'নাম নেই'}</h3>
@@ -1215,13 +1238,12 @@ window.renderShops = function(shops) {
 };
 
 function initYouTubePlayers() {
-    const placeholders = document.querySelectorAll('.youtube-placeholder');
-    placeholders.forEach(placeholder => {
-        const container = placeholder.closest('.video-player-card');
-        const videoId = placeholder.dataset.videoId;
-        if (videoId && container && !container.hasAttribute('data-player-initialized')) {
+    const containers = document.querySelectorAll('.video-player-card');
+    containers.forEach(container => {
+        const videoId = container.getAttribute('data-video-id');
+        if (videoId && videoId !== 'null' && videoId !== '' && !container.hasAttribute('data-player-initialized')) {
             container.setAttribute('data-player-initialized', 'true');
-            createYouTubePlayer(container, videoId, placeholder);
+            createYouTubePlayer(container, videoId);
         }
     });
 }
