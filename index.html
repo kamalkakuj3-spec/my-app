@@ -242,7 +242,7 @@ marquee {
     margin-bottom: 12px;
 }
 
-/* দোকানের কার্ড - ইউটিউব থাম্বনেইল + প্লে বাটন */
+/* দোকানের কার্ড - শুধু সাদা প্লে আইকন (কোন ব্যাকগ্রাউন্ড বা বর্ডার নেই) */
 .shop-card-wrapper {
     margin: 0 16px 16px;
 }
@@ -271,33 +271,29 @@ marquee {
     object-fit: cover;
     display: block;
 }
-.play-button {
+/* শুধু সাদা প্লে আইকন - কোন ব্যাকগ্রাউন্ড, কোন বর্ডার নেই */
+.play-icon {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 70px;
-    height: 70px;
-    background: rgba(108,43,217,0.9);
-    border-radius: 50%;
+    color: white;
+    font-size: 68px;
+    cursor: pointer;
+    z-index: 10;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    transition: transform 0.2s ease;
+    font-family: Arial, sans-serif;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    z-index: 10;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    border: 2px solid white;
 }
-.play-button:hover {
+.play-icon:hover {
     transform: translate(-50%, -50%) scale(1.1);
-    background: var(--primary);
 }
-.play-button::after {
+/* "▶" ক্যারেক্টার ব্যবহার করে প্লে আইকন */
+.play-icon::before {
     content: "▶";
-    color: white;
-    font-size: 28px;
-    margin-left: 4px;
 }
 .shop-video-frame {
     position: absolute;
@@ -334,6 +330,17 @@ marquee {
     align-items: center;
     justify-content: center;
     gap: 6px;
+}
+.no-video {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a0a3e, #6c2bd9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    text-align: center;
 }
 @keyframes tileIn {
     from { transform: translateY(15px); opacity: 0; }
@@ -641,13 +648,12 @@ let allVideos = [];
 
 let videoObservers = [];
 let cloudinaryVideoElements = [];
-let activeVideoPlayers = new Map(); // ট্র্যাক করার জন্য কোন ভিডিও চালু আছে
+let activeVideoPlayers = new Map();
 
 let curSlide = 0;
 let slTimer = null;
 let slData = [];
 
-// Intersection Observer for videos - ভিডিও স্ক্রিনের বাইরে গেলে বন্ধ হবে
 let videoIntersectionObservers = new Map();
 
 function shuffleArray(array) {
@@ -1017,25 +1023,13 @@ window.applyFilters = function() {
     window.renderShops(filtered);
 };
 
-// ভিডিও পজ করার ফাংশন (স্ক্রিনের বাইরে গেলে)
-function pauseVideo(videoId, container) {
-    const iframe = container.querySelector('.shop-video-frame');
-    if (iframe && iframe.src) {
-        // YouTube API দিয়ে পজ করার চেষ্টা
-        if (iframe.contentWindow && iframe.contentWindow.postMessage) {
-            iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-        }
-    }
-    activeVideoPlayers.delete(videoId);
-}
-
-// ভিডিও প্লে করার ফাংশন - সাউন্ড সহ (unmuted)
+// ভিডিও প্লে করার ফাংশন - সাউন্ড সহ
 window.playVideo = function(videoId, element) {
     const container = element.closest('.video-player-card');
     if (!container) return;
     
     const thumbnail = container.querySelector('.video-thumbnail');
-    const playBtn = container.querySelector('.play-button');
+    const playIcon = container.querySelector('.play-icon');
     const iframe = container.querySelector('.shop-video-frame');
     
     // আগের চালানো ভিডিও বন্ধ করুন
@@ -1044,27 +1038,25 @@ window.playVideo = function(videoId, element) {
             if (vid !== videoId) {
                 const oldIframe = playerContainer.querySelector('.shop-video-frame');
                 const oldThumb = playerContainer.querySelector('.video-thumbnail');
-                const oldBtn = playerContainer.querySelector('.play-button');
+                const oldIcon = playerContainer.querySelector('.play-icon');
                 if (oldIframe && oldIframe.src) {
                     oldIframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
                     oldIframe.style.display = 'none';
                 }
                 if (oldThumb) oldThumb.style.display = 'block';
-                if (oldBtn) oldBtn.style.display = 'flex';
+                if (oldIcon) oldIcon.style.display = 'flex';
                 activeVideoPlayers.delete(vid);
             }
         });
     }
     
     if (thumbnail) thumbnail.style.display = 'none';
-    if (playBtn) playBtn.style.display = 'none';
+    if (playIcon) playIcon.style.display = 'none';
     
     if (iframe) {
         if (!iframe.src) {
-            // প্রথমবার iframe লোড করা
             iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&mute=0&playsinline=1&controls=1&modestbranding=0`;
         } else {
-            // রিলোড না করে শুধু play এবং unmute কমান্ড পাঠান
             iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
             iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
         }
@@ -1078,7 +1070,6 @@ window.playVideo = function(videoId, element) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (!entry.isIntersecting) {
-                    // স্ক্রিনের বাইরে গেলে ভিডিও পজ করুন
                     const vidIframe = entry.target.querySelector('.shop-video-frame');
                     if (vidIframe && vidIframe.contentWindow) {
                         vidIframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
@@ -1094,12 +1085,11 @@ window.playVideo = function(videoId, element) {
     }
 };
 
-// রেন্ডার শপস - থাম্বনেইল + প্লে বাটন, অটোপ্লে নেই
+// রেন্ডার শপস - শুধু থাম্বনেইল + সাদা প্লে আইকন
 window.renderShops = function(shops) {
     const container = document.getElementById('shopList');
     if (!container) return;
     
-    // পুরনো অবজারভারগুলো ক্লিনআপ
     videoIntersectionObservers.forEach(observer => observer.disconnect());
     videoIntersectionObservers.clear();
     activeVideoPlayers.clear();
@@ -1136,7 +1126,7 @@ window.renderShops = function(shops) {
                 <div class="shop-video-card">
                     <div class="video-player-card" data-video-id="${videoId}">
                         <img class="video-thumbnail" src="${thumbnailUrl}" alt="ভিডিও থাম্বনেইল" loading="lazy">
-                        <div class="play-button" onclick="window.playVideo('${videoId}', this)"></div>
+                        <div class="play-icon" onclick="window.playVideo('${videoId}', this)"></div>
                         <iframe class="shop-video-frame" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="display: none;"></iframe>
                     </div>
                     <div class="shop-video-info">
