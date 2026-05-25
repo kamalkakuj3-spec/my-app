@@ -250,38 +250,33 @@
   }
   textarea.input-field { resize: none; height: 80px; }
   
-  /* Category Select Styles */
-  .category-select-wrapper {
-    margin-bottom: 16px;
-  }
-  .category-chip-container {
+  /* Category Select Button */
+  .category-select-btn {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 8px;
-  }
-  .category-chip {
-    padding: 6px 14px;
-    border-radius: 99px;
-    font-size: 12px;
-    font-family: 'Hind Siliguri', sans-serif;
-    font-weight: 500;
-    white-space: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--white);
+    border: 1.5px solid #e8e0ff;
+    border-radius: 14px;
+    padding: 12px 14px;
     cursor: pointer;
-    border: 2px solid #e0d9f7;
-    background: white;
-    color: var(--text);
-    transition: all 0.2s;
+    transition: var(--transition);
   }
-  .category-chip.active {
-    background: var(--primary);
-    color: white;
+  .category-select-btn:hover {
     border-color: var(--primary);
-    box-shadow: 0 4px 12px rgba(108,43,217,0.3);
+    background: var(--primary-soft);
   }
-  .category-chip.loading {
-    opacity: 0.5;
-    cursor: wait;
+  .category-selected-text {
+    font-size: 14px;
+    color: var(--text);
+  }
+  .category-placeholder {
+    color: #aaa;
+    font-size: 14px;
+  }
+  .category-arrow {
+    color: var(--primary-light);
+    font-size: 12px;
   }
   
   /* Buttons */
@@ -311,6 +306,128 @@
     width: 100%;
   }
   .btn-small-purple:hover { background: #5a5290; }
+  
+  /* ========== ক্যাটাগরি পপআপ (index.html এর মতো) ========== */
+  .category-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(5px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+  .category-popup {
+    background: white;
+    border-radius: 28px;
+    width: 90%;
+    max-width: 400px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes popIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .popup-header {
+    padding: 18px 20px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .popup-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .popup-close {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .popup-body {
+    padding: 16px;
+    max-height: 55vh;
+    overflow-y: auto;
+  }
+  .category-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .cat-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #f5f3ff;
+    border-radius: 99px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1.5px solid transparent;
+  }
+  .cat-check.selected {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+  .cat-check input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary);
+  }
+  .cat-check label {
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .popup-footer {
+    padding: 16px 20px;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 12px;
+  }
+  .popup-footer button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 99px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Hind Siliguri', sans-serif;
+  }
+  .btn-apply {
+    background: var(--primary);
+    color: white;
+    border: none;
+  }
+  .btn-clear {
+    background: #f0ebff;
+    color: var(--primary);
+    border: none;
+  }
+  /* =================================================== */
   
   /* Product Item */
   .product-item {
@@ -490,7 +607,7 @@
     <!-- Main Edit Button -->
     <button class="btn-gradient-main" id="mainEditBtn"><i class="fas fa-edit"></i> প্রোফাইল এডিট করুন</button>
 
-    <!-- Edit Options Container (5 buttons) -->
+    <!-- Edit Options Container -->
     <div id="editOptionsContainer" class="edit-options-container">
         
         <!-- Option 1: প্রোডাক্ট যোগ করুন -->
@@ -557,7 +674,7 @@
             </div>
         </div>
         
-        <!-- Option 5: দোকানের তথ্য (ক্যাটাগরি নির্বাচন সহ - দোকান পরিচিতির উপরে) -->
+        <!-- Option 5: দোকানের তথ্য (পপআপ ক্যাটাগরি সিলেক্টর সহ) -->
         <div>
             <div class="option-btn" onclick="toggleOptionPanel('shopInfoPanel')">
                 <div class="option-left">
@@ -570,15 +687,16 @@
                 <div class="input-group"><label class="input-label">দোকানের নাম *</label><input class="input-field" type="text" id="shopName" placeholder="দোকানের নাম"></div>
                 <div class="input-group"><label class="input-label">মালিকের নাম *</label><input class="input-field" type="text" id="ownerName" placeholder="মালিকের নাম"></div>
                 
-                <!-- ========== নতুন যোগ করা: ক্যাটাগরি নির্বাচন অপশন (দোকান পরিচিতির উপরে) ========== -->
-                <div class="category-select-wrapper">
+                <!-- ========== পপআপ ক্যাটাগরি সিলেক্টর (index.html এর মতো) ========== -->
+                <div class="input-group">
                     <label class="input-label"><i class="fas fa-tag"></i> ক্যাটাগরি নির্বাচন করুন</label>
-                    <div id="categoryChipsContainer" class="category-chip-container">
-                        <div class="category-chip loading">লোড হচ্ছে...</div>
+                    <div class="category-select-btn" onclick="openCategoryPopup()">
+                        <span id="selectedCategoryDisplay" class="category-placeholder">ক্যাটাগরি নির্বাচন করুন</span>
+                        <i class="fas fa-chevron-down category-arrow"></i>
                     </div>
                     <input type="hidden" id="selectedCategory" value="">
                 </div>
-                <!-- ======================================================================== -->
+                <!-- ================================================================== -->
                 
                 <div class="input-group"><label class="input-label">দোকান পরিচিতি</label><textarea class="input-field" id="description" placeholder="দোকান সম্পর্কে লিখুন..."></textarea></div>
                 <div class="input-group"><label class="input-label">পূর্ণাঙ্গ ঠিকানা</label><textarea class="input-field" id="area" placeholder="বিস্তারিত ঠিকানা" style="height:70px"></textarea></div>
@@ -659,57 +777,109 @@ mainEditBtn.addEventListener('click', function() {
 
 // ========== ক্যাটাগরি JSON লোড ফাংশন ==========
 async function loadCategoriesForDashboard() {
-    const container = document.getElementById('categoryChipsContainer');
-    container.innerHTML = '<div class="category-chip loading">লোড হচ্ছে...</div>';
     try {
         const res = await fetch(CATEGORIES_JSON_URL);
         categoriesList = await res.json();
         console.log('ক্যাটাগরি লোড সফল!', categoriesList.length, 'টি ক্যাটাগরি');
-        renderCategoryChips();
     } catch (error) {
         console.error('ক্যাটাগরি লোড ব্যর্থ:', error);
-        container.innerHTML = '<div class="category-chip" style="background:#fee8e8; border-color:#e74c3c;">⚠️ লোড করতে সমস্যা</div>';
+        categoriesList = [];
     }
 }
 
-function renderCategoryChips() {
-    const container = document.getElementById('categoryChipsContainer');
-    if (!container) return;
+// ========== পপআপ ক্যাটাগরি সিলেক্টর (index.html এর মতো) ==========
+function openCategoryPopup() {
     if (!categoriesList.length) {
-        container.innerHTML = '<div class="category-chip">কোনো ক্যাটাগরি নেই</div>';
+        showToast('ক্যাটাগরি লোড হয়নি, একটু পরে চেষ্টা করুন!', true);
         return;
     }
-    container.innerHTML = '';
-    // "সব" অপশন না রেখে সরাসরি ক্যাটাগরি গুলো দেখানো
-    categoriesList.forEach(cat => {
-        const chip = document.createElement('div');
-        chip.className = 'category-chip';
-        chip.textContent = cat;
-        chip.onclick = () => selectCategory(cat);
-        if (selectedCategoryValue === cat) {
-            chip.classList.add('active');
-        }
-        container.appendChild(chip);
+    
+    const existingPopup = document.querySelector('.category-popup-overlay');
+    if (existingPopup) existingPopup.remove();
+    
+    const overlay = document.createElement('div');
+    overlay.className = 'category-popup-overlay';
+    
+    const categoriesHTML = categoriesList.map(cat => {
+        const isSelected = (selectedCategoryValue === cat);
+        return `
+            <div class="cat-check ${isSelected ? 'selected' : ''}" onclick="window.toggleCategoryPopup('${cat.replace(/'/g, "\\'")}', this)">
+                <input type="checkbox" ${isSelected ? 'checked' : ''} onclick="event.stopPropagation(); window.toggleCategoryPopup('${cat.replace(/'/g, "\\'")}', this.parentElement)">
+                <label>${cat}</label>
+            </div>
+        `;
+    }).join('');
+    
+    overlay.innerHTML = `
+        <div class="category-popup">
+            <div class="popup-header">
+                <h3>📂 ক্যাটাগরি নির্বাচন করুন</h3>
+                <button class="popup-close" onclick="this.closest('.category-popup-overlay').remove()">✕</button>
+            </div>
+            <div class="popup-body">
+                <div class="category-grid">
+                    ${categoriesHTML}
+                </div>
+            </div>
+            <div class="popup-footer">
+                <button class="btn-clear" onclick="window.clearCategorySelection()">সব বাদ দিন</button>
+                <button class="btn-apply" onclick="window.applyCategorySelection()">প্রয়োগ করুন</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.remove();
     });
 }
 
-function selectCategory(category) {
+window.toggleCategoryPopup = function(category, element) {
+    // সিঙ্গেল সিলেক্ট (রেডিও বাটনের মতো)
     selectedCategoryValue = category;
-    // সব চিপ থেকে active ক্লাস রিমুভ
-    document.querySelectorAll('#categoryChipsContainer .category-chip').forEach(chip => {
-        chip.classList.remove('active');
+    
+    // পপআপের ভিতরের সব চেকবক্স আনচেক ও ক্লাস রিমুভ
+    document.querySelectorAll('.cat-check').forEach(check => {
+        check.classList.remove('selected');
+        const cb = check.querySelector('input');
+        if (cb) cb.checked = false;
     });
-    // সিলেক্টেড চিপে active যোগ
-    const chips = document.querySelectorAll('#categoryChipsContainer .category-chip');
-    for (let chip of chips) {
-        if (chip.textContent === category) {
-            chip.classList.add('active');
-            break;
-        }
+    
+    // বর্তমান এলিমেন্ট সিলেক্ট করা
+    element.classList.add('selected');
+    const checkbox = element.querySelector('input');
+    if (checkbox) checkbox.checked = true;
+};
+
+window.clearCategorySelection = function() {
+    selectedCategoryValue = '';
+    document.querySelectorAll('.cat-check').forEach(check => {
+        check.classList.remove('selected');
+        const cb = check.querySelector('input');
+        if (cb) cb.checked = false;
+    });
+};
+
+window.applyCategorySelection = function() {
+    const popup = document.querySelector('.category-popup-overlay');
+    if (popup) popup.remove();
+    
+    // ডিসপ্লে আপডেট
+    const displaySpan = document.getElementById('selectedCategoryDisplay');
+    const hiddenInput = document.getElementById('selectedCategory');
+    
+    if (selectedCategoryValue) {
+        displaySpan.innerHTML = selectedCategoryValue;
+        displaySpan.classList.remove('category-placeholder');
+        displaySpan.classList.add('category-selected-text');
+        hiddenInput.value = selectedCategoryValue;
+    } else {
+        displaySpan.innerHTML = 'ক্যাটাগরি নির্বাচন করুন';
+        displaySpan.classList.add('category-placeholder');
+        displaySpan.classList.remove('category-selected-text');
+        hiddenInput.value = '';
     }
-    document.getElementById('selectedCategory').value = category;
-    console.log('সিলেক্টেড ক্যাটাগরি:', category);
-}
+};
 
 // ========== ইউটিউব ভিডিও আইডি এক্সট্রাক্ট ==========
 function extractYoutubeVideoId(url) {
@@ -911,11 +1081,15 @@ auth.onAuthStateChanged(async user=>{
         document.getElementById('whatsapp').value=currentShopData.whatsapp||'';
         document.getElementById('telegram').value=currentShopData.telegram||'';
         document.getElementById('youtube').value=currentShopData.youtube||'';
-        // ক্যাটাগরি সিলেক্ট করা
+        
+        // ক্যাটাগরি ডিসপ্লে সেট করা
         if(currentShopData.category){
             selectedCategoryValue = currentShopData.category;
             document.getElementById('selectedCategory').value = currentShopData.category;
-            renderCategoryChips();
+            const displaySpan = document.getElementById('selectedCategoryDisplay');
+            displaySpan.innerHTML = currentShopData.category;
+            displaySpan.classList.remove('category-placeholder');
+            displaySpan.classList.add('category-selected-text');
         }
     }
     loadProducts();
