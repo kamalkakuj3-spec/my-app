@@ -436,6 +436,23 @@
     from { transform: translateY(40px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
   }
+  
+  /* YouTube Preview */
+  .youtube-preview {
+    margin-top: 10px;
+    padding: 10px;
+    background: #f0ebff;
+    border-radius: 12px;
+    display: none;
+  }
+  .youtube-preview.show {
+    display: block;
+  }
+  .youtube-preview iframe {
+    width: 100%;
+    height: 180px;
+    border-radius: 8px;
+  }
 </style>
 </head>
 <body>
@@ -456,7 +473,7 @@
     <!-- Main Edit Button -->
     <button class="btn-gradient-main" id="mainEditBtn"><i class="fas fa-edit"></i> প্রোফাইল এডিট করুন</button>
 
-    <!-- Edit Options Container (5 buttons) -->
+    <!-- Edit Options Container -->
     <div id="editOptionsContainer" class="edit-options-container">
         
         <!-- Option 1: প্রোডাক্ট যোগ করুন -->
@@ -541,13 +558,17 @@
                 <div class="input-group"><label class="input-label">WhatsApp নম্বর</label><input class="input-field" type="tel" id="whatsapp" placeholder="01XXXXXXXXX"></div>
                 <div class="input-group"><label class="input-label">টেলিগ্রাম নম্বর</label><input class="input-field" type="tel" id="telegram" placeholder="01XXXXXXXXX"></div>
                 
-                <!-- ========== ইউটিউব ভিডিও লিংক অপশন (নতুন যোগ করা) ========== -->
+                <!-- ইউটিউব ভিডিও লিংক অপশন -->
                 <div class="input-group">
                     <label class="input-label"><i class="fab fa-youtube" style="color:#ff0000;"></i> ইউটিউব ভিডিও লিংক</label>
-                    <input class="input-field" type="url" id="youtube" placeholder="https://www.youtube.com/watch?v=xxxxx">
+                    <input class="input-field" type="url" id="youtube" placeholder="https://www.youtube.com/watch?v=xxxxx" oninput="previewYouTubeVideo()">
                     <small style="font-size: 10px; color: #888; display: block; margin-top: 4px;">💡 এই লিংকটি হোমপেজে ভিডিও আকারে দেখানো হবে</small>
                 </div>
-                <!-- ======================================================== -->
+                
+                <!-- ইউটিউব প্রিভিউ -->
+                <div class="youtube-preview" id="youtubePreview">
+                    <iframe id="youtubePreviewIframe" frameborder="0" allowfullscreen></iframe>
+                </div>
             </div>
         </div>
     </div>
@@ -584,6 +605,39 @@ function goHome() { window.location.href = 'index.html'; }
 function viewProfile(){ if(currentShopId) window.location.href=`profile.html?id=${currentShopId}`; }
 function logout(){ auth.signOut().then(()=>{ showToast('✅ লগআউট হয়েছে!'); setTimeout(()=>window.location.href='index.html',1500); }); }
 
+// ইউটিউব প্রিভিউ ফাংশন
+function previewYouTubeVideo() {
+    const youtubeUrl = document.getElementById('youtube').value.trim();
+    const previewDiv = document.getElementById('youtubePreview');
+    const iframe = document.getElementById('youtubePreviewIframe');
+    
+    if (!youtubeUrl) {
+        previewDiv.classList.remove('show');
+        return;
+    }
+    
+    // ইউটিউব ভিডিও আইডি এক্সট্র্যাক্ট
+    let videoId = null;
+    const patterns = [
+        /(?:youtube\.com\/watch\?v=)([^&]+)/,
+        /(?:youtu\.be\/)([^?]+)/,
+        /(?:youtube\.com\/embed\/)([^?]+)/,
+        /(?:youtube\.com\/shorts\/)([^?]+)/
+    ];
+    
+    for (let pattern of patterns) {
+        const match = youtubeUrl.match(pattern);
+        if (match) { videoId = match[1]; break; }
+    }
+    
+    if (videoId) {
+        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=0&mute=1&playsinline=1`;
+        previewDiv.classList.add('show');
+    } else {
+        previewDiv.classList.remove('show');
+    }
+}
+
 // Toggle Option Panel
 function toggleOptionPanel(panelId) {
     const panel = document.getElementById(panelId);
@@ -616,24 +670,35 @@ async function saveShopData() {
     const area=document.getElementById('area').value.trim();
     const phone=document.getElementById('phone').value.trim();
     const youtube = document.getElementById('youtube').value.trim();
+    
     if(!shopName) return showToast('দোকানের নাম দিন!',true);
     if(!ownerName) return showToast('মালিকের নাম দিন!',true);
     if(!area) return showToast('ঠিকানা দিন!',true);
     if(!phone) return showToast('মোবাইল নম্বর দিন!',true);
-    const btn=document.getElementById('saveBtn'); btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> সেভ হচ্ছে...'; btn.disabled = true;
+    
+    const btn=document.getElementById('saveBtn'); 
+    btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> সেভ হচ্ছে...'; 
+    btn.disabled = true;
+    
+    console.log('সেভ হচ্ছে ইউটিউব লিংক:', youtube);
+    
     try {
         await db.ref('shops/'+currentShopId).update({
             shopName, ownerName, description: document.getElementById('description').value.trim(),
             area, phone, whatsapp: document.getElementById('whatsapp').value.trim(),
             telegram: document.getElementById('telegram').value.trim(),
-            youtube: youtube, // ইউটিউব লিংক সংরক্ষণ
+            youtube: youtube,
             updatedAt: Date.now()
         });
         document.getElementById('previewCardShopName').innerHTML=shopName;
         document.getElementById('previewCardAddress').innerHTML=area;
         showToast('✅ তথ্য সংরক্ষণ হয়েছে!');
-    } catch(e) { showToast('সংরক্ষণ ব্যর্থ!',true); }
-    btn.innerHTML = '<i class="fas fa-save"></i> সেভ করুন'; btn.disabled = false;
+    } catch(e) { 
+        showToast('সংরক্ষণ ব্যর্থ!',true); 
+        console.error('সেভ করতে সমস্যা:', e);
+    }
+    btn.innerHTML = '<i class="fas fa-save"></i> সেভ করুন'; 
+    btn.disabled = false;
 }
 
 // Product Management
@@ -774,7 +839,12 @@ auth.onAuthStateChanged(async user=>{
         document.getElementById('phone').value=currentShopData.phone||'';
         document.getElementById('whatsapp').value=currentShopData.whatsapp||'';
         document.getElementById('telegram').value=currentShopData.telegram||'';
-        document.getElementById('youtube').value=currentShopData.youtube||''; // ইউটিউব লিংক লোড
+        document.getElementById('youtube').value=currentShopData.youtube||'';
+        
+        // ইউটিউব প্রিভিউ দেখানো
+        if(currentShopData.youtube) {
+            setTimeout(() => previewYouTubeVideo(), 100);
+        }
     }
     loadProducts();
     await loadSlides();
