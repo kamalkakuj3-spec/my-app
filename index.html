@@ -377,6 +377,21 @@ marquee {
     align-items: center;
     justify-content: center;
     gap: 6px;
+    flex-wrap: wrap;
+}
+.shop-description-preview {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #eee;
+    text-align: left;
+    line-height: 1.4;
+    max-height: 60px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 }
 .no-video {
     width: 100%;
@@ -583,7 +598,7 @@ marquee {
 
     <div class="search-section" id="searchSection" style="display: none;">
         <div class="search-wrap">
-            <input class="search-input" type="text" id="searchInput" placeholder="দোকান, এলাকা, পণ্য, ক্যাটাগরি, জেলা, উপজেলা সার্চ করুন..." oninput="window.handleSearchInput()">
+            <input class="search-input" type="text" id="searchInput" placeholder="দোকান, এলাকা, পণ্য, ক্যাটাগরি, জেলা, উপজেলা, বিবরণী সার্চ করুন..." oninput="window.handleSearchInput()">
             <div class="search-suggestions" id="searchSuggestions"></div>
         </div>
     </div>
@@ -724,7 +739,7 @@ function hideLoading() {
     if (loader) loader.style.display = 'none';
 }
 
-// ========== সার্চ ইনডেক্স বিল্ড করা ==========
+// ========== সার্চ ইনডেক্স বিল্ড করা (বিবরণী সহ) ==========
 function buildSearchIndex() {
     searchIndex.clear();
     
@@ -760,7 +775,7 @@ function buildSearchIndex() {
         });
     });
     
-    // 3. দোকানের তথ্য যোগ করা
+    // 3. দোকানের তথ্য যোগ করা (বিবরণী সহ)
     allShops.forEach(shop => {
         // দোকানের নাম
         if (shop.shopName) {
@@ -776,6 +791,18 @@ function buildSearchIndex() {
             if (!searchIndex.has(areaKey)) {
                 searchIndex.set(areaKey, { type: 'area', displayText: shop.area, data: shop });
             }
+        }
+        
+        // বিবরণী / description (এটি গুরুত্বপূর্ণ অংশ)
+        if (shop.description) {
+            // বিবরণী থেকে শব্দগুলো আলাদা করে ইনডেক্সে যোগ করা
+            const words = shop.description.toLowerCase().split(/\s+/);
+            const uniqueWords = new Set(words);
+            uniqueWords.forEach(word => {
+                if (word.length > 2 && !searchIndex.has(word)) {
+                    searchIndex.set(word, { type: 'description', displayText: word, data: shop });
+                }
+            });
         }
         
         // প্রোডাক্টের নাম (যদি থাকে)
@@ -815,7 +842,7 @@ function buildSearchIndex() {
         }
     });
     
-    console.log('সার্চ ইনডেক্স তৈরি হয়েছে:', searchIndex.size, 'টি শব্দ');
+    console.log('সার্চ ইনডেক্স তৈরি হয়েছে:', searchIndex.size, 'টি শব্দ (বিবরণী সহ)');
 }
 
 // ========== সার্চ হ্যান্ডলার ==========
@@ -836,13 +863,12 @@ window.handleSearchInput = function() {
         if (word.includes(query)) {
             matches.push({ word, ...info });
         }
-        if (matches.length >= 15) break; // বেশি হলে ১৫টি দেখাবে
+        if (matches.length >= 15) break;
     }
     
     // সাজেশন দেখানো
     if (matches.length > 0) {
         suggestionsBox.innerHTML = matches.map(match => {
-            // সার্চ টার্ম হাইলাইট করা
             const highlightedText = match.displayText.replace(new RegExp(`(${query})`, 'gi'), '<span class="suggestion-highlight">$1</span>');
             const typeLabel = getTypeLabel(match.type);
             return `<div class="suggestion-item" onclick="window.selectSuggestion('${escapeHtml(match.word)}')">
@@ -868,7 +894,8 @@ function getTypeLabel(type) {
         'district': 'জেলা',
         'upazila': 'উপজেলা/থানা',
         'area': 'এলাকা',
-        'shop_category': 'দোকানের ক্যাটাগরি'
+        'shop_category': 'দোকানের ক্যাটাগরি',
+        'description': 'বিবরণী'
     };
     return labels[type] || 'অন্যান্য';
 }
@@ -904,7 +931,7 @@ function performSearch(query) {
         filtered = filtered.filter(shop => selectedCategories.includes(shop.category));
     }
     
-    // সার্চ কোয়েরি ম্যাচিং - সমস্ত ফিল্ডে সার্চ করবে
+    // সার্চ কোয়েরি ম্যাচিং - সমস্ত ফিল্ডে সার্চ করবে (বিবরণী সহ)
     const searchLower = query.toLowerCase();
     filtered = filtered.filter(shop => {
         // দোকানের নাম
@@ -917,6 +944,8 @@ function performSearch(query) {
         if (shop.thana && shop.thana.toLowerCase().includes(searchLower)) return true;
         // ক্যাটাগরি
         if (shop.category && shop.category.toLowerCase().includes(searchLower)) return true;
+        // বিবরণী / description (নতুন যোগ করা)
+        if (shop.description && shop.description.toLowerCase().includes(searchLower)) return true;
         // প্রোডাক্টের নাম
         if (shop.products && Array.isArray(shop.products)) {
             for (let product of shop.products) {
@@ -1392,6 +1421,10 @@ window.renderShops = function(shops) {
         const thumbnailUrl = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : '';
         const locationText = shop.thana ? `${shop.thana}, ${shop.district}` : `${shop.area || ''}, ${shop.district || ''}`;
         
+        // বিবরণী প্রিভিউ (সার্চ রেজাল্টে দেখানোর জন্য)
+        const descriptionPreview = shop.description ? 
+            `<div class="shop-description-preview">📝 ${escapeHtml(shop.description.substring(0, 100))}${shop.description.length > 100 ? '...' : ''}</div>` : '';
+        
         if (videoId) {
             return `
             <div class="shop-card-wrapper">
@@ -1407,6 +1440,7 @@ window.renderShops = function(shops) {
                             📍 ${escapeHtml(locationText)}
                         </div>
                         ${shop.category ? `<div class="shop-video-location" style="font-size: 11px; margin-top: 4px;">🏷️ ${escapeHtml(shop.category)}</div>` : ''}
+                        ${descriptionPreview}
                     </div>
                 </div>
             </div>`;
@@ -1423,6 +1457,7 @@ window.renderShops = function(shops) {
                             📍 ${escapeHtml(locationText)}
                         </div>
                         ${shop.category ? `<div class="shop-video-location" style="font-size: 11px; margin-top: 4px;">🏷️ ${escapeHtml(shop.category)}</div>` : ''}
+                        ${descriptionPreview}
                     </div>
                 </div>
             </div>`;
@@ -1673,7 +1708,6 @@ document.querySelectorAll('.nav-item').forEach(btn => {
     });
 });
 
-// ক্লিক করলে সাজেশন বক্স বন্ধ
 document.addEventListener('click', function(e) {
     const suggestionsBox = document.getElementById('searchSuggestions');
     const searchInput = document.getElementById('searchInput');
