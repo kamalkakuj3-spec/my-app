@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>প্রোফাইল | প্রিমিয়াম স্টোর</title>
-<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<title>দোকান প্রোফাইল — পাইকারি বাজার</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
+
+:root {
     --primary: #6c2bd9;
     --primary-dark: #4a1a9e;
     --primary-light: #a259f7;
@@ -15,408 +15,762 @@
     --bg: #f5f3ff;
     --white: #ffffff;
     --text: #1a1a2e;
-    --text-light: #555;
-    --glow-purple: 0 0 20px rgba(108,43,217,0.6);
-    --glow-gold: 0 0 15px rgba(240,192,64,0.5);
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'Hind Siliguri',sans-serif; background: linear-gradient(145deg, #f5f3ff 0%, #ede8ff 100%); min-height:100vh; overflow-x:hidden; }
-  
-  /* Loading Screen */
-  #loadingScreen { position:fixed; inset:0; background:linear-gradient(135deg,#1a0a3e,#6c2bd9,#a259f7); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; }
-  .loading-spinner { width:60px; height:60px; border:4px solid rgba(255,255,255,0.2); border-top-color:#f0c040; border-radius:50%; animation:spin 0.8s linear infinite; }
-  @keyframes spin { to { transform:rotate(360deg); } }
-  .loading-text { margin-top:20px; font-size:18px; font-weight:600; color:white; }
-  
-  /* Back Button */
-  .back-btn { position:fixed; top:20px; left:20px; width:48px; height:48px; background:rgba(255,255,255,0.9); backdrop-filter:blur(10px); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; cursor:pointer; z-index:100; box-shadow:0 8px 25px rgba(0,0,0,0.15); text-decoration:none; color:var(--primary); transition:all 0.3s; }
-  .back-btn:hover { transform:scale(1.1); background:var(--primary); color:white; }
-  
-  /* Header */
-  .header { background:linear-gradient(135deg,#ffffff,#f3eaff,#d9c8ff); padding:0.8rem 1rem; position:sticky; top:0; z-index:100; border-bottom:2px solid #b27eff; display:flex; flex-direction:column; align-items:center; gap:0.5rem; }
-  .store-header-top { display:flex; align-items:center; justify-content:center; position:relative; width:100%; }
-  .menu-icon { position:absolute; left:0; background:none; border:none; cursor:pointer; font-size:1.6rem; color:#6a2be2; padding:6px; width:42px; height:42px; display:flex; align-items:center; justify-content:center; border-radius:50%; }
-  .menu-icon:hover { background:rgba(108,43,217,0.1); }
-  .store-name-header { font-weight:800; font-size:1.3rem; background:linear-gradient(135deg,var(--primary-dark),var(--primary-light)); -webkit-background-clip:text; background-clip:text; color:transparent; }
-  .search-icon-btn { position:absolute; right:0; background:none; border:none; cursor:pointer; font-size:1.4rem; color:#6a2be2; padding:6px; }
-  .search-container { width:100%; max-width:400px; overflow:hidden; transition:all 0.3s ease; max-height:0; opacity:0; visibility:hidden; }
-  .search-container.open { max-height:52px; opacity:1; visibility:visible; }
-  .search-input-wrapper { display:flex; align-items:center; background:#fefcff; border:1.5px solid #d9c8ff; border-radius:40px; padding:0 10px; }
-  .search-input { flex:1; padding:8px 6px; border:none; font-size:0.85rem; outline:none; background:transparent; }
-  .search-clear { background:none; border:none; cursor:pointer; font-size:0.9rem; color:#9b4dff; padding:4px; }
-  
-  /* ========== DRAWER ========== */
-  .drawer-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0); z-index:1000; display:none; transition:background 0.3s ease; }
-  .drawer-overlay.show { background:rgba(0,0,0,0.5); }
-  .drawer { position:fixed; top:0; left:-340px; width:340px; height:100%; background:white; box-shadow:4px 0 20px rgba(0,0,0,0.15); z-index:1001; transition:left 0.3s ease; overflow-y:auto; border-radius:0 20px 20px 0; }
-  .drawer.open { left:0; }
-  .drawer-header { background:linear-gradient(135deg, var(--primary), var(--primary-light)); padding:22px 20px; color:white; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:10; }
-  .drawer-header h3 { font-size:20px; font-weight:800; }
-  .drawer-close { background:none; border:none; color:white; font-size:24px; cursor:pointer; width:38px; height:38px; display:flex; align-items:center; justify-content:center; border-radius:50%; transition:all 0.2s; }
-  .drawer-close:hover { background:rgba(255,255,255,0.2); transform:rotate(90deg); }
-  .drawer-content { padding:20px; }
-  .drawer-info-item { margin-bottom:20px; border-bottom:1px solid #f0ebff; padding-bottom:14px; }
-  .drawer-info-item:last-child { border-bottom:none; }
-  .drawer-info-label { font-size:14px; font-weight:700; color:var(--primary-light); margin-bottom:6px; display:block; letter-spacing:0.5px; }
-  .drawer-info-value { font-size:17px; color:var(--text); font-weight:600; line-height:1.4; display:block; }
-  /* Clickable Contact Links */
-  .drawer-info-value a { color:var(--text); text-decoration:none; display:inline-block; transition:all 0.2s; }
-  .drawer-info-value a:hover { color:var(--primary); transform:translateX(3px); }
-  .drawer-divider { height:1px; background:linear-gradient(90deg, transparent, var(--primary-light), transparent); margin:15px 0; }
-  
-  /* Bottom Close Button */
-  .drawer-close-bottom { display:flex; justify-content:center; margin-top:20px; margin-bottom:15px; }
-  .close-bottom-btn { background:linear-gradient(135deg, #dc2626, #b91c1c); border:none; color:white; width:48px; height:48px; border-radius:50%; cursor:pointer; font-size:22px; transition:all 0.2s; display:flex; align-items:center; justify-content:center; }
-  .close-bottom-btn:hover { transform:scale(1.05); background:linear-gradient(135deg, #ef4444, #dc2626); }
-  
-  /* Slider */
-  .slider-section { max-width:1200px; margin:15px auto 5px auto; padding:0 15px; }
-  .slider-container { position:relative; width:100%; height:260px; overflow:hidden; border-radius:28px; box-shadow:0 25px 45px -12px rgba(108,43,217,0.4); }
-  .slides-wrapper { display:flex; width:100%; height:100%; transition:transform 0.5s ease; }
-  .slide { min-width:100%; height:100%; }
-  .slide img { width:100%; height:100%; object-fit:cover; }
-  .slider-btn { position:absolute; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.9); border:none; width:40px; height:40px; border-radius:50%; cursor:pointer; font-size:20px; color:var(--primary); z-index:20; }
-  .slider-btn:hover { background:var(--primary); color:white; }
-  .btn-prev { left:12px; } .btn-next { right:12px; }
-  .slider-dots { position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:10px; z-index:20; }
-  .dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.6); cursor:pointer; }
-  .dot.active { background:var(--accent); width:22px; border-radius:10px; }
-  
-  /* Ticker */
-  .ticker-section { padding:0 15px; margin:5px 0 15px 0; }
-  .ticker-wrap { background:#1f0a3b; padding:8px 0; overflow:hidden; border-radius:40px; }
-  .ticker { display:flex; white-space:nowrap; animation:scrollTicker 28s linear infinite; gap:1.5rem; }
-  .ticker-item { font-size:0.85rem; font-weight:600; color:#f0eaff; background:rgba(160,120,255,0.2); padding:0.2rem 1rem; border-radius:40px; }
-  @keyframes scrollTicker { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }
-  
-  /* Products */
-  .container { max-width:1200px; margin:15px auto 30px; padding:0 15px; }
-  .section-title { font-size:22px; font-weight:800; background:linear-gradient(135deg,var(--primary-dark),var(--primary-light)); -webkit-background-clip:text; background-clip:text; color:transparent; margin-bottom:18px; border-left:5px solid var(--accent); padding-left:15px; display:inline-block; }
-  .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
-  .product { background:white; overflow:hidden; transition:all 0.3s; border-radius:20px; box-shadow:0 8px 25px rgba(108,43,217,0.1); border:1px solid rgba(108,43,217,0.1); }
-  .product:hover { transform:translateY(-5px); box-shadow:0 20px 35px rgba(108,43,217,0.2); }
-  .product-img-wrapper { padding:6px; }
-  .product img { width:100%; aspect-ratio:1/1; object-fit:cover; display:block; border-radius:16px; background:#f3edff; }
-  .product-info { padding:6px 10px 12px 10px; background:white; }
-  .product-price { font-size:17px; font-weight:800; color:var(--primary); margin-bottom:4px; }
-  .name-row { display:flex; justify-content:space-between; align-items:center; gap:5px; }
-  .product-name { font-size:14px; font-weight:600; color:var(--text); flex:1; }
-  .three-dots { font-size:18px; cursor:pointer; color:var(--primary-light); background:none; border:none; padding:4px 6px; border-radius:50%; }
-  .three-dots:hover { background:#f0ebff; }
-  .product-desc { font-size:12px; color:var(--text-light); line-height:1.4; margin-top:6px; padding-top:5px; border-top:1px dashed #e2d5ff; display:none; }
-  .product-desc.show { display:block; }
-  .no-results { text-align:center; padding:35px; font-size:14px; color:var(--primary); grid-column:span 2; background:white; border-radius:20px; }
-  
-  /* Scroll Top */
-  .scroll-top { position:fixed; bottom:25px; right:25px; width:48px; height:48px; background:linear-gradient(135deg,var(--primary),var(--primary-light)); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:22px; opacity:0; transition:all 0.3s; color:white; border:none; z-index:99; }
-  .scroll-top.show { opacity:1; }
-  .scroll-top:hover { transform:translateY(-3px); }
-  
-  @media (max-width:768px) { .slider-container { height:170px; } .grid { gap:10px; } .drawer { width:300px; left:-300px; } .drawer-info-value { font-size:15px; } .drawer-info-label { font-size:13px; } }
+    --text-light: #666;
+    --card-shadow: 0 8px 32px rgba(108,43,217,0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Hind Siliguri', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ── LOADING ── */
+#loadingScreen {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #1a0a3e, #6c2bd9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loading-spinner {
+    width: 50px; height: 50px;
+    border: 4px solid rgba(255,255,255,0.2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+}
+
+.loading-text { color: white; font-size: 16px; opacity: 0.8; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── BACK BUTTON ── */
+.back-btn {
+    position: fixed;
+    top: 16px; left: 16px;
+    width: 42px; height: 42px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 100;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    text-decoration: none;
+    color: var(--primary);
+}
+
+/* ── MAIN CONTENT ── */
+#mainContent { display: none; padding-bottom: 30px; }
+
+/* Pending Message Card (নতুন যোগ করা) */
+.pending-card {
+    background: linear-gradient(135deg, #fff9e6, #fff4d6);
+    border-radius: 28px;
+    margin: 20px 16px;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: var(--card-shadow);
+    border: 1px solid rgba(240,192,64,0.3);
+    animation: fadeInUp 0.6s ease;
+}
+
+.pending-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+    display: inline-block;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.pending-title {
+    font-size: 24px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 16px;
+}
+
+.pending-message {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #4a4a5a;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.pending-message p {
+    margin-bottom: 12px;
+}
+
+.pending-features {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: left;
+    border: 1px solid #f0ebff;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0ebff;
+}
+
+.feature-item:last-child {
+    border-bottom: none;
+}
+
+.feature-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--primary-soft);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: var(--primary);
+}
+
+.feature-text {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+}
+
+.pending-contact {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border-radius: 50px;
+    padding: 12px 20px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    text-decoration: none;
+}
+
+.pending-contact i {
+    font-size: 16px;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Profile Card */
+.profile-card {
+    background: white;
+    border-radius: 0 0 28px 28px;
+    padding-bottom: 20px;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 16px;
+}
+
+/* Cover */
+.cover {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cover-shop-name {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    display: inline-block;
+    background: linear-gradient(90deg, #f0c040 0%, #fff8dc 40%, #ffffff 50%, #fff8dc 60%, #f0c040 100%);
+    background-size: 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 3s linear infinite;
+    text-align: center;
+    padding: 0 20px;
+}
+
+@keyframes shimmer {
+    0%   { background-position: 200%; }
+    100% { background-position: -100%; }
+}
+
+.cover-address {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 8px;
+    text-align: center;
+}
+
+/* Avatar */
+.avatar-wrap {
+    margin-top: -45px;
+    margin-left: 20px;
+    display: inline-block;
+    z-index: 10;
+    position: relative;
+}
+
+.avatar {
+    width: 90px; height: 90px;
+    border-radius: 24px;
+    border: 4px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: 700;
+    color: white;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    animation: avatarPop 6s ease-in-out infinite;
+}
+
+@keyframes avatarPop {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.06); }
+}
+
+/* Info */
+.profile-info { padding: 12px 20px 0; }
+
+.shop-name-text {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.owner-name {
+    font-size: 14px;
+    color: var(--text-light);
+    margin-bottom: 8px;
+}
+
+.address-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #f0ebff;
+    color: var(--primary);
+    padding: 5px 12px;
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 14px;
+}
+
+.divider { height: 1px; background: #f0ebff; margin: 0 20px 14px; }
+
+/* Description */
+.description-wrap { padding: 0 20px; margin-bottom: 16px; }
+
+.description-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
+.description-scroll-wrap {
+    overflow: hidden;
+    background: #faf8ff;
+    border-radius: 12px;
+    padding: 12px;
+    border: 1.5px solid #e8e0ff;
+}
+
+.description-scroll-text {
+    display: inline-block;
+    white-space: nowrap;
+    animation: scrollLeft 8s linear infinite;  /* স্পিড বাড়ানো হয়েছে: 35s → 8s */
+    font-size: 14px;
+    color: var(--text-light);
+}
+
+@keyframes scrollLeft {
+    0%   { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+/* Contact Grid - শুধু Call, WhatsApp, Telegram */
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 0 20px;
+}
+
+.contact-tile {
+    padding: 14px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    transition: transform 0.2s;
+    font-family: 'Hind Siliguri', sans-serif;
+}
+
+.contact-tile:active { transform: scale(0.96); }
+.contact-tile.call     { background: #f0ebff; color: var(--primary); }
+.contact-tile.whatsapp { background: #e8faf0; color: #25D366; }
+.contact-tile.telegram { background: #e8f0fe; color: #0088cc; }
+
+.contact-tile-icon { font-size: 24px; }
+.contact-tile-text { font-size: 13px; font-weight: 600; }
+
+/* ── INFO CARD ── */
+.info-section { padding: 0 16px; margin-bottom: 16px; }
+
+.info-card {
+    background: white;
+    border-radius: 20px;
+    padding: 18px;
+    box-shadow: var(--card-shadow);
+    border: 1.5px solid rgba(108,43,217,0.06);
+    animation: tileIn 0.5s ease both;
+}
+
+@keyframes tileIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+}
+
+.info-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1.5px solid #f0ebff;
+}
+
+.info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f9f7ff;
+}
+
+.info-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+.info-icon  { font-size: 18px; width: 26px; text-align: center; flex-shrink: 0; }
+.info-label { font-size: 12px; color: var(--text-light); margin-bottom: 2px; }
+.info-value { font-size: 14px; color: var(--text); font-weight: 500; }
+
+/* ── NOT FOUND (Pending Message) ── */
+#notFound {
+    display: none;
+    text-align: center;
+    padding: 80px 30px;
+}
+
+/* পুরানো notFound স্টাইল রিপ্লেস করে নতুন pending স্টাইল ব্যবহার করব */
+.notfound-icon  { font-size: 60px; margin-bottom: 16px; }
+.notfound-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.notfound-sub   { font-size: 14px; color: var(--text-light); margin-bottom: 24px; }
+
+.back-home-btn {
+    padding: 14px 30px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    border: none;
+    border-radius: 99px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Hind Siliguri', sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
 </style>
 </head>
 <body>
 
 <a class="back-btn" href="index.html">←</a>
 
-<div id="loadingScreen"><div class="loading-spinner"></div><div class="loading-text">🚀 প্রোফাইল লোড হচ্ছে...</div></div>
-
-<div id="notFound" style="display:none; text-align:center; padding:80px 30px;">
-  <div style="font-size:60px;">🏪</div>
-  <div style="font-size:22px; font-weight:700; margin:16px 0;">দোকান পাওয়া যায়নি!</div>
-  <a href="index.html" style="display:inline-block; margin-top:30px; padding:14px 30px; background:linear-gradient(135deg,#6c2bd9,#a259f7); color:white; border-radius:99px; text-decoration:none;">🏠 হোমে যান</a>
+<!-- LOADING -->
+<div id="loadingScreen">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">লোড হচ্ছে...</div>
 </div>
 
-<div id="mainContent" style="display:none">
-  <div class="header">
-    <div class="store-header-top">
-      <button class="menu-icon" id="menuIconBtn"><i class="fas fa-bars"></i></button>
-      <span class="store-name-header" id="storeNameHeader">প্রিমিয়াম স্টোর</span>
-      <button class="search-icon-btn" id="searchIconBtn">🔍</button>
-    </div>
-    <div class="search-container" id="searchContainer">
-      <div class="search-input-wrapper">
-        <span>🔍</span>
-        <input type="text" id="searchInput" class="search-input" placeholder="প্রোডাক্ট সার্চ করুন..." autocomplete="off">
-        <button class="search-clear" id="searchClearBtn" style="display:none;">✕</button>
-      </div>
-    </div>
-  </div>
+<!-- NOT FOUND / PENDING MESSAGE (নতুন ডিজাইন) -->
+<div id="notFound">
+    <div class="pending-card">
+        <div class="pending-icon">🎉</div>
+        <div class="pending-title">প্রোফাইল পেইজে আপনাকে স্বাগতম!</div>
+        
+        <div class="pending-message">
+            <p>🌟 <strong>পাইকারি বাজার অ্যাপসে আপনার নিবন্ধন এখনো পেন্ডিং অবস্থায় আছে।</strong></p>
+            <p>যখনই আমাদের ম্যানেজমেন্ট কর্তৃপক্ষ আপনাকে এপ্রুভ করে দিবেন, তখনই আপনি আপনার দোকান আমাদের অ্যাপসের হোমপেজে দেখতে পাবেন।</p>
+        </div>
 
-  <!-- DRAWER -->
-  <div class="drawer-overlay" id="drawerOverlay"></div>
-  <div class="drawer" id="drawer">
-    <div class="drawer-header">
-      <h3><i class="fas fa-store"></i> দোকানের তথ্য</h3>
-      <button class="drawer-close" id="drawerCloseBtn"><i class="fas fa-times"></i></button>
-    </div>
-    <div class="drawer-content" id="drawerContent">
-      <div style="text-align:center; padding:20px;">🌀 লোড হচ্ছে...</div>
-    </div>
-    <div class="drawer-close-bottom">
-      <button class="close-bottom-btn" id="drawerCloseBottomBtn"><i class="fas fa-times"></i></button>
-    </div>
-  </div>
+        <div class="pending-features">
+            <div class="feature-item">
+                <div class="feature-icon">🏪</div>
+                <div class="feature-text">দোকানের ব্যানার ও প্রোফাইল ছবি কাস্টমাইজ করতে পারবেন</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📝</div>
+                <div class="feature-text">দোকানের বিস্তারিত বিবরণী ও ঠিকানা যোগ করতে পারবেন</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📦</div>
+                <div class="feature-text">পণ্য তালিকা তৈরি ও ম্যানেজ করতে পারবেন</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📞</div>
+                <div class="feature-text">কাস্টমাররা আপনার সাথে যোগাযোগের জন্য মেনু বারে সকল তথ্য দেখতে পাবেন</div>
+            </div>
+        </div>
 
-  <!-- SLIDER -->
-  <div class="slider-section">
-    <div class="slider-container" id="sliderContainer">
-      <div class="slides-wrapper" id="slidesWrapper"></div>
-      <button class="slider-btn btn-prev" id="prevBtn">❮</button>
-      <button class="slider-btn btn-next" id="nextBtn">❯</button>
-      <div class="slider-dots" id="sliderDots"></div>
-    </div>
-  </div>
+        <div class="pending-message">
+            <p>✨ আপনার সফলতা কামনা করছি। পাইকারি বাজার আপনাকে নিয়ে গর্বিত!</p>
+            <p>📞 <strong>যেকোনো সমস্যায় আমাদের সাথে যোগাযোগ করুন:</strong> হোম পেজের সাহায্য বাটনে ক্লিক করে আমাদের কন্টাক্ট নাম্বার পেয়ে যাবেন।</p>
+        </div>
 
-  <!-- TICKER -->
-  <div class="ticker-section">
-    <div class="ticker-wrap">
-      <div class="ticker" id="tickerContainer"></div>
+        <a href="index.html" class="pending-contact">
+            <i class="fas fa-home"></i> 🏠 হোমপেজে যান
+        </a>
     </div>
-  </div>
-
-  <!-- PRODUCTS -->
-  <div class="container">
-    <div class="section-title"><i class="fas fa-fire"></i> পণ্য সমূহ</div>
-    <div class="grid" id="productGrid"></div>
-  </div>
 </div>
 
-<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<!-- MAIN CONTENT (Approved Shop) -->
+<div id="mainContent">
 
+    <div class="profile-card">
+
+        <!-- Cover -->
+        <div class="cover" id="coverBg">
+            <div>
+                <div class="cover-shop-name" id="coverShopName"></div>
+                <div class="cover-address" id="coverAddress"></div>
+            </div>
+        </div>
+
+        <!-- Avatar -->
+        <div class="avatar-wrap">
+            <div class="avatar" id="profileAvatar">?</div>
+        </div>
+
+        <!-- Info -->
+        <div class="profile-info">
+            <div class="shop-name-text" id="shopNameText"></div>
+            <div class="owner-name"     id="ownerNameText"></div>
+            <div class="address-badge">
+                <span>📍</span><span id="addressText"></span>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Description -->
+        <div class="description-wrap" id="descriptionWrap" style="display:none">
+            <div class="description-title">📋 দোকান পরিচিতি</div>
+            <div class="description-scroll-wrap">
+                <span class="description-scroll-text" id="descriptionText"></span>
+            </div>
+        </div>
+
+        <!-- Contacts (Call, WhatsApp, Telegram) -->
+        <div class="contact-grid" id="contactGrid"></div>
+
+    </div>
+
+    <!-- Details -->
+    <div class="info-section">
+        <div class="info-card">
+            <div class="info-card-title">📋 দোকানের বিস্তারিত</div>
+
+            <div class="info-row">
+                <div class="info-icon">🏪</div>
+                <div>
+                    <div class="info-label">দোকানের নাম</div>
+                    <div class="info-value" id="detailShopName">—</div>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-icon">👤</div>
+                <div>
+                    <div class="info-label">মালিকের নাম</div>
+                    <div class="info-value" id="detailOwnerName">—</div>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-icon">🗺️</div>
+                <div>
+                    <div class="info-label">বিভাগ</div>
+                    <div class="info-value" id="detailDivision">—</div>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-icon">📌</div>
+                <div>
+                    <div class="info-label">জেলা</div>
+                    <div class="info-value" id="detailDistrict">—</div>
+                </div>
+            </div>
+
+            <div class="info-row" id="detailThanaRow">
+                <div class="info-icon">📍</div>
+                <div>
+                    <div class="info-label">থানা/উপজেলা</div>
+                    <div class="info-value" id="detailThana">—</div>
+                </div>
+            </div>
+
+            <div class="info-row" id="detailAddressRow" style="display:none">
+                <div class="info-icon">🏠</div>
+                <div>
+                    <div class="info-label">পূর্ণ ঠিকানা</div>
+                    <div class="info-value" id="detailAddress">—</div>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-icon">📱</div>
+                <div>
+                    <div class="info-label">মোবাইল</div>
+                    <div class="info-value" id="detailPhone">—</div>
+                </div>
+            </div>
+
+            <!-- ক্যাটাগরি দেখানোর জন্য নতুন রো -->
+            <div class="info-row" id="detailCategoryRow" style="display:none">
+                <div class="info-icon">🏷️</div>
+                <div>
+                    <div class="info-label">ক্যাটাগরি</div>
+                    <div class="info-value" id="detailCategory">—</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyA1CzQX9tgbLd46QfvCK6Rwqa0z9CRWoMs",
-  authDomain: "agls-5bd4c.firebaseapp.com",
-  databaseURL: "https://agls-5bd4c-default-rtdb.firebaseio.com/",
-  projectId: "agls-5bd4c",
+    apiKey: "AIzaSyA1CzQX9tgbLd46QfvCK6Rwqa0z9CRWoMs",
+    authDomain: "agls-5bd4c.firebaseapp.com",
+    databaseURL: "https://agls-5bd4c-default-rtdb.firebaseio.com/",
+    projectId: "agls-5bd4c",
 };
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-const urlParams = new URLSearchParams(window.location.search);
-const shopId = urlParams.get('id');
-if (!shopId) { showNotFound(); } else { loadShop(); }
+const gradients = [
+    'linear-gradient(135deg, #6c2bd9, #a259f7)',
+    'linear-gradient(135deg, #0f3460, #16213e)',
+    'linear-gradient(135deg, #1a6b3c, #2ecc71)',
+    'linear-gradient(135deg, #e74c3c, #c0392b)',
+    'linear-gradient(135deg, #f39c12, #e67e22)',
+    'linear-gradient(135deg, #1abc9c, #16a085)',
+    'linear-gradient(135deg, #2980b9, #1a5276)',
+];
 
-let currentShopData = null;
+const urlParams = new URLSearchParams(window.location.search);
+const shopId    = urlParams.get('id');
+
+if (!shopId) {
+    showPendingMessage();
+} else {
+    loadShop();
+}
 
 async function loadShop() {
-  try {
-    const snap = await db.ref('shops/' + shopId).get();
-    document.getElementById('loadingScreen').style.display = 'none';
-    if (!snap.exists() || snap.val().status !== 'approved') { showNotFound(); return; }
-    currentShopData = snap.val();
-    document.getElementById('storeNameHeader').textContent = currentShopData.shopName || 'প্রিমিয়াম স্টোর';
-    document.title = `${currentShopData.shopName} | প্রিমিয়াম স্টোর`;
+    try {
+        const snap = await db.ref('shops/' + shopId).get();
+        document.getElementById('loadingScreen').style.display = 'none';
+
+        if (!snap.exists()) { 
+            showPendingMessage(); 
+            return; 
+        }
+
+        const shop = snap.val();
+        
+        // যদি shop.status 'approved' না হয়, তাহলে pending মেসেজ দেখাবে
+        if (shop.status !== 'approved') { 
+            showPendingMessage(); 
+            return; 
+        }
+
+        // Approved shop দেখানো
+        displayApprovedShop(shop);
+
+    } catch (e) {
+        console.error('Error loading shop:', e);
+        showPendingMessage();
+    }
+}
+
+function displayApprovedShop(shop) {
+    const gradIndex = (shop.shopName || '').charCodeAt(0) % gradients.length;
+    const grad      = gradients[gradIndex];
+    const avatar    = (shop.shopName || '?').charAt(0);
+
+    // Cover
+    document.getElementById('coverBg').style.background      = grad;
+    document.getElementById('coverShopName').textContent      = shop.shopName || '';
+    
+    // ঠিকানা তৈরি
+    let fullAddress = '';
+    if (shop.thana) {
+        fullAddress = `${shop.thana}, ${shop.district || ''}`;
+    } else if (shop.area) {
+        fullAddress = `${shop.area}, ${shop.district || ''}`;
+    } else {
+        fullAddress = shop.district || '';
+    }
+    document.getElementById('coverAddress').textContent = `📍 ${fullAddress}`;
+
+    // Avatar
+    const avatarEl = document.getElementById('profileAvatar');
+    avatarEl.textContent       = avatar;
+    avatarEl.style.background  = grad;
+
+    // Info
+    document.getElementById('shopNameText').textContent  = shop.shopName  || '';
+    document.getElementById('ownerNameText').textContent = shop.ownerName ? `👤 ${shop.ownerName}` : '';
+    
+    // অ্যাড্রেস ব্যাজ
+    const addressBadgeText = shop.thana ? `${shop.thana}, ${shop.district}` : (shop.area ? `${shop.area}, ${shop.district}` : shop.district);
+    document.getElementById('addressText').textContent   = addressBadgeText || '';
+
+    // Description
+    if (shop.description) {
+        document.getElementById('descriptionWrap').style.display  = 'block';
+        document.getElementById('descriptionText').textContent    = shop.description;
+    }
+
+    // Contact Grid - Call, WhatsApp, Telegram
+    let contactHtml = '';
+    
+    if (shop.phone) {
+        contactHtml += `<a href="tel:${shop.phone}" class="contact-tile call">
+            <span class="contact-tile-icon">📞</span>
+            <span class="contact-tile-text">Call করুন</span>
+        </a>`;
+    }
+    
+    if (shop.whatsapp) {
+        let waNumber = shop.whatsapp.replace(/[^0-9]/g, '');
+        if (!waNumber.startsWith('88')) {
+            waNumber = '88' + waNumber;
+        }
+        contactHtml += `<a href="https://wa.me/${waNumber}" target="_blank" class="contact-tile whatsapp">
+            <span class="contact-tile-icon">💬</span>
+            <span class="contact-tile-text">WhatsApp</span>
+        </a>`;
+    }
+    
+    if (shop.telegram) {
+        let tgNumber = shop.telegram.replace(/[^0-9]/g, '');
+        if (!tgNumber.startsWith('88')) {
+            tgNumber = '88' + tgNumber;
+        }
+        contactHtml += `<a href="https://t.me/+${tgNumber}" target="_blank" class="contact-tile telegram">
+            <span class="contact-tile-icon">📡</span>
+            <span class="contact-tile-text">Telegram</span>
+        </a>`;
+    }
+    
+    document.getElementById('contactGrid').innerHTML = contactHtml;
+
+    // Details
+    document.getElementById('detailShopName').textContent   = shop.shopName   || '—';
+    document.getElementById('detailOwnerName').textContent  = shop.ownerName  || '—';
+    document.getElementById('detailDivision').textContent   = shop.division   || '—';
+    document.getElementById('detailDistrict').textContent   = shop.district   || '—';
+    document.getElementById('detailPhone').textContent      = shop.phone      || '—';
+    
+    // থানা দেখানো
+    if (shop.thana) {
+        document.getElementById('detailThanaRow').style.display = 'flex';
+        document.getElementById('detailThana').textContent = shop.thana;
+    } else if (shop.area) {
+        document.getElementById('detailThanaRow').style.display = 'flex';
+        document.getElementById('detailThana').textContent = shop.area;
+    } else {
+        document.getElementById('detailThanaRow').style.display = 'none';
+    }
+    
+    // পূর্ণ ঠিকানা
+    if (shop.address) {
+        document.getElementById('detailAddressRow').style.display = 'flex';
+        document.getElementById('detailAddress').textContent = shop.address;
+    }
+
+    // ক্যাটাগরি দেখানো (নতুন যোগ করা)
+    if (shop.category) {
+        document.getElementById('detailCategoryRow').style.display = 'flex';
+        let categoryText = shop.category;
+        // কমা সেপারেটেড হলে কমা রিপ্লেস করে কমা স্পেস
+        if (categoryText.includes(',')) {
+            categoryText = categoryText.split(',').map(c => c.trim()).join(', ');
+        }
+        document.getElementById('detailCategory').textContent = categoryText;
+    }
+
+    document.title = `${shop.shopName} — পাইকারি বাজার`;
     document.getElementById('mainContent').style.display = 'block';
-    
-    renderDrawerContent(currentShopData);
-    
-    await loadTicker();
-    await loadSlider();
-    await loadProducts();
-  } catch(e) { showNotFound(); }
+    document.getElementById('notFound').style.display = 'none';
 }
 
-function showNotFound() {
-  document.getElementById('loadingScreen').style.display = 'none';
-  document.getElementById('notFound').style.display = 'block';
+function showPendingMessage() {
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('notFound').style.display = 'block';
+    document.getElementById('mainContent').style.display = 'none';
+    document.title = 'অপেক্ষমান | পাইকারি বাজার';
 }
-
-function escapeHtml(s) { if(!s) return ''; return s.replace(/[&<>]/g, m=> m==='&'?'&amp;': m==='<'?'&lt;':'&gt;'); }
-
-// ========== DRAWER - با फ़ॉन्ट বড় এবং ক্লিকেবল কন্টাক্ট ==========
-function renderDrawerContent(shop) {
-  const container = document.getElementById('drawerContent');
-  if(!shop) { container.innerHTML = '<div style="text-align:center; padding:20px;">তথ্য পাওয়া যায়নি</div>'; return; }
-  
-  // Phone Call Link
-  const phoneLink = shop.phone ? `<a href="tel:${shop.phone}"><i class="fas fa-phone-alt" style="margin-right:8px; color:#6c2bd9;"></i> ${escapeHtml(shop.phone)}</a>` : '—';
-  
-  // WhatsApp Link
-  let whatsappLink = '—';
-  if(shop.whatsapp) {
-    let waNum = shop.whatsapp.replace(/[^0-9]/g, '');
-    if (!waNum.startsWith('88')) waNum = '88' + waNum;
-    whatsappLink = `<a href="https://wa.me/${waNum}" target="_blank"><i class="fab fa-whatsapp" style="margin-right:8px; color:#25D366;"></i> ${escapeHtml(shop.whatsapp)}</a>`;
-  }
-  
-  // Telegram Link
-  let telegramLink = '—';
-  if(shop.telegram) {
-    let tgNum = shop.telegram.replace(/[^0-9]/g, '');
-    if (!tgNum.startsWith('88')) tgNum = '88' + tgNum;
-    telegramLink = `<a href="https://t.me/+${tgNum}" target="_blank"><i class="fab fa-telegram" style="margin-right:8px; color:#0088cc;"></i> ${escapeHtml(shop.telegram)}</a>`;
-  }
-  
-  container.innerHTML = `
-    <div class="drawer-info-item">
-      <span class="drawer-info-label"><i class="fas fa-store"></i> দোকানের নাম</span>
-      <span class="drawer-info-value">${escapeHtml(shop.shopName || '—')}</span>
-    </div>
-    <div class="drawer-info-item">
-      <span class="drawer-info-label"><i class="fas fa-user-circle"></i> প্রোপাইটরের নাম</span>
-      <span class="drawer-info-value">${escapeHtml(shop.ownerName || '—')}</span>
-    </div>
-    <div class="drawer-info-item">
-      <span class="drawer-info-label"><i class="fas fa-phone-alt"></i> 📞 কন্টাক্ট নাম্বার</span>
-      <span class="drawer-info-value">${phoneLink}</span>
-    </div>
-    <div class="drawer-info-item">
-      <span class="drawer-info-label"><i class="fab fa-whatsapp"></i> 💬 WhatsApp নাম্বার</span>
-      <span class="drawer-info-value">${whatsappLink}</span>
-    </div>
-    <div class="drawer-info-item">
-      <span class="drawer-info-label"><i class="fab fa-telegram"></i> 📡 টেলিগ্রাম নাম্বার</span>
-      <span class="drawer-info-value">${telegramLink}</span>
-    </div>
-    <div class="drawer-divider"></div>
-    <div class="drawer-info-item">
-      <span class="drawer-info-label"><i class="fas fa-map-marker-alt"></i> 🏪 দোকানের ঠিকানা</span>
-      <span class="drawer-info-value">${escapeHtml(shop.area || shop.district || '—')}</span>
-    </div>
-    <div class="drawer-info-item">
-      <span class="drawer-info-label"><i class="fas fa-align-left"></i> 📋 দোকানের বিবরণ</span>
-      <span class="drawer-info-value">${escapeHtml(shop.description || 'কোনো বিবরণ নেই')}</span>
-    </div>
-  `;
-}
-
-// Drawer Open/Close
-function openDrawer() {
-  document.getElementById('drawer').classList.add('open');
-  document.getElementById('drawerOverlay').classList.add('show');
-  document.getElementById('drawerOverlay').style.display = 'block';
-  document.body.style.overflow = 'hidden';
-}
-function closeDrawer() {
-  document.getElementById('drawer').classList.remove('open');
-  document.getElementById('drawerOverlay').classList.remove('show');
-  setTimeout(() => {
-    document.getElementById('drawerOverlay').style.display = 'none';
-  }, 300);
-  document.body.style.overflow = '';
-}
-
-document.getElementById('menuIconBtn').addEventListener('click', openDrawer);
-document.getElementById('drawerCloseBtn').addEventListener('click', closeDrawer);
-document.getElementById('drawerCloseBottomBtn').addEventListener('click', closeDrawer);
-document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
-
-// ========== TICKER ==========
-async function loadTicker() {
-  const snap = await db.ref(`tickers/${shopId}`).once('value');
-  let items = [];
-  if(snap.exists()){ items = snap.val(); }
-  if(!items || items.length===0){ items = ["✨ EXCLUSIVE DROP : AI COLLECTION","🚀 UP TO 40% OFF","💜 FREE SHIPPING","⚡ LIMITED EDITION"]; }
-  const tickerDiv = document.getElementById('tickerContainer');
-  const doubled = [...items, ...items];
-  tickerDiv.innerHTML = doubled.map(text => `<span class="ticker-item">✨ ${escapeHtml(text)}</span>`).join('');
-}
-
-// ========== SLIDER ==========
-let currentSlideIndex = 0, slideInterval = null, slidesData = [];
-async function loadSlider() {
-  const snap = await db.ref(`sliders/${shopId}`).once('value');
-  if(snap.exists()){ slidesData = snap.val(); }
-  if(!slidesData || slidesData.length===0){ slidesData = [{image:"https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?w=1200&h=400&fit=crop"}]; }
-  renderSlider();
-  resetAutoSlide();
-}
-function getGoogleDriveImageUrl(url, w=1200) {
-  if(!url) return "https://via.placeholder.com/1200x400/ede6ff/a855f7?text=No+Image";
-  let f=null,m=url.match(/\/d\/([a-zA-Z0-9_-]+)/); if(m) f=m[1];
-  if(!f) { m=url.match(/id=([a-zA-Z0-9_-]+)/); if(m) f=m[1]; }
-  if(f) return `https://lh3.googleusercontent.com/d/${f}=w${w}`;
-  if(url.match(/\.(jpg|jpeg|png|gif|webp)/i)) return url;
-  return "https://via.placeholder.com/1200x400/ede6ff/a855f7?text=Image+Error";
-}
-function renderSlider() {
-  const w = document.getElementById('slidesWrapper');
-  const d = document.getElementById('sliderDots');
-  if(!w) return;
-  w.innerHTML = '';
-  slidesData.forEach((s,i)=>{ const div=document.createElement('div'); div.className='slide'; div.innerHTML=`<img src="${getGoogleDriveImageUrl(s.image,1200)}" alt="Slide ${i+1}" onerror="this.src='https://via.placeholder.com/1200x400/2d0b5c/ffffff?text=Error'">`; w.appendChild(div); });
-  d.innerHTML = '';
-  slidesData.forEach((_,i)=>{ const dot=document.createElement('div'); dot.className='dot'; if(i===currentSlideIndex) dot.classList.add('active'); dot.addEventListener('click',()=>goToSlide(i)); d.appendChild(dot); });
-  updateSliderPosition();
-}
-function updateSliderPosition() { const wr = document.getElementById('slidesWrapper'); if(wr) wr.style.transform=`translateX(-${currentSlideIndex*100}%)`; document.querySelectorAll('.dot').forEach((d,i)=>{ if(i===currentSlideIndex) d.classList.add('active'); else d.classList.remove('active'); }); }
-function nextSlide() { if(slidesData.length) { currentSlideIndex=(currentSlideIndex+1)%slidesData.length; updateSliderPosition(); resetAutoSlide(); } }
-function prevSlide() { if(slidesData.length) { currentSlideIndex=(currentSlideIndex-1+slidesData.length)%slidesData.length; updateSliderPosition(); resetAutoSlide(); } }
-function goToSlide(i) { if(i>=0&&i<slidesData.length) { currentSlideIndex=i; updateSliderPosition(); resetAutoSlide(); } }
-function resetAutoSlide() { if(slideInterval) clearInterval(slideInterval); slideInterval=setInterval(()=>nextSlide(),5000); }
-
-// ========== PRODUCTS ==========
-let allProducts = [];
-function getProductImageUrl(url) {
-  if(!url) return "https://via.placeholder.com/400x400/ede6ff/a855f7?text=No+Image";
-  let f=null,m=url.match(/\/d\/([a-zA-Z0-9_-]+)/); if(m) f=m[1];
-  if(f) return `https://lh3.googleusercontent.com/d/${f}=w400`;
-  if(url.match(/\.(jpg|jpeg|png|gif|webp)/i)) return url;
-  return "https://via.placeholder.com/400x400/ede6ff/a855f7?text=Image+Error";
-}
-function renderProductGrid(prods) {
-  const g = document.getElementById('productGrid');
-  if(!prods || prods.length === 0) { g.innerHTML = '<div class="no-results">📦 এখনও কোনো প্রোডাক্ট যোগ করা হয়নি</div>'; return; }
-  g.innerHTML = '';
-  prods.forEach(p => {
-    const imgUrl = getProductImageUrl(p.image);
-    const priceDisplay = (p.price && p.price !== "") ? `৳ ${escapeHtml(p.price)}` : "মূল্য নির্ধারিত হয়নি";
-    const nameDisplay = p.name || "নামহীন প্রোডাক্ট";
-    const descDisplay = (p.desc && p.desc !== "") ? escapeHtml(p.desc) : "কোনো বিবরণ নেই।";
-    const div = document.createElement('div'); div.className = 'product';
-    div.innerHTML = `<div class="product-img-wrapper"><img src="${imgUrl}" alt="${escapeHtml(nameDisplay)}" onerror="this.src='https://via.placeholder.com/400x400/ede6ff/a855f7?text=Error'"></div><div class="product-info"><div class="product-price">${priceDisplay}</div><div class="name-row"><div class="product-name">${escapeHtml(nameDisplay)}</div><button class="three-dots" data-desc="${escapeHtml(descDisplay)}">⋮</button></div><div class="product-desc">${escapeHtml(descDisplay)}</div></div>`;
-    g.appendChild(div);
-  });
-  document.querySelectorAll('.three-dots').forEach(btn => { btn.addEventListener('click', (e) => { e.stopPropagation(); const dd = btn.closest('.product-info').querySelector('.product-desc'); if(dd) dd.classList.toggle('show'); }); });
-}
-async function loadProducts() {
-  try {
-    const snapshot = await db.ref(`products/${shopId}`).once('value');
-    allProducts = [];
-    snapshot.forEach(child => { allProducts.push({ id: child.key, ...child.val() }); });
-    allProducts.sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
-    renderProductGrid(allProducts);
-  } catch(e) { document.getElementById('productGrid').innerHTML = '<div class="no-results">⚠️ প্রোডাক্ট লোড করতে সমস্যা</div>'; }
-}
-
-// ========== SEARCH ==========
-function performSearch() {
-  const term = document.getElementById('searchInput').value.trim().toLowerCase();
-  const clearBtn = document.getElementById('searchClearBtn');
-  if (term) clearBtn.style.display = 'flex';
-  else clearBtn.style.display = 'none';
-  if (!term) { renderProductGrid(allProducts); return; }
-  const filtered = allProducts.filter(p => (p.name && p.name.toLowerCase().includes(term)) || (p.price && p.price.toString().includes(term)) || (p.desc && p.desc.toLowerCase().includes(term)));
-  renderProductGrid(filtered);
-}
-
-const searchContainer = document.getElementById('searchContainer');
-const searchIconBtn = document.getElementById('searchIconBtn');
-const searchInput = document.getElementById('searchInput');
-const searchClearBtn = document.getElementById('searchClearBtn');
-
-searchIconBtn.addEventListener('click', () => {
-  searchContainer.classList.toggle('open');
-  if (searchContainer.classList.contains('open')) searchInput.focus();
-  else { searchInput.value = ''; performSearch(); }
-});
-searchClearBtn.addEventListener('click', () => { searchInput.value = ''; performSearch(); searchInput.focus(); });
-searchInput.addEventListener('input', performSearch);
-
-// ========== SCROLL TOP ==========
-window.addEventListener('scroll', () => { const btn = document.getElementById('scrollTop'); if(window.scrollY>300) btn.classList.add('show'); else btn.classList.remove('show'); });
-
-// ========== SLIDER CONTROLS ==========
-document.getElementById('prevBtn').addEventListener('click', prevSlide);
-document.getElementById('nextBtn').addEventListener('click', nextSlide);
-const sc = document.getElementById('sliderContainer');
-sc.addEventListener('mouseenter', () => { if(slideInterval) clearInterval(slideInterval); });
-sc.addEventListener('mouseleave', () => resetAutoSlide());
 </script>
+
 </body>
 </html>
