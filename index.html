@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>পাইকারি বাজার | পাইকারি দোকানের সেরা ঠিকানা</title>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
 :root {
     --primary: #6c2bd9;
@@ -215,6 +216,28 @@ marquee {
     object-fit: cover;
     display: block;
 }
+/* Cloudinary ভিডিওর জন্য আনমিউট বাটন */
+.video-mute-overlay {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s;
+    color: white;
+    font-size: 16px;
+}
+.video-mute-overlay:hover {
+    background: rgba(0,0,0,0.8);
+    transform: scale(1.05);
+}
 .video-card-info {
     padding: 14px 16px;
     text-align: center;
@@ -242,7 +265,7 @@ marquee {
     margin-bottom: 12px;
 }
 
-/* দোকানের কার্ড - নতুন কার্ড ভিউ (ইউটিউব ভিডিও সহ) */
+/* দোকানের কার্ড */
 .shop-card-wrapper {
     margin: 0 16px 16px;
 }
@@ -281,6 +304,28 @@ marquee {
     color: white;
     font-size: 18px;
     text-align: center;
+}
+/* YouTube ভিডিওর জন্য আনমিউট বাটন */
+.youtube-mute-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 20;
+    transition: all 0.2s;
+    color: white;
+    font-size: 16px;
+}
+.youtube-mute-btn:hover {
+    background: rgba(0,0,0,0.8);
+    transform: scale(1.05);
 }
 .shop-video-info {
     padding: 14px 16px;
@@ -495,7 +540,6 @@ marquee {
     <div class="sp-bar-wrap"><div class="sp-bar"></div></div>
 </div>
 
-<!-- লোডিং ওভারলে (৬ নম্বর লোডার) -->
 <div id="loadingOverlay" style="display: none;">
     <div style="text-align: center;">
         <div class="loader-6"></div>
@@ -654,7 +698,7 @@ async function loadCategories() {
     }
 }
 
-// ========== Cloudinary ভিডিও লোড (অটোপ্লে, মিউট, লুপ, স্ক্রল পজ) ==========
+// ========== Cloudinary ভিডিও লোড (অটোপ্লে, মিউট, লুপ, স্ক্রল পজ, + আনমিউট বাটন) ==========
 function loadAdminVideos() {
     db.ref('adminVideos').orderByChild('order').on('value', (snap) => {
         allVideos = [];
@@ -670,7 +714,7 @@ function loadAdminVideos() {
     });
 }
 
-function setupCloudinaryVideo(videoElement, videoUrl) {
+function setupCloudinaryVideo(videoElement, videoUrl, container) {
     if (!videoElement) return;
     
     videoElement.src = videoUrl;
@@ -686,6 +730,25 @@ function setupCloudinaryVideo(videoElement, videoUrl) {
             videoElement.muted = true;
             videoElement.play();
         });
+    }
+    
+    // আনমিউট বাটন তৈরি
+    let muteButton = container.querySelector('.video-mute-overlay');
+    if (!muteButton) {
+        muteButton = document.createElement('div');
+        muteButton.className = 'video-mute-overlay';
+        muteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        muteButton.onclick = (e) => {
+            e.stopPropagation();
+            if (videoElement.muted) {
+                videoElement.muted = false;
+                muteButton.innerHTML = '<i class="fas fa-volume-up"></i>';
+            } else {
+                videoElement.muted = true;
+                muteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            }
+        };
+        container.appendChild(muteButton);
     }
     
     const observer = new IntersectionObserver((entries) => {
@@ -722,7 +785,7 @@ function renderVideoGrid() {
     
     container.innerHTML = allVideos.map(video => `
         <div class="video-card" data-video-id="${video.id}">
-            <div class="video-player-container">
+            <div class="video-player-container" id="cloudinary-container-${video.id}">
                 <video class="cloudinary-video" preload="metadata" playsinline></video>
             </div>
             <div class="video-card-info">
@@ -735,10 +798,11 @@ function renderVideoGrid() {
     const videoCards = document.querySelectorAll('.video-card');
     videoCards.forEach((card, idx) => {
         const videoElement = card.querySelector('.cloudinary-video');
+        const containerDiv = card.querySelector('.video-player-container');
         if (videoElement && allVideos[idx]) {
             let videoUrl = allVideos[idx].videoUrl;
             if (videoUrl && videoUrl.trim() !== '') {
-                setupCloudinaryVideo(videoElement, videoUrl);
+                setupCloudinaryVideo(videoElement, videoUrl, containerDiv);
             } else {
                 videoElement.style.background = "#1a0a3e";
             }
@@ -997,9 +1061,33 @@ window.applyFilters = function() {
     window.renderShops(filtered);
 };
 
-// ইউটিউব প্লেয়ার অবজারভার (স্ক্রল আউট হলে পজ)
-function setupYouTubeObserver(iframe, player) {
+// YouTube আনমিউট ফাংশন
+function toggleYouTubeMute(player, button) {
+    if (player.isMuted()) {
+        player.unMute();
+        button.innerHTML = '<i class="fas fa-volume-up"></i>';
+    } else {
+        player.mute();
+        button.innerHTML = '<i class="fas fa-volume-mute"></i>';
+    }
+}
+
+function setupYouTubeObserver(iframe, player, container) {
     if (!iframe) return;
+    
+    // আনমিউট বাটন তৈরি
+    let muteButton = container.querySelector('.youtube-mute-btn');
+    if (!muteButton) {
+        muteButton = document.createElement('div');
+        muteButton.className = 'youtube-mute-btn';
+        muteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        muteButton.onclick = (e) => {
+            e.stopPropagation();
+            toggleYouTubeMute(player, muteButton);
+        };
+        container.appendChild(muteButton);
+    }
+    
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (!entry.isIntersecting && player && player.pauseVideo) {
@@ -1013,7 +1101,7 @@ function setupYouTubeObserver(iframe, player) {
     return observer;
 }
 
-// ========== রেন্ডার শপস (ইউটিউব ভিডিও - কার্ড ভিউ) ==========
+// ========== রেন্ডার শপস (ইউটিউব ভিডিও - কার্ড ভিউ + আনমিউট বাটন) ==========
 window.renderShops = function(shops) {
     const container = document.getElementById('shopList');
     if (!container) return;
@@ -1067,7 +1155,6 @@ window.renderShops = function(shops) {
         </div>`;
     }).join('');
     
-    // ইউটিউব API রেডি হলে প্লেয়ার ইনিশিয়ালাইজ করুন
     if (typeof YT !== 'undefined' && YT.Player) {
         initYouTubePlayers();
     }
@@ -1079,6 +1166,7 @@ function initYouTubePlayers() {
     youtubePlayers = [];
     
     iframes.forEach(iframe => {
+        const container = iframe.closest('.video-player-card');
         const playerId = 'player_' + Math.random().toString(36).substr(2, 9);
         iframe.id = playerId;
         const player = new YT.Player(playerId, {
@@ -1086,7 +1174,7 @@ function initYouTubePlayers() {
                 onReady: (event) => {
                     event.target.mute();
                     event.target.playVideo();
-                    const observer = setupYouTubeObserver(iframe, event.target);
+                    const observer = setupYouTubeObserver(iframe, event.target, container);
                     if (observer) youtubePlayers.push({ player: event.target, observer });
                 }
             }
@@ -1236,7 +1324,7 @@ window.navigateTo = function(page, event) {
     }
 };
 
-// স্ক্রল ইভেন্ট (সার্চ সেকশন হাইড করার জন্য)
+// স্ক্রল ইভেন্ট
 let lastScrollTop = 0;
 const searchSectionEl = document.getElementById('searchSection');
 window.addEventListener('scroll', function() {
