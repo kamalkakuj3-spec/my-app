@@ -285,7 +285,7 @@ marquee {
     margin-bottom: 12px;
 }
 
-/* দোকানের কার্ড */
+/* দোকানের কার্ড - বিবরণী হাইড করা হয়েছে */
 .shop-card-wrapper {
     margin: 0 16px 16px;
 }
@@ -378,20 +378,6 @@ marquee {
     justify-content: center;
     gap: 6px;
     flex-wrap: wrap;
-}
-.shop-description-preview {
-    font-size: 12px;
-    color: var(--text-light);
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid #eee;
-    text-align: left;
-    line-height: 1.4;
-    max-height: 60px;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
 }
 .no-video {
     width: 100%;
@@ -710,7 +696,7 @@ let selectedCategories = [];
 let allVideos = [];
 
 // সার্চ ইনডেক্সের জন্য সমস্ত ইউনিক শব্দ
-let searchIndex = new Map(); // শব্দ -> { type, displayText, data }
+let searchIndex = new Map();
 
 let videoObservers = [];
 let cloudinaryVideoElements = [];
@@ -739,7 +725,7 @@ function hideLoading() {
     if (loader) loader.style.display = 'none';
 }
 
-// ========== সার্চ ইনডেক্স বিল্ড করা (বিবরণী সহ) ==========
+// ========== সার্চ ইনডেক্স বিল্ড করা ==========
 function buildSearchIndex() {
     searchIndex.clear();
     
@@ -753,13 +739,11 @@ function buildSearchIndex() {
     
     // 2. জিও ডাটা থেকে বিভাগ, জেলা, উপজেলা যোগ করা
     geoData.forEach(division => {
-        // বিভাগ
         const divKey = division.name.toLowerCase();
         if (!searchIndex.has(divKey)) {
             searchIndex.set(divKey, { type: 'division', displayText: division.name, data: division.name });
         }
         
-        // জেলা ও উপজেলা
         division.districts.forEach(district => {
             const distKey = district.name.toLowerCase();
             if (!searchIndex.has(distKey)) {
@@ -775,9 +759,8 @@ function buildSearchIndex() {
         });
     });
     
-    // 3. দোকানের তথ্য যোগ করা (বিবরণী সহ)
+    // 3. দোকানের তথ্য যোগ করা (বিবরণী ইনডেক্সে থাকবে কিন্তু কার্ডে দেখাবে না)
     allShops.forEach(shop => {
-        // দোকানের নাম
         if (shop.shopName) {
             const nameKey = shop.shopName.toLowerCase();
             if (!searchIndex.has(nameKey)) {
@@ -785,7 +768,6 @@ function buildSearchIndex() {
             }
         }
         
-        // এলাকা
         if (shop.area) {
             const areaKey = shop.area.toLowerCase();
             if (!searchIndex.has(areaKey)) {
@@ -793,9 +775,8 @@ function buildSearchIndex() {
             }
         }
         
-        // বিবরণী / description (এটি গুরুত্বপূর্ণ অংশ)
+        // বিবরণী ইনডেক্সে থাকবে (সার্চ রেজাল্টের জন্য) কিন্তু কার্ডে দেখানো হবে না
         if (shop.description) {
-            // বিবরণী থেকে শব্দগুলো আলাদা করে ইনডেক্সে যোগ করা
             const words = shop.description.toLowerCase().split(/\s+/);
             const uniqueWords = new Set(words);
             uniqueWords.forEach(word => {
@@ -805,7 +786,6 @@ function buildSearchIndex() {
             });
         }
         
-        // প্রোডাক্টের নাম (যদি থাকে)
         if (shop.products && Array.isArray(shop.products)) {
             shop.products.forEach(product => {
                 if (product.name) {
@@ -817,7 +797,6 @@ function buildSearchIndex() {
             });
         }
         
-        // দোকানের ক্যাটাগরি
         if (shop.category) {
             const catKey = shop.category.toLowerCase();
             if (!searchIndex.has(catKey)) {
@@ -825,7 +804,6 @@ function buildSearchIndex() {
             }
         }
         
-        // জেলা
         if (shop.district) {
             const distKey = shop.district.toLowerCase();
             if (!searchIndex.has(distKey)) {
@@ -833,7 +811,6 @@ function buildSearchIndex() {
             }
         }
         
-        // থানা
         if (shop.thana) {
             const thanaKey = shop.thana.toLowerCase();
             if (!searchIndex.has(thanaKey)) {
@@ -842,7 +819,7 @@ function buildSearchIndex() {
         }
     });
     
-    console.log('সার্চ ইনডেক্স তৈরি হয়েছে:', searchIndex.size, 'টি শব্দ (বিবরণী সহ)');
+    console.log('সার্চ ইনডেক্স তৈরি হয়েছে:', searchIndex.size, 'টি শব্দ');
 }
 
 // ========== সার্চ হ্যান্ডলার ==========
@@ -857,7 +834,6 @@ window.handleSearchInput = function() {
         return;
     }
     
-    // ম্যাচিং শব্দ খুঁজুন
     const matches = [];
     for (let [word, info] of searchIndex.entries()) {
         if (word.includes(query)) {
@@ -866,7 +842,6 @@ window.handleSearchInput = function() {
         if (matches.length >= 15) break;
     }
     
-    // সাজেশন দেখানো
     if (matches.length > 0) {
         suggestionsBox.innerHTML = matches.map(match => {
             const highlightedText = match.displayText.replace(new RegExp(`(${query})`, 'gi'), '<span class="suggestion-highlight">$1</span>');
@@ -881,7 +856,6 @@ window.handleSearchInput = function() {
         suggestionsBox.classList.remove('show');
     }
     
-    // ফিল্টার অ্যাপ্লাই করা (মূল সার্চ)
     performSearch(query);
 };
 
@@ -915,7 +889,6 @@ function performSearch(query) {
     
     let filtered = [...allShops];
     
-    // বিভাগ ফিল্টার (যদি থাকে)
     if (selectedDivision) {
         const division = geoData.find(d => d.name === selectedDivision);
         const districtNames = division ? division.districts.map(d => d.name) : [];
@@ -931,22 +904,14 @@ function performSearch(query) {
         filtered = filtered.filter(shop => selectedCategories.includes(shop.category));
     }
     
-    // সার্চ কোয়েরি ম্যাচিং - সমস্ত ফিল্ডে সার্চ করবে (বিবরণী সহ)
     const searchLower = query.toLowerCase();
     filtered = filtered.filter(shop => {
-        // দোকানের নাম
         if (shop.shopName && shop.shopName.toLowerCase().includes(searchLower)) return true;
-        // এলাকা
         if (shop.area && shop.area.toLowerCase().includes(searchLower)) return true;
-        // জেলা
         if (shop.district && shop.district.toLowerCase().includes(searchLower)) return true;
-        // থানা
         if (shop.thana && shop.thana.toLowerCase().includes(searchLower)) return true;
-        // ক্যাটাগরি
         if (shop.category && shop.category.toLowerCase().includes(searchLower)) return true;
-        // বিবরণী / description (নতুন যোগ করা)
         if (shop.description && shop.description.toLowerCase().includes(searchLower)) return true;
-        // প্রোডাক্টের নাম
         if (shop.products && Array.isArray(shop.products)) {
             for (let product of shop.products) {
                 if (product.name && product.name.toLowerCase().includes(searchLower)) return true;
@@ -1387,6 +1352,7 @@ window.playVideo = function(videoId, element) {
     }
 };
 
+// রেন্ডার শপস - বিবরণী হাইড করা হয়েছে (শুধু দোকানের নাম, লোকেশন, ক্যাটাগরি দেখাবে)
 window.renderShops = function(shops) {
     const container = document.getElementById('shopList');
     if (!container) return;
@@ -1421,10 +1387,7 @@ window.renderShops = function(shops) {
         const thumbnailUrl = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : '';
         const locationText = shop.thana ? `${shop.thana}, ${shop.district}` : `${shop.area || ''}, ${shop.district || ''}`;
         
-        // বিবরণী প্রিভিউ (সার্চ রেজাল্টে দেখানোর জন্য)
-        const descriptionPreview = shop.description ? 
-            `<div class="shop-description-preview">📝 ${escapeHtml(shop.description.substring(0, 100))}${shop.description.length > 100 ? '...' : ''}</div>` : '';
-        
+        // বিবরণী সম্পূর্ণ হাইড করা হয়েছে - শুধু নাম, লোকেশন ও ক্যাটাগরি দেখাবে
         if (videoId) {
             return `
             <div class="shop-card-wrapper">
@@ -1440,7 +1403,6 @@ window.renderShops = function(shops) {
                             📍 ${escapeHtml(locationText)}
                         </div>
                         ${shop.category ? `<div class="shop-video-location" style="font-size: 11px; margin-top: 4px;">🏷️ ${escapeHtml(shop.category)}</div>` : ''}
-                        ${descriptionPreview}
                     </div>
                 </div>
             </div>`;
@@ -1457,7 +1419,6 @@ window.renderShops = function(shops) {
                             📍 ${escapeHtml(locationText)}
                         </div>
                         ${shop.category ? `<div class="shop-video-location" style="font-size: 11px; margin-top: 4px;">🏷️ ${escapeHtml(shop.category)}</div>` : ''}
-                        ${descriptionPreview}
                     </div>
                 </div>
             </div>`;
