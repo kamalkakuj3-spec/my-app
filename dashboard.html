@@ -335,7 +335,7 @@
   }
   .btn-small-purple:hover { background: #5a5290; }
   
-  /* ========== ক্যাটাগরি পপআপ (মাল্টি-সিলেক্ট) ========== */
+  /* ========== ক্যাটাগরি পপআপ ========== */
   .category-popup-overlay {
     position: fixed;
     top: 0;
@@ -702,7 +702,7 @@
             </div>
         </div>
         
-        <!-- Option 5: দোকানের তথ্য (মাল্টি-ক্যাটাগরি সিলেক্টর সহ) -->
+        <!-- Option 5: দোকানের তথ্য -->
         <div>
             <div class="option-btn" onclick="toggleOptionPanel('shopInfoPanel')">
                 <div class="option-left">
@@ -715,7 +715,7 @@
                 <div class="input-group"><label class="input-label">দোকানের নাম *</label><input class="input-field" type="text" id="shopName" placeholder="দোকানের নাম"></div>
                 <div class="input-group"><label class="input-label">মালিকের নাম *</label><input class="input-field" type="text" id="ownerName" placeholder="মালিকের নাম"></div>
                 
-                <!-- ========== মাল্টি-ক্যাটাগরি সিলেক্টর (একাধিক ক্যাটাগরি নির্বাচন) ========== -->
+                <!-- ক্যাটাগরি সিলেক্টর -->
                 <div class="input-group">
                     <label class="input-label"><i class="fas fa-tags"></i> ক্যাটাগরি নির্বাচন করুন (একাধিক)</label>
                     <div class="category-select-btn" onclick="openCategoryPopup()">
@@ -725,7 +725,6 @@
                     <div id="selectedCategoriesContainer" class="selected-categories-container"></div>
                     <input type="hidden" id="selectedCategoriesInput" value="">
                 </div>
-                <!-- ================================================================== -->
                 
                 <div class="input-group"><label class="input-label">দোকান পরিচিতি</label><textarea class="input-field" id="description" placeholder="দোকান সম্পর্কে লিখুন..."></textarea></div>
                 <div class="input-group"><label class="input-label">পূর্ণাঙ্গ ঠিকানা</label><textarea class="input-field" id="area" placeholder="বিস্তারিত ঠিকানা" style="height:70px"></textarea></div>
@@ -733,7 +732,6 @@
                 <div class="input-group"><label class="input-label">WhatsApp নম্বর</label><input class="input-field" type="tel" id="whatsapp" placeholder="01XXXXXXXXX"></div>
                 <div class="input-group"><label class="input-label">টেলিগ্রাম নম্বর</label><input class="input-field" type="tel" id="telegram" placeholder="01XXXXXXXXX"></div>
                 
-                <!-- ইউটিউব ভিডিও লিংক অপশন -->
                 <div class="input-group">
                     <label class="input-label"><i class="fab fa-youtube" style="color:#ff0000;"></i> ইউটিউব ভিডিও লিংক</label>
                     <input class="input-field" type="url" id="youtube" placeholder="https://www.youtube.com/watch?v=xxxxx">
@@ -768,7 +766,7 @@ const db = firebase.database();
 // ========== ক্যাটাগরি JSON URL ==========
 const CATEGORIES_JSON_URL = 'https://raw.githubusercontent.com/kamalkakuj3-spec/my-app/main/categories.json';
 let categoriesList = [];
-let selectedCategoriesArray = []; // Array of selected categories (মাল্টি-সিলেক্ট)
+let selectedCategoriesArray = [];
 
 let currentShopId = null;
 let currentShopData = null;
@@ -837,14 +835,12 @@ function renderSelectedCategoriesChips() {
     hiddenInput.value = selectedCategoriesArray.join(',');
 }
 
-// ক্যাটাগরি রিমুভ ফাংশন
-window.removeCategory = function(category) {
+function removeCategory(category) {
     selectedCategoriesArray = selectedCategoriesArray.filter(c => c !== category);
     renderSelectedCategoriesChips();
     updateCategoryDisplayText();
-};
+}
 
-// ডিসপ্লে টেক্সট আপডেট
 function updateCategoryDisplayText() {
     const displaySpan = document.getElementById('selectedCategoryDisplay');
     if (selectedCategoriesArray.length === 0) {
@@ -862,7 +858,7 @@ function updateCategoryDisplayText() {
     }
 }
 
-// ========== পপআপ ক্যাটাগরি সিলেক্টর (মাল্টি-সিলেক্ট) ==========
+// ========== ক্যাটাগরি পপআপ ==========
 function openCategoryPopup() {
     if (!categoriesList.length) {
         showToast('ক্যাটাগরি লোড হয়নি, একটু পরে চেষ্টা করুন!', true);
@@ -897,8 +893,8 @@ function openCategoryPopup() {
                 </div>
             </div>
             <div class="popup-footer">
-                <button class="btn-clear" onclick="window.clearAllCategorySelection()">সব বাদ দিন</button>
-                <button class="btn-apply" onclick="window.applyCategorySelection()">প্রয়োগ করুন</button>
+                <button class="btn-clear" onclick="window.clearAllCategoryFromPopup()">সব বাদ দিন</button>
+                <button class="btn-apply" onclick="window.applyCategoryFromPopup()">প্রয়োগ করুন</button>
             </div>
         </div>
     `;
@@ -909,25 +905,25 @@ function openCategoryPopup() {
     });
 }
 
+let tempSelectedCategories = [];
+
 window.toggleCategoryInPopup = function(category, element) {
-    const index = selectedCategoriesArray.indexOf(category);
+    const index = tempSelectedCategories.indexOf(category);
     if (index === -1) {
-        // যোগ করুন
-        selectedCategoriesArray.push(category);
+        tempSelectedCategories.push(category);
         element.classList.add('selected');
         const checkbox = element.querySelector('input');
         if (checkbox) checkbox.checked = true;
     } else {
-        // সরান
-        selectedCategoriesArray.splice(index, 1);
+        tempSelectedCategories.splice(index, 1);
         element.classList.remove('selected');
         const checkbox = element.querySelector('input');
         if (checkbox) checkbox.checked = false;
     }
 };
 
-window.clearAllCategorySelection = function() {
-    selectedCategoriesArray = [];
+window.clearAllCategoryFromPopup = function() {
+    tempSelectedCategories = [];
     document.querySelectorAll('.cat-check').forEach(check => {
         check.classList.remove('selected');
         const cb = check.querySelector('input');
@@ -935,9 +931,12 @@ window.clearAllCategorySelection = function() {
     });
 };
 
-window.applyCategorySelection = function() {
+window.applyCategoryFromPopup = function() {
     const popup = document.querySelector('.category-popup-overlay');
     if (popup) popup.remove();
+    
+    selectedCategoriesArray = [...tempSelectedCategories];
+    tempSelectedCategories = [];
     
     renderSelectedCategoriesChips();
     updateCategoryDisplayText();
@@ -958,7 +957,7 @@ function extractYoutubeVideoId(url) {
     return null;
 }
 
-// Save Shop Data (with multi-category)
+// ========== সেভ শপ ডাটা (ক্যাটাগরি অ্যারে আকারে) ==========
 async function saveShopData() {
     if(!currentShopId) return;
     const shopName=document.getElementById('shopName').value.trim();
@@ -966,7 +965,9 @@ async function saveShopData() {
     const area=document.getElementById('area').value.trim();
     const phone=document.getElementById('phone').value.trim();
     const youtubeUrl = document.getElementById('youtube').value.trim();
-    const selectedCategories = selectedCategoriesArray.join(',');
+    
+    // ক্যাটাগরি স্ট্রিং থেকে অ্যারেতে কনভার্ট (যদি hidden input থেকে আসে)
+    let categoriesArray = [...selectedCategoriesArray];
     
     if(!shopName) return showToast('দোকানের নাম দিন!',true);
     if(!ownerName) return showToast('মালিকের নাম দিন!',true);
@@ -989,7 +990,7 @@ async function saveShopData() {
             telegram: document.getElementById('telegram').value.trim(),
             youtube: youtubeUrl,
             youtubeVideoId: youtubeVideoId,
-            category: selectedCategories,
+            categories: categoriesArray,  // অ্যারে আকারে সেভ
             updatedAt: Date.now()
         });
         document.getElementById('previewCardShopName').innerHTML=shopName;
@@ -1000,7 +1001,7 @@ async function saveShopData() {
     btn.disabled = false;
 }
 
-// Product Management
+// ========== প্রোডাক্ট ম্যানেজমেন্ট ==========
 async function loadProducts() {
     if(!currentShopId) return;
     const container=document.getElementById('productListContainer');
@@ -1084,7 +1085,7 @@ async function addProduct() {
 }
 function getThumbUrl(url){ if(!url) return "https://via.placeholder.com/55x55/ede6ff/a855f7?text=No"; let f=null,m=url.match(/\/d\/([a-zA-Z0-9_-]+)/); if(m) f=m[1]; if(f) return `https://lh3.googleusercontent.com/d/${f}=w100`; return url; }
 
-// Slider Functions
+// ========== স্লাইডার ==========
 let slidesData = [];
 async function loadSlides() {
     if(!currentShopId) return;
@@ -1100,7 +1101,7 @@ async function updateSlideImage(idx,url){ slidesData[idx].image=url; await db.re
 async function removeSlide(idx){ if(slidesData.length===1){ showToast('কমপক্ষে একটি স্লাইড রাখতে হবে!',true); return; } slidesData.splice(idx,1); await db.ref(`sliders/${currentShopId}`).set(slidesData); renderSliderList(); showToast('স্লাইড মুছে ফেলা হয়েছে'); }
 async function addNewSlide(){ slidesData.push({image:"https://via.placeholder.com/1200x400/8b5cf6/ffffff?text=New+Slide"}); await db.ref(`sliders/${currentShopId}`).set(slidesData); renderSliderList(); showToast('নতুন স্লাইড যোগ হয়েছে'); }
 
-// Ticker Functions
+// ========== টিকার ==========
 let tickerItems = [];
 async function loadTicker() {
     if(!currentShopId) return;
@@ -1115,7 +1116,7 @@ function updateTickerPreview(items){ document.getElementById('tickerPreview').in
 async function saveTicker(){ let val=document.getElementById('tickerInput').value.trim(); if(!val){ showToast('কিছু লিখুন!',true); return; } let items=val.includes(',')?val.split(',').map(s=>s.trim()).filter(s=>s):[val]; if(!items.length) return; await db.ref(`tickers/${currentShopId}`).set(items); updateTickerPreview(items); showToast('টিকার আপডেট হয়েছে!'); }
 async function resetTicker(){ const def=["✨ EXCLUSIVE DROP : AI COLLECTION","🚀 UP TO 40% OFF","💜 FREE SHIPPING","⚡ LIMITED EDITION"]; await db.ref(`tickers/${currentShopId}`).set(def); document.getElementById('tickerInput').value=def.join(', '); updateTickerPreview(def); showToast('ডিফল্ট টিকার রিসেট হয়েছে!'); }
 
-// Initialize
+// ========== ইনিশিয়ালাইজ ==========
 auth.onAuthStateChanged(async user=>{
     if(!user){ window.location.href='login.html'; return; }
     currentShopId=user.uid;
@@ -1124,7 +1125,6 @@ auth.onAuthStateChanged(async user=>{
     document.getElementById('mainContent').style.display='block';
     document.getElementById('saveWrap').style.display='flex';
     
-    // ক্যাটাগরি JSON লোড করা
     await loadCategoriesForDashboard();
     
     if(snap.exists()){
@@ -1144,16 +1144,19 @@ auth.onAuthStateChanged(async user=>{
         document.getElementById('telegram').value=currentShopData.telegram||'';
         document.getElementById('youtube').value=currentShopData.youtube||'';
         
-        // ক্যাটাগরি লোড করা (কমা সেপারেটেড স্ট্রিং থেকে array তে কনভার্ট)
-        if(currentShopData.category){
-            if(currentShopData.category.includes(',')){
-                selectedCategoriesArray = currentShopData.category.split(',').map(c => c.trim()).filter(c => c);
+        // ক্যাটাগরি লোড করা (অ্যারে আকারে)
+        if(currentShopData.categories && Array.isArray(currentShopData.categories)) {
+            selectedCategoriesArray = [...currentShopData.categories];
+        } else if(currentShopData.category) {
+            // ব্যাকওয়ার্ড কম্প্যাটিবিলিটি
+            if(currentShopData.category.includes(',')) {
+                selectedCategoriesArray = currentShopData.category.split(',').map(c => c.trim());
             } else {
                 selectedCategoriesArray = [currentShopData.category];
             }
-            renderSelectedCategoriesChips();
-            updateCategoryDisplayText();
         }
+        renderSelectedCategoriesChips();
+        updateCategoryDisplayText();
     }
     loadProducts();
     await loadSlides();
