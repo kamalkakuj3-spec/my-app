@@ -655,7 +655,7 @@ textarea.input-field {
 
 .msg-box.show { display: flex; }
 
-/* ========== শুধুমাত্র টেক্সট লিংক (কোনো ব্যাকগ্রাউন্ড নেই) ========== */
+/* ========== শুধুমাত্র সাধারণ টেক্সট (কোনো ব্যাকগ্রাউন্ড, বাটন, লাইনার নেই) ========== */
 .save-text-link {
     text-align: center;
     margin: 30px 0 40px;
@@ -665,10 +665,10 @@ textarea.input-field {
 .save-text {
     display: inline-block;
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--primary);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: color 0.2s ease;
     text-decoration: none;
     background: transparent;
     border: none;
@@ -683,18 +683,13 @@ textarea.input-field {
 
 .save-text:hover {
     color: var(--primary-dark);
-    transform: scale(1.02);
-}
-
-.save-text:active {
-    transform: scale(0.98);
+    text-decoration: underline;
 }
 
 /* লোডিং স্টেট */
 .save-text.loading {
     color: #b39ddb;
     pointer-events: none;
-    transform: none;
 }
 
 .save-text.loading .spinner-small {
@@ -982,7 +977,7 @@ textarea.input-field {
 
 </div>
 
-<!-- ========== শুধুমাত্র টেক্সট লিংক (কোনো ব্যাকগ্রাউন্ড, বাটন, লাইনার নেই) ========== -->
+<!-- ========== শুধুমাত্র সাধারণ টেক্সট (কোনো ব্যাকগ্রাউন্ড, বাটন, লাইনার নেই) ========== -->
 <div class="save-text-link">
     <div class="save-text" id="saveText" onclick="registerShop()">
         <i class="fas fa-save"></i>
