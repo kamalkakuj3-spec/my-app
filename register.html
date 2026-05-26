@@ -655,44 +655,47 @@ textarea.input-field {
 
 .msg-box.show { display: flex; }
 
-/* ========== শুধুমাত্র সাধারণ টেক্সট (কোনো ব্যাকগ্রাউন্ড, বাটন, লাইনার নেই) ========== */
-.save-text-link {
+/* ========== শুধুমাত্র সেভ টেক্সট (কোনো ব্যাকগ্রাউন্ড নেই) ========== */
+.save-text-container {
     text-align: center;
     margin: 30px 0 40px;
     padding: 0;
 }
 
-.save-text {
+.save-text-btn {
     display: inline-block;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     color: var(--primary);
     cursor: pointer;
     transition: color 0.2s ease;
-    text-decoration: none;
     background: transparent;
     border: none;
     padding: 0;
     letter-spacing: 0.5px;
 }
 
-.save-text i {
+.save-text-btn i {
     margin-right: 8px;
-    font-size: 16px;
+    font-size: 14px;
 }
 
-.save-text:hover {
+.save-text-btn:hover {
     color: var(--primary-dark);
     text-decoration: underline;
 }
 
 /* লোডিং স্টেট */
-.save-text.loading {
+.save-text-btn.loading {
     color: #b39ddb;
     pointer-events: none;
 }
 
-.save-text.loading .spinner-small {
+.save-text-btn.loading i {
+    display: none;
+}
+
+.save-text-btn.loading .spinner-small {
     display: inline-block;
     width: 16px;
     height: 16px;
@@ -704,11 +707,7 @@ textarea.input-field {
     vertical-align: middle;
 }
 
-.save-text.loading i {
-    display: none;
-}
-
-.save-text.loading span {
+.save-text-btn.loading span {
     opacity: 0.7;
 }
 
@@ -977,9 +976,9 @@ textarea.input-field {
 
 </div>
 
-<!-- ========== শুধুমাত্র সাধারণ টেক্সট (কোনো ব্যাকগ্রাউন্ড, বাটন, লাইনার নেই) ========== -->
-<div class="save-text-link">
-    <div class="save-text" id="saveText" onclick="registerShop()">
+<!-- ========== শুধুমাত্র টেক্সট (কোনো ব্যাকগ্রাউন্ড, বাটন, লাইনার নেই) ========== -->
+<div class="save-text-container">
+    <div class="save-text-btn" id="saveBtn">
         <i class="fas fa-save"></i>
         <span>তথ্য সেভ করুন</span>
         <span class="spinner-small" style="display: none;"></span>
@@ -1012,6 +1011,9 @@ const CATEGORIES_JSON_URL = 'https://raw.githubusercontent.com/kamalkakuj3-spec/
 let divisionsData = [];
 let categoriesList = [];
 let selectedCategoriesArray = [];
+
+// ========== DOM এলিমেন্টস ==========
+let shopName, ownerName, description, division, district, thana, area, categories, phone, whatsapp, telegram, youtube, email, password, confirm;
 
 // ========== JSON লোড ফাংশন ==========
 async function loadDivisionsFromJSON() {
@@ -1318,58 +1320,69 @@ function goToLogin() {
     window.location.href = 'login.html';
 }
 
+// ========== ফর্ম ভ্যালু গেট ফাংশন ==========
+function getFormValues() {
+    shopName = document.getElementById('shopName')?.value.trim() || '';
+    ownerName = document.getElementById('ownerName')?.value.trim() || '';
+    description = document.getElementById('description')?.value.trim() || '';
+    division = document.getElementById('division')?.value || '';
+    district = document.getElementById('district')?.value || '';
+    thana = document.getElementById('thana')?.value || '';
+    area = document.getElementById('area')?.value.trim() || '';
+    categories = document.getElementById('categoriesInput')?.value || '';
+    phone = document.getElementById('phone')?.value.trim() || '';
+    whatsapp = document.getElementById('whatsapp')?.value.trim() || '';
+    telegram = document.getElementById('telegram')?.value.trim() || '';
+    youtube = document.getElementById('youtube')?.value.trim() || '';
+    email = document.getElementById('email')?.value.trim() || '';
+    password = document.getElementById('password')?.value || '';
+    confirm = document.getElementById('confirmPassword')?.value || '';
+}
+
+// ========== ভ্যালিডেশন ফাংশন ==========
+function validateForm() {
+    if (!shopName) { showError('দোকানের নাম দিন!'); return false; }
+    if (!ownerName) { showError('মালিকের নাম দিন!'); return false; }
+    if (!division) { showError('বিভাগ বাছাই করুন!'); return false; }
+    if (!district) { showError('জেলা বাছাই করুন!'); return false; }
+    if (!thana) { showError('থানা বাছাই করুন!'); return false; }
+    if (!area) { showError('এলাকা/বিস্তারিত ঠিকানা দিন!'); return false; }
+    if (!categories) { showError('কমপক্ষে একটি ক্যাটাগরি বাছাই করুন!'); return false; }
+    if (!phone) { showError('মোবাইল নম্বর দিন!'); return false; }
+    if (!email) { showError('ইমেইল দিন!'); return false; }
+    if (password.length < 6) { showError('পাসওয়ার্ড কমপক্ষে ৬ অক্ষর হতে হবে!'); return false; }
+    if (password !== confirm) { showError('পাসওয়ার্ড মিলছে না!'); return false; }
+    return true;
+}
+
 // ========== রেজিস্ট্রেশন ফাংশন ==========
 async function registerShop() {
     console.log('registerShop function called');
     
-    const saveText = document.getElementById('saveText');
+    // গেট ফর্ম ভ্যালু
+    getFormValues();
     
-    // Get all form values
-    const shopName = document.getElementById('shopName')?.value.trim() || '';
-    const ownerName = document.getElementById('ownerName')?.value.trim() || '';
-    const description = document.getElementById('description')?.value.trim() || '';
-    const division = document.getElementById('division')?.value || '';
-    const district = document.getElementById('district')?.value || '';
-    const thana = document.getElementById('thana')?.value || '';
-    const area = document.getElementById('area')?.value.trim() || '';
-    const categories = document.getElementById('categoriesInput')?.value || '';
-    const phone = document.getElementById('phone')?.value.trim() || '';
-    const whatsapp = document.getElementById('whatsapp')?.value.trim() || '';
-    const telegram = document.getElementById('telegram')?.value.trim() || '';
-    const youtube = document.getElementById('youtube')?.value.trim() || '';
-    const email = document.getElementById('email')?.value.trim() || '';
-    const password = document.getElementById('password')?.value || '';
-    const confirm = document.getElementById('confirmPassword')?.value || '';
-
-    console.log('Form Data:', {shopName, ownerName, division, district, thana, area, categories, phone, email});
-
-    // Validation
-    if (!shopName) return showError('দোকানের নাম দিন!');
-    if (!ownerName) return showError('মালিকের নাম দিন!');
-    if (!division) return showError('বিভাগ বাছাই করুন!');
-    if (!district) return showError('জেলা বাছাই করুন!');
-    if (!thana) return showError('থানা বাছাই করুন!');
-    if (!area) return showError('এলাকা/বিস্তারিত ঠিকানা দিন!');
-    if (!categories) return showError('কমপক্ষে একটি ক্যাটাগরি বাছাই করুন!');
-    if (!phone) return showError('মোবাইল নম্বর দিন!');
-    if (!email) return showError('ইমেইল দিন!');
-    if (password.length < 6) return showError('পাসওয়ার্ড কমপক্ষে ৬ অক্ষর হতে হবে!');
-    if (password !== confirm) return showError('পাসওয়ার্ড মিলছে না!');
-
-    // Show loading state
-    saveText.classList.add('loading');
-    const iconSpan = saveText.querySelector('i');
-    const textSpan = saveText.querySelector('span:not(.spinner-small)');
-    const spinnerSpan = saveText.querySelector('.spinner-small');
+    // ভ্যালিডেশন
+    if (!validateForm()) return;
+    
+    const saveBtn = document.getElementById('saveBtn');
+    const iconSpan = saveBtn.querySelector('i');
+    const textSpan = saveBtn.querySelector('span:not(.spinner-small)');
+    const spinnerSpan = saveBtn.querySelector('.spinner-small');
+    
+    // লোডিং স্টেট
+    saveBtn.classList.add('loading');
     if (iconSpan) iconSpan.style.display = 'none';
     if (textSpan) textSpan.style.opacity = '0.7';
     if (spinnerSpan) spinnerSpan.style.display = 'inline-block';
-
+    
     try {
+        // ইউজার তৈরি
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
         const uid = userCredential.user.uid;
         console.log('User created:', uid);
-
+        
+        // ইউটিউব ভিডিও আইডি এক্সট্রাক্ট
         let youtubeVideoId = '';
         if (youtube) {
             const patterns = [
@@ -1383,7 +1396,8 @@ async function registerShop() {
             }
             if (!youtubeVideoId && youtube.length > 0) youtubeVideoId = youtube;
         }
-
+        
+        // শপ ডাটা
         const shopData = {
             shopName,
             ownerName,
@@ -1406,22 +1420,27 @@ async function registerShop() {
         console.log('Saving shop data:', shopData);
         await db.ref('shops/' + uid).set(shopData);
         console.log('Shop data saved successfully');
-
+        
+        // লগআউট
         await auth.signOut();
         
+        // টোস্ট ও মডেল দেখানো
         showToast();
         
         setTimeout(() => {
             showConfirmationModal();
         }, 1000);
-
+        
     } catch (error) {
         console.error('Registration error:', error);
-        saveText.classList.remove('loading');
+        
+        // লোডিং স্টেট রিমুভ
+        saveBtn.classList.remove('loading');
         if (iconSpan) iconSpan.style.display = 'inline-block';
         if (textSpan) textSpan.style.opacity = '1';
         if (spinnerSpan) spinnerSpan.style.display = 'none';
-
+        
+        // এরর মেসেজ
         if (error.code === 'auth/email-already-in-use') {
             showError('এই ইমেইল দিয়ে আগেই একাউন্ট আছে!');
         } else if (error.code === 'auth/invalid-email') {
@@ -1437,17 +1456,19 @@ async function registerShop() {
 // ========== পেজ লোড ==========
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM Content Loaded');
+    
     await loadDivisionsFromJSON();
     await loadCategoriesFromJSON();
     
-    // সেভ টেক্সটে ক্লিক ইভেন্ট নিশ্চিত করা
-    const saveText = document.getElementById('saveText');
-    if (saveText) {
-        saveText.addEventListener('click', function(e) {
+    const saveBtn = document.getElementById('saveBtn');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', function(e) {
             e.preventDefault();
             registerShop();
         });
-        console.log('Save text click event attached');
+        console.log('Save button click event attached');
+    } else {
+        console.error('Save button not found!');
     }
 });
 </script>
