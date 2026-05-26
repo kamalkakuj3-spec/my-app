@@ -655,21 +655,18 @@ textarea.input-field {
 
 .msg-box.show { display: flex; }
 
-/* ========== নেভিগেশন বার (শুধুমাত্র সেভ বাটন) ========== */
+/* ========== নেভিগেশন বার (শুধুমাত্র সেভ বাটন - ট্রান্সপারেন্ট ব্যাকগ্রাউন্ড) ========== */
 .bottom-navbar {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    background: transparent;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 12px 20px;
+    padding: 12px 20px 20px;
     z-index: 1000;
-    border-top: 1px solid rgba(108, 43, 217, 0.1);
 }
 
 /* সেভ বাটন স্টাইল (নেভিগেশন বারের মধ্যে) */
@@ -681,7 +678,7 @@ textarea.input-field {
     background: linear-gradient(135deg, var(--primary), var(--primary-light));
     color: white;
     border: none;
-    padding: 12px 28px;
+    padding: 14px 32px;
     border-radius: 50px;
     font-size: 16px;
     font-weight: 600;
@@ -997,7 +994,7 @@ textarea.input-field {
 
 </div>
 
-<!-- ========== নেভিগেশন বার (শুধুমাত্র সেভ বাটন) ========== -->
+<!-- ========== নেভিগেশন বার (শুধুমাত্র সেভ বাটন - ট্রান্সপারেন্ট) ========== -->
 <div class="bottom-navbar">
     <button class="save-nav-btn" id="saveBtn">
         <i class="fas fa-save"></i>
@@ -1376,7 +1373,7 @@ function validateForm() {
     return true;
 }
 
-// ========== রেজিস্ট্রেশন ফাংশন ==========
+// ========== রেজিস্ট্রেশন ফাংশন (আগের মতোই কাজ করবে) ==========
 async function registerShop() {
     console.log('registerShop function called');
     
