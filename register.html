@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>নিবন্ধন — পাইকারি বাজার</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Hind Siliguri', sans-serif;
+    background: linear-gradient(135deg, #f5f3ff 0%, #e8e0ff 100%);
+    padding-bottom: 90px;
+}
+.container { max-width: 500px; margin: 0 auto; padding: 0 16px; }
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 32px rgba(108,43,217,0.15);
+}
+.card h3 { color: #6c2bd9; margin-bottom: 15px; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+.input-group { margin-bottom: 14px; }
+label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #333; }
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e8e0ff;
+    border-radius: 12px;
+    font-size: 14px;
+    font-family: inherit;
+    background: #faf8ff;
+}
+input:focus, select:focus { border-color: #6c2bd9; outline: none; }
+
+.password-strength { display: flex; gap: 4px; margin-top: 8px; }
+.strength-bar { flex: 1; height: 4px; border-radius: 99px; background: #e8e0ff; }
+.strength-bar.weak { background: #e74c3c; }
+.strength-bar.medium { background: #f0c040; }
+.strength-bar.strong { background: #2ecc71; }
+
+.category-select-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #faf8ff;
+    border: 2px solid #e8e0ff;
+    border-radius: 12px;
+    padding: 12px;
+    cursor: pointer;
+}
+.selected-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+.cat-chip {
+    background: #f0ebff;
+    padding: 5px 12px;
+    border-radius: 99px;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.cat-chip i { cursor: pointer; color: #999; }
+
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.popup {
+    background: white;
+    border-radius: 28px;
+    width: 90%;
+    max-width: 400px;
+    max-height: 80vh;
+    overflow: hidden;
+}
+.popup-header {
+    padding: 15px 20px;
+    background: #6c2bd9;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+}
+.popup-body { padding: 16px; max-height: 55vh; overflow-y: auto; }
+.cat-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+.cat-option {
+    padding: 8px 16px;
+    background: #f5f3ff;
+    border-radius: 99px;
+    cursor: pointer;
+}
+.cat-option.selected { background: #6c2bd9; color: white; }
+.popup-footer { padding: 16px; border-top: 1px solid #eee; display: flex; gap: 12px; }
+.popup-footer button { flex: 1; padding: 12px; border-radius: 99px; cursor: pointer; }
+.btn-apply { background: #6c2bd9; color: white; border: none; }
+.btn-clear { background: #f0ebff; color: #6c2bd9; border: none; }
+
+.bottom-navbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: transparent;
+    padding: 12px 20px 25px;
+    text-align: center;
+}
+.save-btn {
+    background: linear-gradient(135deg, #6c2bd9, #a259f7);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(108,43,217,0.3);
+}
+.save-btn.loading { opacity: 0.7; cursor: wait; }
+.spinner { display: none; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; margin-left: 10px; }
+.save-btn.loading .spinner { display: inline-block; }
+.save-btn.loading i { display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.header {
+    background: linear-gradient(135deg, #1a0a3e 0%, #6c2bd9 100%);
+    padding: 40px 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.header h1 { color: white; font-size: 24px; }
+.header p { color: rgba(255,255,255,0.7); }
+
+.error-msg {
+    background: #fdf0ef;
+    color: #e74c3c;
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    display: none;
+}
+.toast {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2ecc71;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 50px;
+    z-index: 1000;
+    display: none;
+}
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+}
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 25px;
+    text-align: center;
+    width: 85%;
+    max-width: 300px;
+}
+.modal-content button {
+    background: #6c2bd9;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 50px;
+    margin-top: 15px;
+    cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>🏪 দোকান নিবন্ধন করুন</h1>
+    <p>আপনার দোকানের তথ্য দিন</p>
+</div>
+
+<div class="container">
+    <div class="error-msg" id="errorMsg"></div>
+    <div class="toast" id="toast">✅ তথ্য সেভ হয়েছে!</div>
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div style="font-size: 50px;">✅</div>
+            <h3 style="color:#6c2bd9;">নিবন্ধন সম্পন্ন!</h3>
+            <p>আপনার তথ্য সফলভাবে সংরক্ষিত হয়েছে।</p>
+            <button onclick="goToLogin()">লগইন পেজে যান</button>
+        </div>
+    </div>
+
+    <!-- Shop Info -->
+    <div class="card">
+        <h3>🏪 দোকানের তথ্য</h3>
+        <div class="input-group">
+            <label>দোকানের নাম *</label>
+            <input type="text" id="shopName" placeholder="যেমন: রহিম স্টোর">
+        </div>
+        <div class="input-group">
+            <label>মালিকের নাম *</label>
+            <input type="text" id="ownerName" placeholder="আপনার নাম">
+        </div>
+        <div class="input-group">
+            <label>দোকান পরিচিতি</label>
+            <textarea id="description" rows="2" placeholder="দোকান সম্পর্কে লিখুন..."></textarea>
+        </div>
+    </div>
+
+    <!-- Address -->
+    <div class="card">
+        <h3>📍 ঠিকানা</h3>
+        <div class="input-group">
+            <label>বিভাগ *</label>
+            <select id="division">
+                <option value="">— বিভাগ বাছাই করুন —</option>
+            </select>
+        </div>
+        <div class="input-group" id="districtGroup" style="display:none">
+            <label>জেলা *</label>
+            <select id="district">
+                <option value="">— জেলা বাছাই করুন —</option>
+            </select>
+        </div>
+        <div class="input-group" id="thanaGroup" style="display:none">
+            <label>থানা/উপজেলা *</label>
+            <select id="thana">
+                <option value="">— থানা বাছাই করুন —</option>
+            </select>
+        </div>
+        <div class="input-group" id="areaGroup" style="display:none">
+            <label>বিস্তারিত ঠিকানা *</label>
+            <textarea id="area" rows="2" placeholder="বাড়ি, রোড, এলাকা"></textarea>
+        </div>
+    </div>
+
+    <!-- Category -->
+    <div class="card" id="categoryCard" style="display:none">
+        <h3>🗂️ ক্যাটাগরি</h3>
+        <div class="category-select-btn" onclick="openCategoryPopup()">
+            <span id="catDisplay">ক্যাটাগরি নির্বাচন করুন</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="selectedCats" class="selected-categories"></div>
+        <input type="hidden" id="categoriesInput" value="">
+    </div>
+
+    <!-- Contact -->
+    <div class="card">
+        <h3>📞 যোগাযোগ</h3>
+        <div class="input-group">
+            <label>মোবাইল নম্বর *</label>
+            <input type="tel" id="phone" placeholder="01XXXXXXXXX">
+        </div>
+        <div class="input-group">
+            <label>WhatsApp নম্বর</label>
+            <input type="tel" id="whatsapp" placeholder="01XXXXXXXXX">
+        </div>
+        <div class="input-group">
+            <label>টেলিগ্রাম নম্বর</label>
+            <input type="tel" id="telegram" placeholder="01XXXXXXXXX">
+        </div>
+        <div class="input-group">
+            <label>YouTube লিংক</label>
+            <input type="url" id="youtube" placeholder="https://youtube.com/...">
+        </div>
+    </div>
+
+    <!-- Account -->
+    <div class="card">
+        <h3>🔐 একাউন্ট</h3>
+        <div class="input-group">
+            <label>ইমেইল *</label>
+            <input type="email" id="email" placeholder="example@gmail.com">
+        </div>
+        <div class="input-group">
+            <label>পাসওয়ার্ড *</label>
+            <input type="password" id="password" placeholder="কমপক্ষে ৬ অক্ষর">
+        </div>
+        <div class="password-strength">
+            <div class="strength-bar" id="bar1"></div>
+            <div class="strength-bar" id="bar2"></div>
+            <div class="strength-bar" id="bar3"></div>
+        </div>
+        <div class="input-group">
+            <label>পাসওয়ার্ড নিশ্চিত করুন *</label>
+            <input type="password" id="confirmPassword" placeholder="আবার লিখুন">
+        </div>
+    </div>
+</div>
+
+<div class="bottom-navbar">
+    <button class="save-btn" id="saveBtn">
+        <i class="fas fa-save"></i> তথ্য সেভ করুন
+        <span class="spinner"></span>
+    </button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+<script>
+// Firebase Config
+const firebaseConfig = {
+    apiKey: "AIzaSyA1CzQX9tgbLd46QfvCK6Rwqa0z9CRWoMs",
+    authDomain: "agls-5bd4c.firebaseapp.com",
+    databaseURL: "https://agls-5bd4c-default-rtdb.firebaseio.com/",
+    projectId: "agls-5bd4c",
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+
+let divisionsData = [];
+let categoriesList = [];
+let selectedCategories = [];
+
+// Load Divisions
+async function loadDivisions() {
+    try {
+        const res = await fetch('https://raw.githubusercontent.com/kamalkakuj3-spec/my-app/main/divisions.json');
+        const data = await res.json();
+        divisionsData = data.divisions;
+        const select = document.getElementById('division');
+        select.innerHTML = '<option value="">— বিভাগ বাছাই করুন —</option>';
+        divisionsData.forEach(d => {
+            const opt = document.createElement('option');
+            opt.value = d.name;
+            opt.textContent = d.name;
+            select.appendChild(opt);
+        });
+    } catch(e) { console.error(e); }
+}
+
+// Load Categories
+async function loadCategories() {
+    try {
+        const res = await fetch('https://raw.githubusercontent.com/kamalkakuj3-spec/my-app/main/categories.json');
+        categoriesList = await res.json();
+    } catch(e) {
+        categoriesList = ["পোশাক ও বস্ত্র", "খাদ্যপণ্য ও মসলা", "ইলেকট্রনিক্স", "গৃহস্থালি পণ্য"];
+    }
+}
+
+// Category Popup
+window.openCategoryPopup = function() {
+    let tempSelected = [...selectedCategories];
+    let html = `<div class="popup-overlay" id="catPopup"><div class="popup"><div class="popup-header"><h3>ক্যাটাগরি নির্বাচন করুন</h3><button onclick="closePopup()" style="background:none;border:none;color:white;font-size:20px;">✕</button></div><div class="popup-body"><div class="cat-grid">`;
+    categoriesList.forEach(cat => {
+        const isSel = tempSelected.includes(cat);
+        html += `<div class="cat-option ${isSel ? 'selected' : ''}" onclick="toggleCat('${cat}', this)">${cat}</div>`;
+    });
+    html += `</div></div><div class="popup-footer"><button class="btn-clear" onclick="clearAll()">সব বাদ দিন</button><button class="btn-apply" onclick="applyCats()">প্রয়োগ করুন</button></div></div></div>`;
+    document.body.insertAdjacentHTML('beforeend', html);
+    window.tempSelected = tempSelected;
+};
+window.closePopup = function() { document.getElementById('catPopup')?.remove(); };
+window.toggleCat = function(cat, el) {
+    const idx = window.tempSelected.indexOf(cat);
+    if(idx === -1) { window.tempSelected.push(cat); el.classList.add('selected'); }
+    else { window.tempSelected.splice(idx,1); el.classList.remove('selected'); }
+};
+window.clearAll = function() { window.tempSelected = []; document.querySelectorAll('.cat-option').forEach(c => c.classList.remove('selected')); };
+window.applyCats = function() {
+    selectedCategories = [...window.tempSelected];
+    document.getElementById('catPopup')?.remove();
+    renderChips();
+};
+function renderChips() {
+    const cont = document.getElementById('selectedCats');
+    const hid = document.getElementById('categoriesInput');
+    const disp = document.getElementById('catDisplay');
+    if(!selectedCategories.length) {
+        cont.innerHTML = '';
+        hid.value = '';
+        disp.innerHTML = 'ক্যাটাগরি নির্বাচন করুন';
+        return;
+    }
+    cont.innerHTML = selectedCategories.map(c => `<span class="cat-chip">${c} <i class="fas fa-times-circle" onclick="removeCat('${c}')"></i></span>`).join('');
+    hid.value = selectedCategories.join(',');
+    disp.innerHTML = selectedCategories.length + ' টি সিলেক্টেড';
+}
+window.removeCat = function(c) { selectedCategories = selectedCategories.filter(x => x !== c); renderChips(); };
+
+// Address Functions
+document.getElementById('division').onchange = function() {
+    const div = this.value;
+    const distSel = document.getElementById('district');
+    distSel.innerHTML = '<option value="">— জেলা বাছাই করুন —</option>';
+    document.getElementById('thana').innerHTML = '<option value="">— থানা বাছাই করুন —</option>';
+    document.getElementById('districtGroup').style.display = div ? 'block' : 'none';
+    document.getElementById('thanaGroup').style.display = 'none';
+    document.getElementById('areaGroup').style.display = 'none';
+    document.getElementById('categoryCard').style.display = 'none';
+    if(!div) return;
+    const division = divisionsData.find(d => d.name === div);
+    if(division?.districts) {
+        division.districts.forEach(d => {
+            const opt = document.createElement('option');
+            opt.value = d.name;
+            opt.textContent = d.name;
+            distSel.appendChild(opt);
+        });
+    }
+};
+document.getElementById('district').onchange = function() {
+    const div = document.getElementById('division').value;
+    const dist = this.value;
+    const thanaSel = document.getElementById('thana');
+    thanaSel.innerHTML = '<option value="">— থানা বাছাই করুন —</option>';
+    document.getElementById('thanaGroup').style.display = 'none';
+    document.getElementById('areaGroup').style.display = 'none';
+    document.getElementById('categoryCard').style.display = 'none';
+    if(!div || !dist) return;
+    const division = divisionsData.find(d => d.name === div);
+    const district = division?.districts.find(d => d.name === dist);
+    if(district?.upazilas) {
+        district.upazilas.forEach(u => {
+            const opt = document.createElement('option');
+            opt.value = u;
+            opt.textContent = u;
+            thanaSel.appendChild(opt);
+        });
+    } else {
+        const opt = document.createElement('option');
+        opt.value = "সদর";
+        opt.textContent = "সদর উপজেলা";
+        thanaSel.appendChild(opt);
+    }
+    document.getElementById('thanaGroup').style.display = 'block';
+};
+document.getElementById('thana').onchange = function() {
+    const thana = this.value;
+    document.getElementById('areaGroup').style.display = thana ? 'block' : 'none';
+    document.getElementById('categoryCard').style.display = thana ? 'block' : 'none';
+};
+
+// Password Strength
+document.getElementById('password').oninput = function() {
+    const pass = this.value;
+    const b1 = document.getElementById('bar1'), b2 = document.getElementById('bar2'), b3 = document.getElementById('bar3');
+    b1.className = b2.className = b3.className = 'strength-bar';
+    if(pass.length < 6) b1.classList.add('weak');
+    else if(pass.length < 10) { b1.classList.add('medium'); b2.classList.add('medium'); }
+    else { b1.classList.add('strong'); b2.classList.add('strong'); b3.classList.add('strong'); }
+};
+
+// UI Functions
+function showError(msg) {
+    const box = document.getElementById('errorMsg');
+    box.textContent = msg;
+    box.style.display = 'block';
+    setTimeout(() => box.style.display = 'none', 4000);
+}
+function showToast() {
+    const t = document.getElementById('toast');
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 2000);
+}
+function showModal() { document.getElementById('modal').style.display = 'flex'; }
+window.goToLogin = function() { window.location.href = 'login.html'; };
+
+// Register Function
+async function registerShop() {
+    const shopName = document.getElementById('shopName').value.trim();
+    const ownerName = document.getElementById('ownerName').value.trim();
+    const description = document.getElementById('description').value.trim();
+    const division = document.getElementById('division').value;
+    const district = document.getElementById('district').value;
+    const thana = document.getElementById('thana').value;
+    const area = document.getElementById('area').value.trim();
+    const categories = document.getElementById('categoriesInput').value;
+    const phone = document.getElementById('phone').value.trim();
+    const whatsapp = document.getElementById('whatsapp').value.trim();
+    const telegram = document.getElementById('telegram').value.trim();
+    const youtube = document.getElementById('youtube').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirm = document.getElementById('confirmPassword').value;
+
+    if(!shopName) { showError('দোকানের নাম দিন'); return; }
+    if(!ownerName) { showError('মালিকের নাম দিন'); return; }
+    if(!division) { showError('বিভাগ দিন'); return; }
+    if(!district) { showError('জেলা দিন'); return; }
+    if(!thana) { showError('থানা দিন'); return; }
+    if(!area) { showError('ঠিকানা দিন'); return; }
+    if(!categories) { showError('ক্যাটাগরি নির্বাচন করুন'); return; }
+    if(!phone) { showError('মোবাইল নম্বর দিন'); return; }
+    if(!email) { showError('ইমেইল দিন'); return; }
+    if(password.length < 6) { showError('পাসওয়ার্ড ৬ অক্ষরের বেশি হতে হবে'); return; }
+    if(password !== confirm) { showError('পাসওয়ার্ড মিলছে না'); return; }
+
+    const btn = document.getElementById('saveBtn');
+    btn.classList.add('loading');
+    btn.disabled = true;
+
+    try {
+        const result = await auth.createUserWithEmailAndPassword(email, password);
+        const uid = result.user.uid;
+
+        let ytId = '';
+        if(youtube) {
+            const m = youtube.match(/(?:youtube\.com\/watch\?v=)([^&]+)/);
+            if(m) ytId = m[1];
+        }
+
+        await db.ref('shops/' + uid).set({
+            shopName, ownerName, description, division, district, thana, area,
+            categories: categories.split(','), phone, whatsapp, telegram,
+            youtubeVideoId: ytId, youtubeLink: youtube, email,
+            status: 'pending', createdAt: Date.now()
+        });
+
+        await auth.signOut();
+        showToast();
+        setTimeout(() => showModal(), 1000);
+    } catch(err) {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        if(err.code === 'auth/email-already-in-use') showError('এই ইমেইল আগেই আছে');
+        else if(err.code === 'auth/invalid-email') showError('সঠিক ইমেইল দিন');
+        else showError(err.message);
+    }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadDivisions();
+    await loadCategories();
+    document.getElementById('saveBtn').onclick = (e) => {
+        e.preventDefault();
+        registerShop();
+    };
+});
+</script>
+</body>
+</html>
