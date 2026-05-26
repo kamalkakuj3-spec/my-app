@@ -654,82 +654,64 @@ textarea.input-field {
 
 .msg-box.show { display: flex; }
 
-/* SUBMIT BUTTON */
-.submit-wrap {
+/* ========== নিচের সেভ লাইনার (clickable bar) ========== */
+.save-bar {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
     padding: 16px 20px;
-    background: white;
-    border-top: 1px solid #f0ebff;
-    box-shadow: 0 -4px 20px rgba(108,43,217,0.1);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 100;
+    box-shadow: 0 -4px 20px rgba(108,43,217,0.3);
 }
 
-.submit-btn {
-    width: 100%;
-    padding: 16px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-light));
-    color: white;
-    border: none;
-    border-radius: 14px;
-    font-size: 17px;
+.save-bar:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    transform: translateY(-3px);
+}
+
+.save-bar:active {
+    transform: translateY(0);
+}
+
+.save-bar-text {
+    font-size: 18px;
     font-weight: 700;
-    font-family: 'Hind Siliguri', sans-serif;
-    cursor: pointer;
-    box-shadow: 0 6px 20px rgba(108,43,217,0.4);
-    transition: all 0.2s;
+    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    position: relative;
-    overflow: hidden;
+    gap: 12px;
+    letter-spacing: 1px;
 }
 
-/* Submit Button Shine Effect */
-.submit-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.5s ease;
+.save-bar-text i {
+    font-size: 20px;
 }
 
-.submit-btn:hover::before {
-    left: 100%;
-}
-
-.submit-btn:active {
-    transform: scale(0.97);
-    box-shadow: 0 3px 10px rgba(108,43,217,0.3);
-}
-
-.submit-btn.loading {
+/* লোডিং স্টেট */
+.save-bar.loading {
     background: #b39ddb;
     pointer-events: none;
+    transform: none;
 }
 
-.spinner {
+.save-bar.loading .save-bar-text .spinner-small {
+    display: inline-block;
     width: 20px;
     height: 20px;
     border: 3px solid rgba(255,255,255,0.3);
     border-top-color: white;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
-    display: none;
 }
 
-.submit-btn.loading .spinner { display: block; }
-.submit-btn.loading .btn-text { display: none; }
-
-.submit-btn .btn-text {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+.save-bar.loading .save-bar-text i {
+    display: none;
 }
 
 @keyframes spin {
@@ -997,9 +979,13 @@ textarea.input-field {
 
 </div>
 
-<!-- SUBMIT BUTTON - ID সঠিকভাবে দেওয়া হয়েছে -->
-<div class="submit-wrap">
-    <button type="button" class="submit-btn" id="submitBtn">💾 তথ্য সেভ করুন</button>
+<!-- ========== সেভ লাইনার (ক্লিকযোগ্য বার) ========== -->
+<div class="save-bar" id="saveBar" onclick="registerShop()">
+    <div class="save-bar-text">
+        <i class="fas fa-save"></i>
+        <span>💾 তথ্য সেভ করুন</span>
+        <span class="spinner-small" style="display: none;"></span>
+    </div>
 </div>
 
 <!-- Firebase -->
@@ -1338,6 +1324,8 @@ function goToLogin() {
 async function registerShop() {
     console.log('registerShop function called');
     
+    const saveBar = document.getElementById('saveBar');
+    
     // Get all form values
     const shopName = document.getElementById('shopName')?.value.trim() || '';
     const ownerName = document.getElementById('ownerName')?.value.trim() || '';
@@ -1370,9 +1358,14 @@ async function registerShop() {
     if (password.length < 6) return showError('পাসওয়ার্ড কমপক্ষে ৬ অক্ষর হতে হবে!');
     if (password !== confirm) return showError('পাসওয়ার্ড মিলছে না!');
 
-    const btn = document.getElementById('submitBtn');
-    btn.classList.add('loading');
-    btn.disabled = true;
+    // Show loading state
+    saveBar.classList.add('loading');
+    const textSpan = saveBar.querySelector('.save-bar-text span');
+    const iconSpan = saveBar.querySelector('.save-bar-text i');
+    const spinnerSpan = saveBar.querySelector('.spinner-small');
+    if (textSpan) textSpan.style.display = 'none';
+    if (iconSpan) iconSpan.style.display = 'none';
+    if (spinnerSpan) spinnerSpan.style.display = 'inline-block';
 
     try {
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
@@ -1425,9 +1418,11 @@ async function registerShop() {
         }, 1000);
 
     } catch (error) {
-        btn.classList.remove('loading');
-        btn.disabled = false;
         console.error('Registration error:', error);
+        saveBar.classList.remove('loading');
+        if (textSpan) textSpan.style.display = 'inline';
+        if (iconSpan) iconSpan.style.display = 'inline-flex';
+        if (spinnerSpan) spinnerSpan.style.display = 'none';
 
         if (error.code === 'auth/email-already-in-use') {
             showError('এই ইমেইল দিয়ে আগেই একাউন্ট আছে!');
@@ -1441,24 +1436,20 @@ async function registerShop() {
     }
 }
 
-// বাটনে ক্লিক ইভেন্ট যোগ করা হচ্ছে
+// ========== পেজ লোড ==========
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM Content Loaded');
-    
-    // JSON লোড
     await loadDivisionsFromJSON();
     await loadCategoriesFromJSON();
     
-    // বাটনে ক্লিক ইভেন্ট যোগ করা
-    const submitBtn = document.getElementById('submitBtn');
-    if (submitBtn) {
-        submitBtn.addEventListener('click', function(e) {
+    // সেভ বারে ক্লিক ইভেন্ট নিশ্চিত করা
+    const saveBar = document.getElementById('saveBar');
+    if (saveBar) {
+        saveBar.addEventListener('click', function(e) {
             e.preventDefault();
             registerShop();
         });
-        console.log('Submit button event attached');
-    } else {
-        console.error('Submit button not found!');
+        console.log('Save bar click event attached');
     }
 });
 </script>
