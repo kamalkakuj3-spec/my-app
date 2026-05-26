@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>নিবন্ধন — পাইকারি বাজার</title>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
 
 :root {
@@ -143,6 +144,178 @@ body {
 
 .modal-btn.cancel:hover {
     background: #e8e0ff;
+}
+
+/* ========== ক্যাটাগরি পপআপ (মাল্টি-সিলেক্ট) ========== */
+.category-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(5px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+.category-popup {
+    background: white;
+    border-radius: 28px;
+    width: 90%;
+    max-width: 400px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes popIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+.popup-header {
+    padding: 18px 20px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.popup-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+}
+.popup-close {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.popup-body {
+    padding: 16px;
+    max-height: 55vh;
+    overflow-y: auto;
+}
+.category-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.cat-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #f5f3ff;
+    border-radius: 99px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1.5px solid transparent;
+}
+.cat-check.selected {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+.cat-check input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary);
+}
+.cat-check label {
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+.popup-footer {
+    padding: 16px 20px;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 12px;
+}
+.popup-footer button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 99px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Hind Siliguri', sans-serif;
+}
+.btn-apply {
+    background: var(--primary);
+    color: white;
+    border: none;
+}
+.btn-clear {
+    background: #f0ebff;
+    color: var(--primary);
+    border: none;
+}
+/* =================================================== */
+
+/* সিলেক্টেড ক্যাটাগরি চিপস */
+.selected-categories-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+.selected-cat-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f0ebff;
+    padding: 5px 10px 5px 14px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--primary-dark);
+}
+.selected-cat-chip i {
+    cursor: pointer;
+    font-size: 12px;
+    color: #999;
+    transition: color 0.2s;
+}
+.selected-cat-chip i:hover {
+    color: #e74c3c;
+}
+
+/* Category Select Button */
+.category-select-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    border: 1.5px solid #e8e0ff;
+    border-radius: 14px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 10px;
+}
+.category-select-btn:hover {
+    border-color: var(--primary);
+    background: #f0ebff;
+}
+.category-placeholder {
+    color: #aaa;
+    font-size: 14px;
+}
+.category-selected-text {
+    font-size: 14px;
+    color: var(--text);
 }
 
 /* HEADER */
@@ -426,81 +599,6 @@ textarea.input-field {
     line-height: 1.6;
 }
 
-/* CATEGORY GRID */
-.cat-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-top: 10px;
-    max-height: 300px;
-    overflow-y: auto;
-    padding: 5px;
-}
-
-.cat-checkbox-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 12px;
-    background: #faf8ff;
-    border: 1.5px solid #e8e0ff;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 13px;
-}
-
-.cat-checkbox-item:hover {
-    background: #f0ebff;
-    border-color: var(--primary-light);
-}
-
-.cat-checkbox-item.selected {
-    background: linear-gradient(135deg, #f0ebff, #e8e0ff);
-    border-color: var(--primary);
-    color: var(--primary);
-    font-weight: 500;
-}
-
-.cat-checkbox-item input {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-    accent-color: var(--primary);
-}
-
-.cat-checkbox-item span {
-    flex: 1;
-}
-
-.selected-cats {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 12px;
-}
-
-.selected-cat-tag {
-    background: linear-gradient(135deg, var(--primary), var(--primary-light));
-    color: white;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.selected-cat-tag .remove {
-    cursor: pointer;
-    font-size: 14px;
-    opacity: 0.8;
-}
-
-.selected-cat-tag .remove:hover {
-    opacity: 1;
-}
-
 /* PASSWORD STRENGTH */
 .password-strength {
     display: flex;
@@ -579,6 +677,24 @@ textarea.input-field {
     align-items: center;
     justify-content: center;
     gap: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Submit Button Shine Effect */
+.submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.submit-btn:hover::before {
+    left: 100%;
 }
 
 .submit-btn:active {
@@ -758,25 +874,24 @@ textarea.input-field {
         </div>
     </div>
 
-    <!-- ৩. ক্যাটাগরি — JSON থেকে লোড -->
+    <!-- ৩. ক্যাটাগরি — পপআপ উইন্ডো আকারে -->
     <div class="tile-section" id="categorySection" style="display:none">
         <div class="tile-card">
             <div class="tile-header">
                 <div class="tile-icon">🗂️</div>
                 <div>
                     <div class="tile-title">ক্যাটাগরি</div>
-                    <div class="tile-subtitle">আপনার পণ্যের ধরন বাছাই করুন (JSON থেকে লোড)</div>
+                    <div class="tile-subtitle">আপনার পণ্যের ধরন বাছাই করুন (একাধিক)</div>
                 </div>
             </div>
 
             <label class="input-label">পণ্যের ক্যাটাগরি *</label>
-            <div class="cat-grid" id="catGrid"></div>
-            
-            <div id="selectedCatsContainer" style="display:none">
-                <label class="input-label" style="margin-top:12px">নির্বাচিত ক্যাটাগরি:</label>
-                <div class="selected-cats" id="selectedCats"></div>
+            <div class="category-select-btn" onclick="openCategoryPopup()">
+                <span id="selectedCategoryDisplay" class="category-placeholder">ক্যাটাগরি নির্বাচন করুন</span>
+                <i class="fas fa-chevron-down category-arrow"></i>
             </div>
-            <input type="hidden" id="categories" value="">
+            <div id="selectedCategoriesContainer" class="selected-categories-container"></div>
+            <input type="hidden" id="categoriesInput" value="">
         </div>
     </div>
 
@@ -903,7 +1018,7 @@ const CATEGORIES_JSON_URL = 'https://raw.githubusercontent.com/kamalkakuj3-spec/
 // ========== গ্লোবাল ভেরিয়েবল ==========
 let divisionsData = [];
 let categoriesList = [];
-let selectedCategories = [];
+let selectedCategoriesArray = [];
 
 // ========== JSON লোড ফাংশন ==========
 async function loadDivisionsFromJSON() {
@@ -913,7 +1028,6 @@ async function loadDivisionsFromJSON() {
         divisionsData = data.divisions;
         console.log('বিভাগ JSON লোড সফল!', divisionsData.length, 'টি বিভাগ');
         
-        // বিভাগ সিলেক্ট বক্স পপুলেট
         const divisionSelect = document.getElementById('division');
         divisionSelect.innerHTML = '<option value="">— বিভাগ বাছাই করুন —</option>';
         divisionsData.forEach(div => {
@@ -933,76 +1047,142 @@ async function loadCategoriesFromJSON() {
         const res = await fetch(CATEGORIES_JSON_URL);
         categoriesList = await res.json();
         console.log('ক্যাটাগরি JSON লোড সফল!', categoriesList.length, 'টি ক্যাটাগরি');
-        loadCategoryGrid();
     } catch (error) {
         console.error('ক্যাটাগরি JSON লোড ব্যর্থ:', error);
-        // ব্যাকআপ ক্যাটাগরি
         categoriesList = ["পোশাক ও বস্ত্র", "খাদ্যপণ্য ও মসলা", "ইলেকট্রনিক্স", "গৃহস্থালি পণ্য", "হার্ডওয়্যার ও নির্মাণ", "ওষুধ ও স্বাস্থ্য", "সৌন্দর্য ও কসমেটিক্স", "ব্যাগ ও জুতা", "কৃষি ও সার", "স্টেশনারি ও অফিস", "অটোমোবাইল", "খেলনা ও শিশু পণ্য", "উপহার ও সাজসজ্জা", "প্যাকেজিং সামগ্রী", "শিল্প ও কারখানা", "মাছ ও মাংস", "নার্সারি ও বাগান", "খেলাধুলা সামগ্রী", "বই ও শিক্ষা সামগ্রী", "সোলার ও বিদ্যুৎ", "সেলাই ও কারুকাজ", "যানবাহন যন্ত্রাংশ", "অন্যান্য"];
-        loadCategoryGrid();
     }
 }
 
-function loadCategoryGrid() {
-    const grid = document.getElementById('catGrid');
-    grid.innerHTML = categoriesList.map((cat, index) => {
+// ========== ক্যাটাগরি পপআপ ফাংশন ==========
+function openCategoryPopup() {
+    if (!categoriesList.length) {
+        showError('ক্যাটাগরি লোড হয়নি, একটু পরে চেষ্টা করুন!');
+        return;
+    }
+    
+    const existingPopup = document.querySelector('.category-popup-overlay');
+    if (existingPopup) existingPopup.remove();
+    
+    const overlay = document.createElement('div');
+    overlay.className = 'category-popup-overlay';
+    
+    const categoriesHTML = categoriesList.map(cat => {
+        const isSelected = selectedCategoriesArray.includes(cat);
         return `
-            <div class="cat-checkbox-item" onclick="toggleCategory('${cat.replace(/'/g, "\\'")}', this)">
-                <input type="checkbox" id="cat_${index}" value="${cat.replace(/'/g, "\\'")}">
-                <span>${cat}</span>
+            <div class="cat-check ${isSelected ? 'selected' : ''}" onclick="window.toggleCategoryInPopup('${cat.replace(/'/g, "\\'")}', this)">
+                <input type="checkbox" ${isSelected ? 'checked' : ''} onclick="event.stopPropagation(); window.toggleCategoryInPopup('${cat.replace(/'/g, "\\'")}', this.parentElement)">
+                <label>${cat}</label>
             </div>
         `;
     }).join('');
-}
-
-function toggleCategory(catName, element) {
-    const checkbox = element.querySelector('input');
-    checkbox.checked = !checkbox.checked;
     
-    if (checkbox.checked) {
-        if (!selectedCategories.includes(catName)) {
-            selectedCategories.push(catName);
-        }
-        element.classList.add('selected');
-    } else {
-        selectedCategories = selectedCategories.filter(c => c !== catName);
-        element.classList.remove('selected');
-    }
-    updateSelectedCatsDisplay();
-}
-
-function updateSelectedCatsDisplay() {
-    const container = document.getElementById('selectedCatsContainer');
-    const selectedDiv = document.getElementById('selectedCats');
-    const hiddenInput = document.getElementById('categories');
-    
-    if (selectedCategories.length > 0) {
-        container.style.display = 'block';
-        selectedDiv.innerHTML = selectedCategories.map(cat => `
-            <div class="selected-cat-tag">
-                ${cat}
-                <span class="remove" onclick="removeCategory('${cat.replace(/'/g, "\\'")}')">✕</span>
+    overlay.innerHTML = `
+        <div class="category-popup">
+            <div class="popup-header">
+                <h3>📂 ক্যাটাগরি নির্বাচন করুন (একাধিক)</h3>
+                <button class="popup-close" onclick="this.closest('.category-popup-overlay').remove()">✕</button>
             </div>
-        `).join('');
-        hiddenInput.value = selectedCategories.join(',');
+            <div class="popup-body">
+                <div class="category-grid">
+                    ${categoriesHTML}
+                </div>
+            </div>
+            <div class="popup-footer">
+                <button class="btn-clear" onclick="window.clearAllCategorySelection()">সব বাদ দিন</button>
+                <button class="btn-apply" onclick="window.applyCategorySelection()">প্রয়োগ করুন</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.remove();
+    });
+}
+
+let tempSelectedCategories = [];
+
+window.toggleCategoryInPopup = function(category, element) {
+    const index = tempSelectedCategories.indexOf(category);
+    if (index === -1) {
+        tempSelectedCategories.push(category);
+        element.classList.add('selected');
+        const checkbox = element.querySelector('input');
+        if (checkbox) checkbox.checked = true;
     } else {
-        container.style.display = 'none';
+        tempSelectedCategories.splice(index, 1);
+        element.classList.remove('selected');
+        const checkbox = element.querySelector('input');
+        if (checkbox) checkbox.checked = false;
+    }
+};
+
+window.clearAllCategorySelection = function() {
+    tempSelectedCategories = [];
+    document.querySelectorAll('.cat-check').forEach(check => {
+        check.classList.remove('selected');
+        const cb = check.querySelector('input');
+        if (cb) cb.checked = false;
+    });
+};
+
+window.applyCategorySelection = function() {
+    const popup = document.querySelector('.category-popup-overlay');
+    if (popup) popup.remove();
+    
+    selectedCategoriesArray = [...tempSelectedCategories];
+    tempSelectedCategories = [];
+    
+    renderSelectedCategoriesChips();
+    updateCategoryDisplayText();
+};
+
+function renderSelectedCategoriesChips() {
+    const container = document.getElementById('selectedCategoriesContainer');
+    const hiddenInput = document.getElementById('categoriesInput');
+    
+    if (!selectedCategoriesArray.length) {
+        container.innerHTML = '';
         hiddenInput.value = '';
+        return;
+    }
+    
+    container.innerHTML = selectedCategoriesArray.map(cat => `
+        <span class="selected-cat-chip">
+            ${escapeHtml(cat)}
+            <i class="fas fa-times-circle" onclick="removeCategory('${escapeHtml(cat).replace(/'/g, "\\'")}')"></i>
+        </span>
+    `).join('');
+    
+    hiddenInput.value = selectedCategoriesArray.join(',');
+}
+
+function removeCategory(category) {
+    selectedCategoriesArray = selectedCategoriesArray.filter(c => c !== category);
+    renderSelectedCategoriesChips();
+    updateCategoryDisplayText();
+}
+
+function updateCategoryDisplayText() {
+    const displaySpan = document.getElementById('selectedCategoryDisplay');
+    if (selectedCategoriesArray.length === 0) {
+        displaySpan.innerHTML = 'ক্যাটাগরি নির্বাচন করুন';
+        displaySpan.classList.add('category-placeholder');
+        displaySpan.classList.remove('category-selected-text');
+    } else if (selectedCategoriesArray.length === 1) {
+        displaySpan.innerHTML = selectedCategoriesArray[0];
+        displaySpan.classList.remove('category-placeholder');
+        displaySpan.classList.add('category-selected-text');
+    } else {
+        displaySpan.innerHTML = `${selectedCategoriesArray.length} টি ক্যাটাগরি সিলেক্টেড`;
+        displaySpan.classList.remove('category-placeholder');
+        displaySpan.classList.add('category-selected-text');
     }
 }
 
-function removeCategory(catName) {
-    selectedCategories = selectedCategories.filter(c => c !== catName);
-    const checkboxes = document.querySelectorAll('.cat-checkbox-item input');
-    checkboxes.forEach(cb => {
-        if (cb.value === catName) {
-            cb.checked = false;
-            cb.closest('.cat-checkbox-item').classList.remove('selected');
-        }
-    });
-    updateSelectedCatsDisplay();
-}
+function escapeHtml(s) { if(!s) return ''; return s.replace(/[&<>]/g, m=> m==='&'?'&amp;': m==='<'?'&lt;':'&gt;'); }
 
-// ========== বিভাগ পরিবর্তন (JSON থেকে) ==========
+// ========== বিভাগ পরিবর্তন ==========
 function onDivisionChange() {
     const divisionName = document.getElementById('division').value;
     const districtSelect = document.getElementById('district');
@@ -1011,7 +1191,6 @@ function onDivisionChange() {
     const areaGroup = document.getElementById('areaGroup');
     const categorySection = document.getElementById('categorySection');
 
-    // রিসেট
     districtSelect.innerHTML = '<option value="">— জেলা বাছাই করুন —</option>';
     document.getElementById('thana').innerHTML = '<option value="">— থানা বাছাই করুন —</option>';
     
@@ -1038,7 +1217,6 @@ function onDivisionChange() {
     }
 }
 
-// ========== জেলা পরিবর্তন (JSON থেকে) ==========
 function onDistrictChange() {
     const divisionName = document.getElementById('division').value;
     const districtName = document.getElementById('district').value;
@@ -1047,7 +1225,6 @@ function onDistrictChange() {
     const areaGroup = document.getElementById('areaGroup');
     const categorySection = document.getElementById('categorySection');
 
-    // রিসেট
     thanaSelect.innerHTML = '<option value="">— থানা বাছাই করুন —</option>';
     areaGroup.style.display = 'none';
     categorySection.style.display = 'none';
@@ -1069,7 +1246,6 @@ function onDistrictChange() {
         });
         thanaGroup.style.display = 'block';
     } else if (districtName) {
-        // যদি উপজেলা না থাকে, ডিফল্ট
         const opt = document.createElement('option');
         opt.value = "সদর";
         opt.textContent = "সদর উপজেলা";
@@ -1080,7 +1256,6 @@ function onDistrictChange() {
     }
 }
 
-// ========== থানা পরিবর্তন ==========
 function onThanaChange() {
     const thana = document.getElementById('thana').value;
     const areaGroup = document.getElementById('areaGroup');
@@ -1158,7 +1333,7 @@ async function registerShop() {
     const district = document.getElementById('district').value;
     const thana = document.getElementById('thana').value;
     const area = document.getElementById('area').value.trim();
-    const categories = document.getElementById('categories').value;
+    const categories = document.getElementById('categoriesInput').value;
     const phone = document.getElementById('phone').value.trim();
     const whatsapp = document.getElementById('whatsapp').value.trim();
     const telegram = document.getElementById('telegram').value.trim();
@@ -1187,7 +1362,6 @@ async function registerShop() {
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
         const uid = userCredential.user.uid;
 
-        // YouTube লিংক থেকে ভিডিও আইডি এক্সট্রাক্ট
         let youtubeVideoId = '';
         if (youtube) {
             const patterns = [
@@ -1250,6 +1424,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadCategoriesFromJSON();
 });
 </script>
-
 </body>
 </html>
