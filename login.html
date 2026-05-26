@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>লগইন - পাইকারি বাজার</title>
-<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<title>লগইন — পাইকারি বাজার</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
 :root {
@@ -13,215 +13,42 @@
     --primary-light: #a259f7;
     --accent: #f0c040;
     --bg: #f5f3ff;
+    --white: #ffffff;
     --text: #1a1a2e;
     --text-light: #666;
-    --shadow: 0 4px 20px rgba(108,43,217,0.12);
-    --glow: 0 0 30px rgba(108,43,217,0.4);
-    --glow-accent: 0 0 20px rgba(240,192,64,0.3);
+    --error: #e74c3c;
+    --success: #2ecc71;
+    --card-shadow: 0 8px 32px rgba(108,43,217,0.15);
 }
-* { margin:0; padding:0; box-sizing:border-box; }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
 body {
     font-family: 'Hind Siliguri', sans-serif;
-    background: linear-gradient(135deg, #1a0a3e 0%, #2d1a5e 50%, #6c2bd9 100%);
+    background: linear-gradient(135deg, #f5f3ff 0%, #e8e0ff 100%);
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
-    position: relative;
-    overflow-x: hidden;
 }
 
-/* Animated Background */
-body::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-        radial-gradient(circle at 20% 80%, rgba(108,43,217,0.3) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(240,192,64,0.15) 0%, transparent 50%),
-        repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 2px, transparent 2px, transparent 8px);
-    animation: bgPulse 8s ease-in-out infinite;
-    pointer-events: none;
-}
-
-@keyframes bgPulse {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 1; }
-}
-
-/* Floating Particles */
-.particle {
-    position: absolute;
-    background: linear-gradient(135deg, var(--primary-light), var(--accent));
-    border-radius: 50%;
-    opacity: 0.3;
-    animation: floatParticle 20s linear infinite;
-    pointer-events: none;
-}
-@keyframes floatParticle {
-    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-    10% { opacity: 0.3; }
-    90% { opacity: 0.3; }
-    100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
-}
-
+/* Login Container */
 .login-container {
-    max-width: 440px;
+    max-width: 400px;
     width: 100%;
-    background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(10px);
-    border-radius: 48px;
+    background: white;
+    border-radius: 28px;
     padding: 40px 32px;
-    box-shadow: 
-        0 25px 50px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.5);
-    text-align: center;
-    position: relative;
-    z-index: 10;
-    animation: slideUpFade 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: var(--card-shadow);
+    border: 1.5px solid rgba(108,43,217,0.08);
+    animation: fadeInUp 0.5s ease;
 }
-
-.login-container:hover {
-    transform: translateY(-5px);
-    box-shadow: 
-        0 35px 60px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6),
-        0 0 30px rgba(108,43,217,0.3);
-}
-
-@keyframes slideUpFade {
-    from {
-        opacity: 0;
-        transform: translateY(40px) scale(0.96);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-/* Decorative Circles */
-.login-container::before,
-.login-container::after {
-    content: '';
-    position: absolute;
-    border-radius: 50%;
-    z-index: -1;
-    opacity: 0.4;
-}
-
-.login-container::before {
-    width: 150px;
-    height: 150px;
-    background: radial-gradient(circle, var(--primary-light), transparent);
-    top: -50px;
-    right: -50px;
-    animation: rotateSlow 20s linear infinite;
-}
-
-.login-container::after {
-    width: 120px;
-    height: 120px;
-    background: radial-gradient(circle, var(--accent), transparent);
-    bottom: -40px;
-    left: -40px;
-    animation: rotateReverse 15s linear infinite;
-}
-
-@keyframes rotateSlow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-@keyframes rotateReverse {
-    from { transform: rotate(360deg); }
-    to { transform: rotate(0deg); }
-}
-
-/* Title with Gradient Animation */
-h1 {
-    font-size: 32px;
-    font-weight: 800;
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary), var(--primary-light));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    margin-bottom: 12px;
-    animation: gradientShift 3s ease infinite;
-    background-size: 200% 200%;
-    position: relative;
-    display: inline-block;
-}
-
-h1::before {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 25%;
-    width: 50%;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, var(--primary), transparent);
-    border-radius: 3px;
-    animation: lineExpand 2s ease-in-out infinite;
-}
-
-@keyframes lineExpand {
-    0%, 100% { width: 30%; left: 35%; }
-    50% { width: 70%; left: 15%; }
-}
-
-@keyframes gradientShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-}
-
-.subtitle {
-    color: var(--text-light);
-    font-size: 14px;
-    margin-bottom: 35px;
-    position: relative;
-    display: inline-block;
-}
-
-.subtitle::before,
-.subtitle::after {
-    content: '';
-    position: absolute;
-    width: 30px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--primary-light), transparent);
-    top: 50%;
-}
-
-.subtitle::before {
-    left: -40px;
-}
-
-.subtitle::after {
-    right: -40px;
-}
-
-/* Input Groups - ফোকাস এনিমেশন বাদ দেওয়া হয়েছে */
-.input-group {
-    margin-bottom: 22px;
-    text-align: left;
-    animation: fadeInUp 0.5s ease backwards;
-    animation-delay: calc(var(--i, 0) * 0.1s);
-}
-
-.input-group:nth-child(1) { --i: 1; }
-.input-group:nth-child(2) { --i: 2; }
 
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(15px);
+        transform: translateY(30px);
     }
     to {
         opacity: 1;
@@ -229,13 +56,39 @@ h1::before {
     }
 }
 
+/* Header */
+.header-icon {
+    text-align: center;
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-light);
+    margin-bottom: 32px;
+}
+
+/* Input Groups */
+.input-group {
+    margin-bottom: 20px;
+}
+
 .input-group label {
     display: block;
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--text);
-    margin-bottom: 8px;
-    letter-spacing: 0.5px;
+    margin-bottom: 6px;
 }
 
 .input-group label i {
@@ -243,50 +96,55 @@ h1::before {
     color: var(--primary);
 }
 
-.input-group input {
-    width: 100%;
-    padding: 14px 16px;
-    font-size: 15px;
-    font-family: 'Hind Siliguri', sans-serif;
-    border: 2px solid #e8e0ff;
-    border-radius: 16px;
-    outline: none;
-    transition: all 0.3s ease;
-    background: #fafaff;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.02), 0 1px 0 rgba(255,255,255,0.8);
-}
-
-.input-group input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(108,43,217,0.1);
-    /* transform: translateY(-1px); ← এই লাইনটি বাদ দেওয়া হয়েছে */
-}
-
-/* Password wrapper */
-.password-wrapper {
+.input-wrap {
     position: relative;
 }
-.password-wrapper input {
-    padding-right: 55px;
+
+.input-wrap input {
+    width: 100%;
+    padding: 14px 16px;
+    padding-right: 75px;
+    border: 2px solid #e8e0ff;
+    border-radius: 14px;
+    font-size: 14px;
+    font-family: 'Hind Siliguri', sans-serif;
+    color: var(--text);
+    background: #faf8ff;
+    outline: none;
+    transition: all 0.2s;
 }
+
+.input-wrap input:focus {
+    border-color: var(--primary);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(108,43,217,0.08);
+}
+
+.input-wrap input::placeholder {
+    color: #bbb;
+}
+
+/* Password Toggle - টেক্সট 버전 */
 .pass-toggle {
     position: absolute;
-    right: 16px;
+    right: 12px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 20px;
+    font-size: 12px;
+    font-weight: 600;
     cursor: pointer;
-    color: #aaa;
-    transition: all 0.2s ease;
-    letter-spacing: -3px;
-    background: transparent;
-    padding: 5px;
-    border-radius: 50%;
-}
-.pass-toggle:hover {
     color: var(--primary);
-    transform: translateY(-50%) scale(1.1);
-    background: rgba(108,43,217,0.1);
+    background: #f0ebff;
+    padding: 5px 10px;
+    border-radius: 30px;
+    transition: all 0.2s;
+    font-family: 'Hind Siliguri', sans-serif;
+    white-space: nowrap;
+}
+
+.pass-toggle:hover {
+    background: var(--primary);
+    color: white;
 }
 
 /* Forgot Password */
@@ -294,218 +152,211 @@ h1::before {
     text-align: right;
     margin-top: 8px;
 }
+
 .forgot-password a {
     font-size: 12px;
     color: var(--primary);
     text-decoration: none;
-    font-weight: 600;
-    transition: all 0.2s;
-    position: relative;
-    display: inline-block;
-}
-.forgot-password a::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: var(--primary);
-    transition: width 0.3s ease;
-}
-.forgot-password a:hover::after {
-    width: 100%;
-}
-.forgot-password a:hover {
-    color: var(--primary-dark);
+    font-weight: 500;
+    transition: color 0.2s;
 }
 
-/* Login Button with 3D Effect */
+.forgot-password a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* Login Button */
 .login-btn {
     width: 100%;
-    padding: 16px;
+    padding: 14px;
     background: linear-gradient(135deg, var(--primary), var(--primary-light));
     color: white;
     border: none;
-    border-radius: 20px;
+    border-radius: 50px;
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 600;
     font-family: 'Hind Siliguri', sans-serif;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: 15px;
-    margin-bottom: 25px;
+    margin-top: 16px;
+    margin-bottom: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 8px 20px rgba(108,43,217,0.4);
-}
-
-.login-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s ease;
-}
-
-.login-btn:hover::before {
-    left: 100%;
+    box-shadow: 0 4px 15px rgba(108,43,217,0.3);
 }
 
 .login-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(108,43,217,0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(108,43,217,0.4);
 }
 
 .login-btn:active {
-    transform: translateY(1px);
+    transform: translateY(0);
 }
 
 .login-btn.loading {
-    background: linear-gradient(135deg, #b39ddb, #9b80c4);
-    pointer-events: none;
+    opacity: 0.8;
+    cursor: wait;
     transform: none;
 }
 
 .spinner {
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(255,255,255,0.3);
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
     border-top-color: white;
     border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+    animation: spin 0.6s linear infinite;
     display: none;
 }
-.login-btn.loading .spinner { display: block; }
-.login-btn.loading .btn-text { display: none; }
-@keyframes spin { to { transform: rotate(360deg); } }
+
+.login-btn.loading .spinner {
+    display: inline-block;
+}
+
+.login-btn.loading .btn-text {
+    display: none;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
 
 /* Register Link */
 .register-link {
     text-align: center;
     font-size: 14px;
     color: var(--text-light);
-    margin-bottom: 15px;
+    padding-top: 16px;
+    border-top: 1px solid #e8e0ff;
 }
+
 .register-link a {
     color: var(--primary);
     text-decoration: none;
     font-weight: 700;
-    transition: all 0.2s;
-    position: relative;
+    transition: color 0.2s;
 }
-.register-link a::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: var(--primary);
-    transition: width 0.3s ease;
-}
-.register-link a:hover::after {
-    width: 100%;
-}
+
 .register-link a:hover {
     color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+.register-link i {
+    font-size: 12px;
+    margin-left: 4px;
 }
 
 /* Back Home Link */
 .back-home {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    margin-top: 5px;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
     color: var(--text-light);
     font-size: 13px;
     text-decoration: none;
-    transition: all 0.2s;
-    padding: 6px 12px;
-    border-radius: 30px;
-    background: rgba(108,43,217,0.05);
+    transition: color 0.2s;
+    width: 100%;
 }
+
 .back-home:hover {
     color: var(--primary);
-    background: rgba(108,43,217,0.1);
-    transform: translateX(-3px);
 }
 
-/* Error & Success Messages */
-.error-message, .success-message {
-    padding: 12px 16px;
-    border-radius: 20px;
+/* Toast Messages */
+.toast-error {
+    position: fixed;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #e74c3c;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 50px;
     font-size: 13px;
-    margin-bottom: 20px;
-    display: none;
-    align-items: center;
-    gap: 10px;
-    animation: shake 0.4s ease;
+    font-weight: 500;
+    z-index: 1001;
+    opacity: 0;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    box-shadow: 0 4px 15px rgba(231,76,60,0.3);
+    pointer-events: none;
+}
+.toast-error.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
 }
 
-.error-message {
-    background: linear-gradient(135deg, #fee2e2, #fecaca);
-    color: #dc2626;
-    border-left: 4px solid #dc2626;
+.toast-success {
+    position: fixed;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #2ecc71;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 1001;
+    opacity: 0;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    box-shadow: 0 4px 15px rgba(46,204,113,0.3);
+    pointer-events: none;
 }
-
-.success-message {
-    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-    color: #16a34a;
-    border-left: 4px solid #16a34a;
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-}
-
-.error-message i, .success-message i {
-    font-size: 18px;
+.toast-success.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
 }
 
 /* Responsive */
 @media (max-width: 480px) {
     .login-container {
         padding: 32px 24px;
-        border-radius: 36px;
+        border-radius: 24px;
     }
-    h1 {
-        font-size: 28px;
+    .toast-error, .toast-success {
+        white-space: normal;
+        text-align: center;
+        max-width: 85%;
+        bottom: 100px;
+    }
+    .pass-toggle {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+    .input-wrap input {
+        padding-right: 65px;
     }
 }
 </style>
 </head>
 <body>
 
-<!-- Floating Particles -->
-<div id="particles"></div>
-
 <div class="login-container">
-    <h1>স্বাগতম</h1>
-    <div class="subtitle">আপনার অ্যাকাউন্টে লগইন করুন</div>
-
-    <div id="errorMessage" class="error-message"><i class="fas fa-exclamation-circle"></i> <span></span></div>
-    <div id="successMessage" class="success-message"><i class="fas fa-check-circle"></i> <span></span></div>
+    <div class="header-icon">🔐</div>
+    <h1>লগইন করুন</h1>
+    <div class="subtitle">আপনার অ্যাকাউন্টে প্রবেশ করুন</div>
 
     <div class="input-group">
         <label><i class="fas fa-envelope"></i> ইমেইল ঠিকানা</label>
-        <input type="email" id="emailInput" placeholder="you@example.com">
+        <div class="input-wrap">
+            <input type="email" id="emailInput" placeholder="you@example.com">
+        </div>
     </div>
 
     <div class="input-group">
         <label><i class="fas fa-lock"></i> পাসওয়ার্ড</label>
-        <div class="password-wrapper">
+        <div class="input-wrap">
             <input type="password" id="passwordInput" placeholder="••••••••">
-            <span class="pass-toggle" onclick="togglePassword()">👁️👁️</span>
+            <span class="pass-toggle" onclick="togglePassword()">দেখুন</span>
         </div>
         <div class="forgot-password">
             <a href="#" onclick="forgotPassword()">পাসওয়ার্ড ভুলে গেছেন?</a>
@@ -524,96 +375,75 @@ h1::before {
     <a href="index.html" class="back-home"><i class="fas fa-arrow-left"></i> হোমপেজে ফিরুন</a>
 </div>
 
+<!-- Toast Messages -->
+<div id="toastError" class="toast-error">⚠️ ইমেইল এবং পাসওয়ার্ড দিন!</div>
+<div id="toastSuccess" class="toast-success">✅ লগইন সফল! রিডাইরেক্ট হচ্ছে...</div>
+
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script>
 // Firebase configuration
-firebase.initializeApp({
+const firebaseConfig = {
     apiKey: "AIzaSyA1CzQX9tgbLd46QfvCK6Rwqa0z9CRWoMs",
     authDomain: "agls-5bd4c.firebaseapp.com",
     databaseURL: "https://agls-5bd4c-default-rtdb.firebaseio.com/",
     projectId: "agls-5bd4c",
-});
-const auth = firebase.auth();
-
-// Create floating particles
-function createParticles() {
-    const container = document.getElementById('particles');
-    for (let i = 0; i < 30; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        const size = Math.random() * 6 + 2;
-        particle.style.width = size + 'px';
-        particle.style.height = size + 'px';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.animationDuration = Math.random() * 15 + 10 + 's';
-        particle.style.animationDelay = Math.random() * 10 + 's';
-        particle.style.opacity = Math.random() * 0.3 + 0.1;
-        container.appendChild(particle);
-    }
-}
-createParticles();
-
-// Toggle password visibility
-window.togglePassword = function() {
-    const passInput = document.getElementById('passwordInput');
-    const toggleIcon = document.querySelector('.pass-toggle');
-    if (passInput.type === 'password') {
-        passInput.type = 'text';
-        toggleIcon.textContent = '🙈🙈';
-        toggleIcon.style.transform = 'translateY(-50%) scale(1.1)';
-        setTimeout(() => {
-            toggleIcon.style.transform = 'translateY(-50%)';
-        }, 200);
-    } else {
-        passInput.type = 'password';
-        toggleIcon.textContent = '👁️👁️';
-        toggleIcon.style.transform = 'translateY(-50%) scale(1.1)';
-        setTimeout(() => {
-            toggleIcon.style.transform = 'translateY(-50%)';
-        }, 200);
-    }
 };
 
-// Show message function
-function showMessage(elementId, message, isError = false) {
-    const element = document.getElementById(elementId);
-    const span = element.querySelector('span');
-    if (span) span.textContent = message;
-    element.style.display = 'flex';
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// Toast functions
+function showErrorToast(msg) {
+    const toast = document.getElementById('toastError');
+    toast.textContent = msg;
+    toast.classList.add('show');
     setTimeout(() => {
-        element.style.opacity = '0';
-        setTimeout(() => {
-            element.style.display = 'none';
-            element.style.opacity = '1';
-        }, 300);
-    }, 4000);
+        toast.classList.remove('show');
+    }, 3000);
 }
+
+function showSuccessToast(msg) {
+    const toast = document.getElementById('toastSuccess');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2000);
+}
+
+// Toggle password visibility - টেক্সট পরিবর্তন সহ
+window.togglePassword = function() {
+    const passInput = document.getElementById('passwordInput');
+    const toggleBtn = document.querySelector('.pass-toggle');
+    if (passInput.type === 'password') {
+        passInput.type = 'text';
+        toggleBtn.textContent = 'লুকান';
+    } else {
+        passInput.type = 'password';
+        toggleBtn.textContent = 'দেখুন';
+    }
+};
 
 // Forgot password function
 window.forgotPassword = async function() {
     const email = document.getElementById('emailInput').value.trim();
-    const errorDiv = document.getElementById('errorMessage');
-    const successDiv = document.getElementById('successMessage');
-    
-    errorDiv.style.display = 'none';
-    successDiv.style.display = 'none';
     
     if (!email) {
-        showMessage('errorMessage', 'পাসওয়ার্ড রিসেট করতে আগে আপনার ইমেইল দিন!', true);
+        showErrorToast('⚠️ পাসওয়ার্ড রিসেট করতে ইমেইল দিন!');
         return;
     }
     
     try {
         await auth.sendPasswordResetEmail(email);
-        showMessage('successMessage', 'পাসওয়ার্ড রিসেট ইমেইল পাঠানো হয়েছে! আপনার ইনবক্স চেক করুন।');
+        showSuccessToast('✅ পাসওয়ার্ড রিসেট ইমেইল পাঠানো হয়েছে!');
     } catch (error) {
         if (error.code === 'auth/user-not-found') {
-            showMessage('errorMessage', 'এই ইমেইলে কোনো অ্যাকাউন্ট নেই!', true);
+            showErrorToast('⚠️ এই ইমেইলে কোনো অ্যাকাউন্ট নেই!');
         } else if (error.code === 'auth/invalid-email') {
-            showMessage('errorMessage', 'সঠিক ইমেইল দিন!', true);
+            showErrorToast('⚠️ সঠিক ইমেইল দিন!');
         } else {
-            showMessage('errorMessage', 'সমস্যা হয়েছে! আবার চেষ্টা করুন।', true);
+            showErrorToast('⚠️ সমস্যা হয়েছে! আবার চেষ্টা করুন।');
         }
     }
 };
@@ -624,11 +454,8 @@ window.login = async function() {
     const password = document.getElementById('passwordInput').value;
     const loginBtn = document.getElementById('loginBtn');
     
-    document.getElementById('errorMessage').style.display = 'none';
-    document.getElementById('successMessage').style.display = 'none';
-    
     if (!email || !password) {
-        showMessage('errorMessage', 'ইমেইল এবং পাসওয়ার্ড উভয়ই প্রয়োজন', true);
+        showErrorToast('⚠️ ইমেইল এবং পাসওয়ার্ড দিন!');
         return;
     }
     
@@ -636,31 +463,25 @@ window.login = async function() {
     
     try {
         await auth.signInWithEmailAndPassword(email, password);
-        showMessage('successMessage', 'লগইন সফল! রিডাইরেক্ট হচ্ছে...');
+        showSuccessToast('✅ লগইন সফল! রিডাইরেক্ট হচ্ছে...');
         
         setTimeout(() => {
             window.location.href = 'index.html';
         }, 1500);
     } catch (error) {
         loginBtn.classList.remove('loading');
-        let errorMessage = '';
-        switch (error.code) {
-            case 'auth/user-not-found':
-                errorMessage = 'এই ইমেইলে কোনো অ্যাকাউন্ট নেই।';
-                break;
-            case 'auth/wrong-password':
-                errorMessage = 'পাসওয়ার্ড ভুল।';
-                break;
-            case 'auth/invalid-email':
-                errorMessage = 'সঠিক ইমেইল দিন।';
-                break;
-            case 'auth/too-many-requests':
-                errorMessage = 'অনেকবার চেষ্টা করেছেন! কিছুক্ষণ পর চেষ্টা করুন।';
-                break;
-            default:
-                errorMessage = 'লগইন ব্যর্থ হয়েছে। আবার চেষ্টা করুন।';
+        
+        if (error.code === 'auth/user-not-found') {
+            showErrorToast('⚠️ এই ইমেইলে কোনো অ্যাকাউন্ট নেই!');
+        } else if (error.code === 'auth/wrong-password') {
+            showErrorToast('⚠️ পাসওয়ার্ড ভুল!');
+        } else if (error.code === 'auth/invalid-email') {
+            showErrorToast('⚠️ সঠিক ইমেইল দিন!');
+        } else if (error.code === 'auth/too-many-requests') {
+            showErrorToast('⚠️ অনেকবার চেষ্টা করেছেন! কিছুক্ষণ পর চেষ্টা করুন।');
+        } else {
+            showErrorToast('⚠️ লগইন ব্যর্থ হয়েছে!');
         }
-        showMessage('errorMessage', errorMessage, true);
     }
 };
 
