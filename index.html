@@ -213,8 +213,7 @@ marquee {
 .filter-wrap { padding:0 16px; margin-bottom:6px; }
 .filter-step { background:white; border-radius:14px; padding:12px 14px; box-shadow:var(--shadow); margin-bottom:8px; border:1.5px solid rgba(108,43,217,0.06); }
 .fs-header { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
-.fs-num { width:24px; height:24px; border-radius:50%; background:var(--primary); color:white; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.fs-num.done { background:#2ecc71; }
+/* স্টেপ নম্বর বাদ দেওয়া হয়েছে */
 .fs-title { font-size:13px; font-weight:700; color:var(--text); }
 .fs-sel   { font-size:11px; color:var(--primary); font-weight:600; margin-left:auto; }
 .chip-scroll { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding-bottom:2px; }
@@ -365,7 +364,7 @@ marquee {
     gap: 8px;
     margin-bottom: 8px;
     justify-content: flex-start;
-    margin-left: 4px;  /* বাম পাশে একটু বেশি মার্জিন */
+    margin-left: 6px;  /* বাম পাশে একটু বেশি মার্জিন */
 }
 
 .shop-video-name {
@@ -399,7 +398,7 @@ marquee {
     transform: scale(1.1);
 }
 
-/* ঠিকানা - বাম দিকে */
+/* ঠিকানা - বাম দিকে (লোকেশন আইকন বাদ) */
 .shop-video-location {
     font-size: 13px;
     font-weight: 500;
@@ -409,7 +408,7 @@ marquee {
     gap: 6px;
     flex-wrap: wrap;
     justify-content: flex-start;
-    margin-left: 4px;  /* বাম পাশে একটু বেশি মার্জিন */
+    margin-left: 6px;  /* বাম পাশে মার্জিন */
 }
 
 /* ক্যাটাগরি ড্রপডাউন - বাম দিকে */
@@ -420,7 +419,7 @@ marquee {
     display: none;
     animation: slideDown 0.3s ease;
     text-align: left;
-    margin-left: 4px;  /* বাম পাশে মার্জিন */
+    margin-left: 6px;  /* বাম পাশে মার্জিন */
 }
 .categories-dropdown.show {
     display: block;
@@ -688,13 +687,12 @@ marquee {
         <div class="ab-arrow">→</div>
     </a>
 
-    <!-- FILTERS -->
+    <!-- FILTERS (স্টেপ নম্বর বাদ দেওয়া হয়েছে) -->
     <div class="filter-wrap">
         <button class="reset-btn" id="resetBtn" onclick="window.resetFilters()">🔄 ফিল্টার রিসেট করুন</button>
 
         <div class="filter-step" id="step1">
             <div class="fs-header">
-                <div class="fs-num" id="num1">১</div>
                 <div class="fs-title">বিভাগ বাছাই করুন</div>
                 <div class="fs-sel" id="sel1"></div>
             </div>
@@ -703,7 +701,6 @@ marquee {
 
         <div class="filter-step hidden" id="step2">
             <div class="fs-header">
-                <div class="fs-num" id="num2">২</div>
                 <div class="fs-title">জেলা বাছাই করুন</div>
                 <div class="fs-sel" id="sel2"></div>
             </div>
@@ -712,7 +709,6 @@ marquee {
 
         <div class="filter-step hidden" id="step3">
             <div class="fs-header">
-                <div class="fs-num" id="num3">৩</div>
                 <div class="fs-title">থানা/উপজেলা বাছাই করুন</div>
                 <div class="fs-sel" id="sel3"></div>
             </div>
@@ -721,7 +717,6 @@ marquee {
 
         <div class="filter-step hidden" id="step4">
             <div class="fs-header">
-                <div class="fs-num" id="num4">৪</div>
                 <div class="fs-title">ক্যাটাগরি বাছাই করুন</div>
                 <div class="fs-sel" id="sel4"></div>
             </div>
@@ -1507,7 +1502,7 @@ window.renderShops = function(shops) {
                             <button class="dropdown-icon" onclick="window.toggleCategoriesDropdown('${shop.id}', event)">▼</button>
                         </div>
                         <div class="shop-video-location">
-                            📍 ${escapeHtml(locationText)}
+                            ${escapeHtml(locationText)}
                         </div>
                         ${categoriesDropdownHtml}
                     </div>
@@ -1526,7 +1521,7 @@ window.renderShops = function(shops) {
                             <button class="dropdown-icon" onclick="window.toggleCategoriesDropdown('${shop.id}', event)">▼</button>
                         </div>
                         <div class="shop-video-location">
-                            📍 ${escapeHtml(locationText)}
+                            ${escapeHtml(locationText)}
                         </div>
                         ${categoriesDropdownHtml}
                     </div>
