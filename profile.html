@@ -91,7 +91,7 @@
   .close-bottom-btn { background:linear-gradient(135deg, #dc2626, #b91c1c); border:none; color:white; width:48px; height:48px; border-radius:50%; cursor:pointer; font-size:22px; transition:all 0.2s; display:flex; align-items:center; justify-content:center; }
   .close-bottom-btn:hover { transform:scale(1.05); background:linear-gradient(135deg, #ef4444, #dc2626); }
   
-  /* Slider - border radius কম করা হয়েছে (পাঁচ ভাগের এক ভাগ) */
+  /* Slider - border radius কম করা হয়েছে */
   .slider-section { max-width:1200px; margin:15px auto 5px auto; padding:0 15px; }
   .slider-container { position:relative; width:100%; height:260px; overflow:hidden; border-radius:6px; box-shadow:0 25px 45px -12px rgba(108,43,217,0.4); }
   .slides-wrapper { display:flex; width:100%; height:100%; transition:transform 0.5s ease; }
@@ -104,14 +104,14 @@
   .dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.6); cursor:pointer; }
   .dot.active { background:var(--accent); width:22px; border-radius:10px; }
   
-  /* Ticker - border radius কম করা হয়েছে (পাঁচ ভাগের এক ভাগ) এবং স্পিড 28s */
+  /* Ticker - border radius কম করা হয়েছে, ব্যাকগ্রাউন্ড ট্রান্সপারেন্ট, স্পিড 28s */
   .ticker-section { padding:0 15px; margin:5px 0 15px 0; }
-  .ticker-wrap { background:#1f0a3b; padding:8px 0; overflow:hidden; border-radius:6px; }
+  .ticker-wrap { background:transparent; padding:8px 0; overflow:hidden; border-radius:6px; }
   .ticker { display:flex; white-space:nowrap; animation:scrollTicker 28s linear infinite; gap:1.5rem; }
-  .ticker-item { font-size:0.85rem; font-weight:600; color:#f0eaff; background:rgba(160,120,255,0.2); padding:0.2rem 1rem; border-radius:40px; }
+  .ticker-item { font-size:0.85rem; font-weight:600; color:#1a0a3e; background:rgba(108,43,217,0.1); padding:0.2rem 1rem; border-radius:40px; }
   @keyframes scrollTicker { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }
   
-  /* Products - card border radius কম করা হয়েছে (পাঁচ ভাগের এক ভাগ) */
+  /* Products - card border radius কম করা হয়েছে */
   .container { max-width:1200px; margin:15px auto 30px; padding:0 15px; }
   .section-title { font-size:22px; font-weight:800; background:linear-gradient(135deg,var(--primary-dark),var(--primary-light)); -webkit-background-clip:text; background-clip:text; color:transparent; margin-bottom:18px; border-left:5px solid var(--accent); padding-left:15px; display:inline-block; }
   .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
