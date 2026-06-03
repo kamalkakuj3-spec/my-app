@@ -639,12 +639,17 @@ async function registerShop() {
             if(m) ytId = m[1];
         }
 
+        // ========== শুধুমাত্র এখানে পরিবর্তন করা হয়েছে ==========
+        // পূর্বে ছিল: status: 'pending'
+        // এখন পরিবর্তন করে দেওয়া হয়েছে: status: 'approved'
         await db.ref('shops/' + uid).set({
             shopName, ownerName, description, division, district, thana, area,
             categories: categories.split(','), phone, whatsapp, telegram,
             youtubeVideoId: ytId, youtubeLink: youtube, email,
-            status: 'pending', createdAt: Date.now()
+            status: 'approved',  // ← এখানে পরিবর্তন করা হয়েছে (pending থেকে approved)
+            createdAt: Date.now()
         });
+        // =====================================================
 
         await auth.signOut();
         showSuccessToast('✅ নিবন্ধন সফল!');
