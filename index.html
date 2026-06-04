@@ -291,7 +291,7 @@ marquee {
 }
 .video-player-container {
     position: relative;
-    background: #000;
+    background: transparent;
     width: 100%;
     aspect-ratio: 16 / 9;
     cursor: pointer;
@@ -302,6 +302,7 @@ marquee {
     object-fit: cover;
     display: block;
     border-radius: 12px;
+    background: transparent;
 }
 .video-card-info {
     padding: 14px 16px;
@@ -351,7 +352,7 @@ marquee {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
-    background: #000;
+    background: transparent;
     cursor: pointer;
 }
 .video-thumbnail {
@@ -1068,6 +1069,7 @@ function loadAdminVideos() {
     });
 }
 
+// ========== আপডেটেড setupCloudinaryVideo ফাংশন ==========
 function setupCloudinaryVideo(videoElement, videoUrl) {
     if (!videoElement) return;
     
@@ -1087,12 +1089,16 @@ function setupCloudinaryVideo(videoElement, videoUrl) {
         });
     }
     
+    // ইন্টারসেকশন অবজারভার - ভিডিও বাইরে গেলে মিউট করে দেয়
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
+                // ভিডিও স্ক্রিনে ফিরলে শুধু প্লে করবে, কিন্তু মিউট রিমুভ করবে না
                 videoElement.play().catch(e => console.log("Play on view error:", e));
             } else {
+                // ভিডিও স্ক্রিনের বাইরে গেলে পজ + মিউট করে দেয়
                 videoElement.pause();
+                videoElement.muted = true;
             }
         });
     }, { threshold: 0.1 });
