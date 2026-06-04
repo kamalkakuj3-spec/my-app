@@ -44,7 +44,7 @@
   @keyframes spin { to { transform:rotate(360deg); } }
   .loading-text { margin-top:15px; font-size:16px; font-weight:500; color:white; }
   
-  /* Dashboard Header - No Menu Icon */
+  /* Dashboard Header - Without Menu Icon */
   .dashboard-header {
     display: flex;
     align-items: center;
@@ -126,28 +126,14 @@
     transform: scale(1.02);
   }
   .shop-id-message {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--primary);
     margin-top: 10px;
     font-weight: 500;
+    line-height: 1.5;
   }
   
   .content { padding:0 16px 100px; }
-  
-  /* Status Badge */
-  .status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    border-radius: 40px;
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 16px;
-  }
-  .status-badge.approved { background: #e8faf0; color: #2ecc71; }
-  .status-badge.pending { background: #fff8e5; color: #f0c040; }
-  .status-badge.rejected { background: #fee8e8; color: #e74c3c; }
   
   /* Glass Button */
   .btn-glass {
@@ -640,7 +626,89 @@
     cursor: pointer;
   }
   
-  /* Logout Toast Message */
+  /* Success Toast Message - Popup Style */
+  .success-toast {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    color: #1a1a2e;
+    padding: 24px 28px;
+    border-radius: 24px;
+    font-weight: 500;
+    font-size: 15px;
+    z-index: 10001;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3);
+    text-align: center;
+    max-width: 90%;
+    width: 360px;
+    border: 2px solid var(--primary-light);
+    animation: popupShow 0.3s ease forwards;
+  }
+  .success-toast i {
+    font-size: 48px;
+    color: #2ecc71;
+    display: block;
+    margin-bottom: 16px;
+  }
+  .success-toast .toast-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 12px;
+  }
+  .success-toast .toast-message {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #4a4a5a;
+  }
+  .success-toast .toast-close {
+    margin-top: 20px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 40px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  @keyframes popupShow {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+  
+  /* Error Toast */
+  .error-toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #e74c3c;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 60px;
+    font-weight: 600;
+    font-size: 14px;
+    z-index: 10001;
+    animation: fadeToast 2.5s ease forwards;
+    white-space: nowrap;
+  }
+  @keyframes fadeToast {
+    0% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+    15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-20px); visibility: hidden; }
+  }
+  
+  /* Logout Toast */
   .logout-toast {
     position: fixed;
     top: 80px;
@@ -656,53 +724,9 @@
     align-items: center;
     gap: 12px;
     z-index: 10001;
-    animation: logoutToastFade 2.5s ease forwards;
+    animation: fadeToast 2.5s ease forwards;
     white-space: nowrap;
-    box-shadow: none;
-    border: none;
   }
-  
-  @keyframes logoutToastFade {
-    0% {
-      opacity: 0;
-      transform: translateX(-50%) translateY(-20px);
-    }
-    15% {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-    85% {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-    100% {
-      opacity: 0;
-      transform: translateX(-50%) translateY(-20px);
-      visibility: hidden;
-    }
-  }
-  
-  /* অন্যান্য টোস্ট */
-  .custom-toast {
-    position: fixed;
-    top: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #2ecc71;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 60px;
-    font-weight: 600;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    z-index: 10001;
-    animation: logoutToastFade 2.5s ease forwards;
-    white-space: nowrap;
-    box-shadow: none;
-  }
-  .custom-toast.error { background: #e74c3c; }
 </style>
 </head>
 <body>
@@ -720,7 +744,7 @@
     <div class="shop-id-banner">
         <div class="shop-id-label">
             <i class="fas fa-fingerprint"></i>
-            <span>🆔 আপনার প্রোফাইল আইডি</span>
+            <span>🆔 আপনার দোকানের প্রোফাইল আইডি</span>
         </div>
         <div class="shop-id-value">
             <span id="shopIdDisplay">লোড হচ্ছে...</span>
@@ -729,12 +753,9 @@
             </button>
         </div>
         <div class="shop-id-message">
-            <i class="fas fa-rocket"></i> আপনার প্রোফাইল প্রমোট করানোর জন্য এই Shop ID কপি করে পাইকারি বাজার কর্তৃপক্ষদের পাঠান
+            <i class="fas fa-info-circle"></i> আপনার দোকান প্রমোট করানোর ক্ষেত্রে আপনার দোকানের প্রোফাইল আইডি প্রয়োজন হবে।
         </div>
     </div>
-
-    <!-- Status Badge -->
-    <div id="cardStatusBadge" class="status-badge pending"><i class="fas fa-clock"></i> পেন্ডিং</div>
 
     <!-- Live Profile Button -->
     <button class="btn-glass" onclick="viewProfile()"><i class="fas fa-globe"></i> লাইভ প্রোফাইল দেখুন</button>
@@ -879,28 +900,54 @@ let allProducts = [];
 
 function escapeHtml(s) { if(!s) return ''; return s.replace(/[&<>]/g, m=> m==='&'?'&amp;': m==='<'?'&lt;':'&gt;'); }
 
-function showToast(msg, isError=false) { 
-    let toast = document.createElement('div'); 
-    toast.className = 'custom-toast' + (isError ? ' error' : ''); 
-    toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${msg}`; 
-    document.body.appendChild(toast); 
-    setTimeout(() => { if(toast && toast.remove) toast.remove(); }, 2500); 
+function showErrorToast(msg) {
+    let toast = document.createElement('div');
+    toast.className = 'error-toast';
+    toast.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${msg}`;
+    document.body.appendChild(toast);
+    setTimeout(() => { if(toast && toast.remove) toast.remove(); }, 3000);
+}
+
+// Popup Style Success Toast
+function showSuccessPopup() {
+    // Remove existing popup if any
+    const existingPopup = document.querySelector('.success-toast');
+    if (existingPopup) existingPopup.remove();
+    
+    const popup = document.createElement('div');
+    popup.className = 'success-toast';
+    popup.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <div class="toast-title">✅ কপি সম্পন্ন!</div>
+        <div class="toast-message">
+            দোকানের প্রোফাইল আইডি কপি হয়েছে!<br>
+            এখন চাইলেই পাইকারি বাজার অ্যাপস কর্তৃপক্ষদের<br>
+            আপনার দোকানের প্রোফাইলের আইডি প্রমোটের জন্য পাঠাতে পারেন।
+        </div>
+        <button class="toast-close" onclick="this.parentElement.remove()">ঠিক আছে</button>
+    `;
+    document.body.appendChild(popup);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (popup && popup.remove) popup.remove();
+    }, 5000);
 }
 
 function goHome() { window.location.href = 'index.html'; }
 function viewProfile(){ if(currentShopId) window.location.href=`profile.html?id=${currentShopId}`; }
 
-// Shop ID Copy Function
+// Shop ID Copy Function with Popup
 window.copyShopId = function() {
     const shopId = currentShopId;
     if (shopId) {
         navigator.clipboard.writeText(shopId).then(() => {
-            showToast('✅ Shop ID কপি হয়েছে! এখন অ্যাডমিনকে পাঠাতে পারেন');
+            showSuccessPopup();
         }).catch(() => {
-            showToast('⚠️ কপি করতে সমস্যা হয়েছে', true);
+            showErrorToast('⚠️ কপি করতে সমস্যা হয়েছে!');
         });
     } else {
-        showToast('⚠️ Shop ID পাওয়া যায়নি', true);
+        showErrorToast('⚠️ Shop ID পাওয়া যায়নি!');
     }
 };
 
@@ -912,7 +959,7 @@ function logout(){
         document.body.appendChild(toast); 
         setTimeout(() => { if(toast && toast.remove) toast.remove(); }, 2500);
         setTimeout(()=>{ window.location.href = 'index.html'; }, 1200);
-    }).catch((error)=>{ showToast('❌ লগআউট ব্যর্থ হয়েছে!', true); });
+    }).catch((error)=>{ showErrorToast('❌ লগআউট ব্যর্থ হয়েছে!'); });
 }
 
 function toggleOptionPanel(panelId) {
@@ -989,7 +1036,7 @@ function updateCategoryDisplayText() {
 }
 
 function openCategoryPopup() {
-    if (!categoriesList.length) { showToast('ক্যাটাগরি লোড হয়নি!', true); return; }
+    if (!categoriesList.length) { showErrorToast('ক্যাটাগরি লোড হয়নি!'); return; }
     const existingPopup = document.querySelector('.category-popup-overlay');
     if (existingPopup) existingPopup.remove();
     const overlay = document.createElement('div');
@@ -1032,18 +1079,18 @@ async function saveShopData() {
     const phone=document.getElementById('phone').value.trim();
     const youtubeUrl = document.getElementById('youtube').value.trim();
     const selectedCategories = selectedCategoriesArray.join(',');
-    if(!shopName) return showToast('দোকানের নাম দিন!',true);
-    if(!ownerName) return showToast('মালিকের নাম দিন!',true);
-    if(!area) return showToast('ঠিকানা দিন!',true);
-    if(!phone) return showToast('মোবাইল নম্বর দিন!',true);
+    if(!shopName) return showErrorToast('দোকানের নাম দিন!');
+    if(!ownerName) return showErrorToast('মালিকের নাম দিন!');
+    if(!area) return showErrorToast('ঠিকানা দিন!');
+    if(!phone) return showErrorToast('মোবাইল নম্বর দিন!');
     const youtubeVideoId = extractYoutubeVideoId(youtubeUrl);
     const btn=document.getElementById('saveBtn'); 
     btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> সেভ হচ্ছে...'; btn.disabled = true;
     try {
         await db.ref('shops/'+currentShopId).update({ shopName, ownerName, description: document.getElementById('description').value.trim(), area, phone, whatsapp: document.getElementById('whatsapp').value.trim(), telegram: document.getElementById('telegram').value.trim(), youtube: youtubeUrl, youtubeVideoId: youtubeVideoId, category: selectedCategories, updatedAt: Date.now() });
         document.getElementById('headerShopName').innerHTML = shopName;
-        showToast('✅ তথ্য সংরক্ষণ হয়েছে!');
-    } catch(e) { showToast('সংরক্ষণ ব্যর্থ!',true); }
+        showErrorToast('✅ তথ্য সংরক্ষণ হয়েছে!');
+    } catch(e) { showErrorToast('সংরক্ষণ ব্যর্থ!'); }
     btn.innerHTML = '<i class="fas fa-save"></i> সেভ করুন'; btn.disabled = false;
 }
 
@@ -1076,8 +1123,8 @@ function renderProductList() {
 function attachProductEvents() {
     document.querySelectorAll('.dot-btn').forEach(btn=>{ btn.addEventListener('click',(e)=>{ e.stopPropagation(); const id=btn.dataset.id; document.querySelectorAll('.dropdown-menu').forEach(m=>m.classList.remove('show')); document.getElementById(`dropdown-${id}`).classList.toggle('show'); }); });
     document.querySelectorAll('.edit-name-item, .edit-price-item, .edit-desc-item').forEach(item=>{ item.addEventListener('click',()=>{ const id=item.dataset.id; document.getElementById(`edit-form-${id}`).classList.toggle('show'); document.getElementById(`dropdown-${id}`).classList.remove('show'); }); });
-    document.querySelectorAll('.delete-item').forEach(item=>{ item.addEventListener('click',async()=>{ if(confirm('প্রোডাক্ট মুছতে চান?')){ await db.ref(`products/${currentShopId}/${item.dataset.id}`).remove(); showToast('✅ প্রোডাক্ট মুছে ফেলা হয়েছে'); loadProducts(); } }); });
-    document.querySelectorAll('.save-edit-btn').forEach(btn=>{ btn.addEventListener('click',async()=>{ const id=btn.dataset.id; const newName=document.getElementById(`edit-name-${id}`).value.trim(); if(!newName){ showToast('নাম খালি রাখা যাবে না!',true); return; } await db.ref(`products/${currentShopId}/${id}`).update({ name:newName, price:document.getElementById(`edit-price-${id}`).value.trim(), desc:document.getElementById(`edit-desc-${id}`).value.trim() }); showToast('✅ প্রোডাক্ট আপডেট হয়েছে'); loadProducts(); }); });
+    document.querySelectorAll('.delete-item').forEach(item=>{ item.addEventListener('click',async()=>{ if(confirm('প্রোডাক্ট মুছতে চান?')){ await db.ref(`products/${currentShopId}/${item.dataset.id}`).remove(); showErrorToast('✅ প্রোডাক্ট মুছে ফেলা হয়েছে'); loadProducts(); } }); });
+    document.querySelectorAll('.save-edit-btn').forEach(btn=>{ btn.addEventListener('click',async()=>{ const id=btn.dataset.id; const newName=document.getElementById(`edit-name-${id}`).value.trim(); if(!newName){ showErrorToast('নাম খালি রাখা যাবে না!'); return; } await db.ref(`products/${currentShopId}/${id}`).update({ name:newName, price:document.getElementById(`edit-price-${id}`).value.trim(), desc:document.getElementById(`edit-desc-${id}`).value.trim() }); showErrorToast('✅ প্রোডাক্ট আপডেট হয়েছে'); loadProducts(); }); });
     document.querySelectorAll('.cancel-edit-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ const id=btn.dataset.id; document.getElementById(`edit-form-${id}`).classList.remove('show'); }); });
 }
 
@@ -1086,9 +1133,9 @@ async function addProduct() {
     let price=document.getElementById('prodPrice').value.trim();
     let image=document.getElementById('prodImage').value.trim();
     let desc=document.getElementById('prodDesc').value.trim();
-    if(!name || !image){ showToast('নাম এবং ইমেজ লিংক দিন!',true); return; }
+    if(!name || !image){ showErrorToast('নাম এবং ইমেজ লিংক দিন!'); return; }
     await db.ref(`products/${currentShopId}`).push({ name, price, image, desc, timestamp:Date.now() });
-    showToast('✅ প্রোডাক্ট যোগ হয়েছে!');
+    showErrorToast('✅ প্রোডাক্ট যোগ হয়েছে!');
     document.getElementById('prodName').value=''; document.getElementById('prodPrice').value=''; document.getElementById('prodImage').value=''; document.getElementById('prodDesc').value='';
     loadProducts();
 }
@@ -1105,9 +1152,9 @@ async function loadSlides() {
 }
 function renderSliderList(){ const c=document.getElementById('sliderListContainer'); c.innerHTML=''; slidesData.forEach((s,i)=>{ const d=document.createElement('div'); d.className='slider-item'; d.innerHTML=`<div style="display:flex; gap:10px; align-items:center;"><img src="${getDriveUrl(s.image,50)}" style="width:50px; height:40px; object-fit:cover; border-radius:8px;"><input type="text" value="${escapeHtml(s.image)}" placeholder="Google Drive Link" style="flex:1; padding:8px; border-radius:12px; border:1px solid #d9c8ff;" onchange="updateSlideImage(${i},this.value)"><button onclick="removeSlide(${i})" style="background:#dc2626; color:white; border:none; padding:6px 12px; border-radius:30px;">🗑</button></div>`; c.appendChild(d); }); }
 function getDriveUrl(url,w=100){ if(!url) return "https://via.placeholder.com/50x40/ede6ff/a855f7"; let f=null,m=url.match(/\/d\/([a-zA-Z0-9_-]+)/); if(m) f=m[1]; if(f) return `https://lh3.googleusercontent.com/d/${f}=w${w}`; return url; }
-async function updateSlideImage(idx,url){ slidesData[idx].image=url; await db.ref(`sliders/${currentShopId}`).set(slidesData); showToast('স্লাইডার আপডেট হয়েছে'); }
-async function removeSlide(idx){ if(slidesData.length===1){ showToast('কমপক্ষে একটি স্লাইড রাখতে হবে!',true); return; } slidesData.splice(idx,1); await db.ref(`sliders/${currentShopId}`).set(slidesData); renderSliderList(); showToast('স্লাইড মুছে ফেলা হয়েছে'); }
-async function addNewSlide(){ slidesData.push({image:"https://via.placeholder.com/1200x400/8b5cf6/ffffff?text=New+Slide"}); await db.ref(`sliders/${currentShopId}`).set(slidesData); renderSliderList(); showToast('নতুন স্লাইড যোগ হয়েছে'); }
+async function updateSlideImage(idx,url){ slidesData[idx].image=url; await db.ref(`sliders/${currentShopId}`).set(slidesData); showErrorToast('স্লাইডার আপডেট হয়েছে'); }
+async function removeSlide(idx){ if(slidesData.length===1){ showErrorToast('কমপক্ষে একটি স্লাইড রাখতে হবে!'); return; } slidesData.splice(idx,1); await db.ref(`sliders/${currentShopId}`).set(slidesData); renderSliderList(); showErrorToast('স্লাইড মুছে ফেলা হয়েছে'); }
+async function addNewSlide(){ slidesData.push({image:"https://via.placeholder.com/1200x400/8b5cf6/ffffff?text=New+Slide"}); await db.ref(`sliders/${currentShopId}`).set(slidesData); renderSliderList(); showErrorToast('নতুন স্লাইড যোগ হয়েছে'); }
 
 let tickerItems = [];
 async function loadTicker() {
@@ -1120,8 +1167,8 @@ async function loadTicker() {
     updateTickerPreview(tickerItems);
 }
 function updateTickerPreview(items){ document.getElementById('tickerPreview').innerHTML=items.map(t=>`✨ ${escapeHtml(t)} ✨`).join(' • '); }
-async function saveTicker(){ let val=document.getElementById('tickerInput').value.trim(); if(!val){ showToast('কিছু লিখুন!',true); return; } let items=val.includes(',')?val.split(',').map(s=>s.trim()).filter(s=>s):[val]; if(!items.length) return; await db.ref(`tickers/${currentShopId}`).set(items); updateTickerPreview(items); showToast('টিকার আপডেট হয়েছে!'); }
-async function resetTicker(){ const def=["✨ EXCLUSIVE DROP : AI COLLECTION","🚀 UP TO 40% OFF","💜 FREE SHIPPING","⚡ LIMITED EDITION"]; await db.ref(`tickers/${currentShopId}`).set(def); document.getElementById('tickerInput').value=def.join(', '); updateTickerPreview(def); showToast('ডিফল্ট টিকার রিসেট হয়েছে!'); }
+async function saveTicker(){ let val=document.getElementById('tickerInput').value.trim(); if(!val){ showErrorToast('কিছু লিখুন!'); return; } let items=val.includes(',')?val.split(',').map(s=>s.trim()).filter(s=>s):[val]; if(!items.length) return; await db.ref(`tickers/${currentShopId}`).set(items); updateTickerPreview(items); showErrorToast('টিকার আপডেট হয়েছে!'); }
+async function resetTicker(){ const def=["✨ EXCLUSIVE DROP : AI COLLECTION","🚀 UP TO 40% OFF","💜 FREE SHIPPING","⚡ LIMITED EDITION"]; await db.ref(`tickers/${currentShopId}`).set(def); document.getElementById('tickerInput').value=def.join(', '); updateTickerPreview(def); showErrorToast('ডিফল্ট টিকার রিসেট হয়েছে!'); }
 
 auth.onAuthStateChanged(async user=>{
     if(!user){ window.location.href = 'login.html'; return; }
@@ -1131,17 +1178,12 @@ auth.onAuthStateChanged(async user=>{
     document.getElementById('mainContent').style.display='block';
     document.getElementById('saveWrap').style.display='flex';
     
-    // Shop ID Display
     document.getElementById('shopIdDisplay').innerHTML = currentShopId;
     
     await loadCategoriesForDashboard();
     if(snap.exists()){
         currentShopData=snap.val();
         document.getElementById('headerShopName').innerHTML = currentShopData.shopName || 'দোকানের নাম';
-        const badge=document.getElementById('cardStatusBadge');
-        if(currentShopData.status==='approved'){ badge.className='status-badge approved'; badge.innerHTML='<i class="fas fa-check-circle"></i> Approved'; }
-        else if(currentShopData.status==='rejected'){ badge.className='status-badge rejected'; badge.innerHTML='<i class="fas fa-times-circle"></i> Rejected'; }
-        else{ badge.className='status-badge pending'; badge.innerHTML='<i class="fas fa-clock"></i> পেন্ডিং'; }
         
         document.getElementById('shopName').value=currentShopData.shopName||'';
         document.getElementById('ownerName').value=currentShopData.ownerName||'';
