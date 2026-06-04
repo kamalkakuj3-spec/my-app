@@ -213,7 +213,6 @@ marquee {
 .filter-wrap { padding:0 16px; margin-bottom:6px; }
 .filter-step { background:white; border-radius:14px; padding:12px 14px; box-shadow:var(--shadow); margin-bottom:8px; border:1.5px solid rgba(108,43,217,0.06); }
 .fs-header { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
-/* স্টেপ নম্বর বাদ দেওয়া হয়েছে */
 .fs-title { font-size:13px; font-weight:700; color:var(--text); }
 .fs-sel   { font-size:11px; color:var(--primary); font-weight:600; margin-left:auto; }
 .chip-scroll { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding-bottom:2px; }
@@ -354,7 +353,7 @@ marquee {
     padding: 14px 16px;
     background: white;
     text-align: left;
-    padding-left: 20px;  /* বাম পাশে অতিরিক্ত মার্জিন */
+    padding-left: 20px;
 }
 
 /* দোকানের নামের সারি - বাম দিকে */
@@ -364,7 +363,7 @@ marquee {
     gap: 8px;
     margin-bottom: 8px;
     justify-content: flex-start;
-    margin-left: 6px;  /* বাম পাশে একটু বেশি মার্জিন */
+    margin-left: 6px;
 }
 
 .shop-video-name {
@@ -408,7 +407,7 @@ marquee {
     gap: 6px;
     flex-wrap: wrap;
     justify-content: flex-start;
-    margin-left: 6px;  /* বাম পাশে মার্জিন */
+    margin-left: 6px;
 }
 
 /* ক্যাটাগরি ড্রপডাউন - বাম দিকে */
@@ -419,7 +418,7 @@ marquee {
     display: none;
     animation: slideDown 0.3s ease;
     text-align: left;
-    margin-left: 6px;  /* বাম পাশে মার্জিন */
+    margin-left: 6px;
 }
 .categories-dropdown.show {
     display: block;
@@ -1059,6 +1058,7 @@ function setupCloudinaryVideo(videoElement, videoUrl) {
     cloudinaryVideoElements.push({ element: videoElement, observer });
 }
 
+// ========== ভিডিও গ্রিড রেন্ডার (শুধু এখানে পরিবর্তন) ==========
 function renderVideoGrid() {
     const container = document.getElementById('videoGrid');
     if (!container) return;
@@ -1083,7 +1083,10 @@ function renderVideoGrid() {
                 <video class="cloudinary-video" preload="metadata" playsinline></video>
             </div>
             <div class="video-card-info">
-                <div class="video-card-title">${escapeHtml(video.title || 'ভিডিও')}</div>
+                <div class="video-card-title" onclick="${video.shopId ? `window.location.href='profile.html?id=${video.shopId}'` : 'return false'}" style="cursor: ${video.shopId ? 'pointer' : 'default'}; ${video.shopId ? '' : 'opacity: 0.7;'}">
+                    ${escapeHtml(video.title || 'ভিডিও')}
+                    ${video.shopId ? '<span style="font-size: 10px; background: #f0ebff; color: #6c2bd9; padding: 2px 8px; border-radius: 99px; margin-left: 8px;">🔗 দোকান দেখুন</span>' : ''}
+                </div>
                 <div class="video-card-desc">${escapeHtml(video.description || '')}</div>
             </div>
         </div>
@@ -1102,6 +1105,7 @@ function renderVideoGrid() {
         }
     });
 }
+// ============================================================
 
 async function loadGeoData() {
     try {
@@ -1427,7 +1431,6 @@ window.toggleCategoriesDropdown = function(shopId, event) {
     event.stopPropagation();
     const dropdown = document.getElementById(`categories-dropdown-${shopId}`);
     if (dropdown) {
-        // অন্য সব ড্রপডাউন বন্ধ করে দিন
         document.querySelectorAll('.categories-dropdown').forEach(d => {
             if (d.id !== `categories-dropdown-${shopId}`) {
                 d.classList.remove('show');
@@ -1471,7 +1474,6 @@ window.renderShops = function(shops) {
         const thumbnailUrl = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : '';
         const locationText = shop.thana ? `${shop.thana}, ${shop.district}` : `${shop.area || ''}, ${shop.district || ''}`;
         
-        // ক্যাটাগরি ড্রপডাউন কন্টেন্ট তৈরি
         let categoriesDropdownHtml = '';
         if (shop.categories && Array.isArray(shop.categories) && shop.categories.length > 0) {
             categoriesDropdownHtml = `
@@ -1802,7 +1804,6 @@ document.addEventListener('click', function(e) {
     if (suggestionsBox && !suggestionsBox.contains(e.target) && e.target !== searchInput) {
         suggestionsBox.classList.remove('show');
     }
-    // ড্রপডাউনের বাইরে ক্লিক করলে বন্ধ হবে (কিন্তু আইকনে ক্লিক করলে বন্ধ হবে না)
     if (!e.target.classList.contains('dropdown-icon') && !e.target.closest('.categories-dropdown')) {
         document.querySelectorAll('.categories-dropdown').forEach(dropdown => {
             dropdown.classList.remove('show');
