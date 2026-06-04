@@ -95,8 +95,10 @@
   .close-bottom-btn { background:linear-gradient(135deg, #dc2626, #b91c1c); border:none; color:white; width:48px; height:48px; border-radius:50%; cursor:pointer; font-size:22px; transition:all 0.2s; display:flex; align-items:center; justify-content:center; }
   .close-bottom-btn:hover { transform:scale(1.05); background:linear-gradient(135deg, #ef4444, #dc2626); }
   
-  /* ========== SLIDER - index.html এর মতো স্টাইল ========== */
-  .slider-section { margin:0 16px 20px; }
+  /* ========== SLIDER - index.html এর মতো স্টাইল (উপরে গ্যাপ সহ) ========== */
+  .slider-section { 
+    margin: 20px 16px 20px;  /* উপরে 20px গ্যাপ যোগ করা হয়েছে */
+  }
   .slider-box {
     position: relative;
     border-radius: 20px;
@@ -116,8 +118,10 @@
   .sl-dot { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.3s; width: 6px; }
   .sl-dot.active { width: 20px; background: white; }
   
-  /* ========== TICKER - index.html এর মতো স্টাইল (সঠিক অ্যানিমেশন সহ) ========== */
-  .ticker-section { margin:0 16px 20px; }
+  /* ========== TICKER - স্পিড অর্ধেক (8s) এবং গ্যাপ অর্ধেক ========== */
+  .ticker-section { 
+    margin: 10px 16px 20px;  /* উপরের margin 10px করা হয়েছে (অর্ধেক) */
+  }
   .ticker-wrap {
     background: linear-gradient(90deg, var(--primary), var(--primary-light));
     border-radius: 14px;
@@ -128,7 +132,7 @@
   .ticker { 
     display: flex; 
     white-space: nowrap; 
-    animation: scrollTicker 4s linear infinite; 
+    animation: scrollTicker 8s linear infinite;  /* 4s থেকে 8s (স্পিড অর্ধেক) */
     gap: 1.5rem; 
     width: fit-content;
   }
@@ -232,7 +236,7 @@
     </div>
   </div>
 
-  <!-- SLIDER SECTION - index.html এর মতো স্টাইল -->
+  <!-- SLIDER SECTION -->
   <div class="slider-section" id="sliderSection" style="display:none">
     <div class="slider-box">
       <div class="slider-track" id="sliderTrack"></div>
@@ -242,7 +246,7 @@
     </div>
   </div>
 
-  <!-- TICKER SECTION - index.html এর মতো স্টাইল (সঠিক অ্যানিমেশন সহ) -->
+  <!-- TICKER SECTION -->
   <div class="ticker-section" id="tickerSection" style="display:none">
     <div class="ticker-wrap">
       <div class="ticker" id="tickerContainer"></div>
@@ -389,7 +393,7 @@ document.getElementById('drawerCloseBtn').addEventListener('click', closeDrawer)
 document.getElementById('drawerCloseBottomBtn').addEventListener('click', closeDrawer);
 document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
 
-// ========== TICKER - index.html এর মতো ডাবল আইটেম কৌশল (সঠিক অ্যানিমেশন) ==========
+// ========== TICKER - ডাবল আইটেম কৌশল (স্পিড 8s) ==========
 async function loadTicker() {
   const snap = await db.ref(`tickers/${shopId}`).once('value');
   let items = [];
@@ -401,12 +405,12 @@ async function loadTicker() {
   document.getElementById('tickerSection').style.display = 'block';
   const tickerDiv = document.getElementById('tickerContainer');
   
-  // 🔴 গুরুত্বপূর্ণ: আইটেমগুলিকে ডাবল করছি যাতে অ্যানিমেশন সঠিকভাবে লুপ হয় 🔴
+  // আইটেমগুলিকে ডাবল করছি যাতে অ্যানিমেশন সঠিকভাবে লুপ হয়
   const doubled = [...items, ...items];
   tickerDiv.innerHTML = doubled.map(text => `<span class="ticker-item">✨ ${escapeHtml(text)}</span>`).join('');
 }
 
-// ========== SLIDER - index.html এর মতো স্টাইল ==========
+// ========== SLIDER ==========
 async function loadSlider() {
   const snap = await db.ref(`sliders/${shopId}`).once('value');
   slidesData = [];
