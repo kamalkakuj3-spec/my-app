@@ -185,7 +185,7 @@ marquee {
 }
 
 /* SLIDER SECTION */
-.slider-section { margin:0 16px 20px; }
+.slider-section { margin:0 16px 5px; } /* নিচের গ্যাপ 20px থেকে 5px করা হয়েছে */
 .slider-box {
     position: relative;
     border-radius: 20px;
@@ -204,6 +204,38 @@ marquee {
 .sl-dots { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
 .sl-dot { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.3s; width: 6px; }
 .sl-dot.active { width: 20px; background: white; }
+
+/* TICKER SECTION - উপরের গ্যাপ 3px (3 ভাগের 1 ভাগ) */
+.ticker-section { 
+    margin: 3px 16px 10px;
+}
+.ticker-wrap {
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    border-radius: 14px;
+    padding: 8px 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(108,43,217,0.15);
+}
+.ticker {
+    display: flex;
+    white-space: nowrap;
+    animation: scrollTicker 8s linear infinite;
+    gap: 1.5rem;
+    width: fit-content;
+}
+.ticker-item {
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    letter-spacing: 0.5px;
+}
+@keyframes scrollTicker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
 
 /* ADD BANNER */
 .add-banner { 
@@ -236,7 +268,7 @@ marquee {
 .hidden { display:none; }
 .reset-btn { width:100%; padding:8px; background:#f0ebff; color:var(--primary); border:none; border-radius:12px; font-size:13px; font-weight:600; font-family:'Hind Siliguri',sans-serif; cursor:pointer; margin-bottom:8px; display:none; }
 
-/* ========== ভিডিও গ্রিড - আপডেটেড স্টাইল ========== */
+/* ========== ভিডিও গ্রিড - আপডেটেড স্টাইল (কালো বর্ডার বাদ) ========== */
 .video-grid-section {
     margin: 0 16px 20px;
 }
@@ -247,7 +279,7 @@ marquee {
 }
 .video-card {
     background: white;
-    border-radius: 20px;
+    border-radius: 16px;  /* কার্ডের চারপাশে 16px রাউন্ড */
     overflow: hidden;
     box-shadow: var(--shadow);
     transition: all 0.3s ease;
@@ -259,19 +291,17 @@ marquee {
 }
 .video-player-container {
     position: relative;
-    background: #000;
+    background: transparent;  /* কালো বর্ডার বাদ */
     width: 100%;
     aspect-ratio: 16 / 9;
     cursor: pointer;
-    padding: 5px;
-    border-radius: 12px;
 }
 .cloudinary-video {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    border-radius: 8px;
+    border-radius: 12px;  /* ভিডিওর চারপাশে 12px রাউন্ড */
 }
 .video-card-info {
     padding: 14px 16px;
@@ -306,7 +336,7 @@ marquee {
 }
 .shop-video-card {
     background: white;
-    border-radius: 20px;
+    border-radius: 16px;  /* কার্ডের চারপাশে 16px রাউন্ড */
     overflow: hidden;
     box-shadow: var(--shadow);
     transition: all 0.3s ease;
@@ -320,17 +350,15 @@ marquee {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
-    background: #000;
+    background: transparent;  /* কালো বর্ডার বাদ */
     cursor: pointer;
-    padding: 5px;
-    border-radius: 12px;
 }
 .video-thumbnail {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    border-radius: 8px;
+    border-radius: 12px;  /* থাম্বনেইলের চারপাশে 12px রাউন্ড */
 }
 .play-icon {
     position: absolute;
@@ -362,13 +390,13 @@ marquee {
 }
 .shop-video-frame {
     position: absolute;
-    top: 5px;
-    left: 5px;
-    width: calc(100% - 10px);
-    height: calc(100% - 10px);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     border: none;
     display: none;
-    border-radius: 8px;
+    border-radius: 12px;  /* ইউটিউব ফ্রেমের চারপাশে 12px রাউন্ড */
 }
 .shop-video-info {
     padding: 14px 16px;
@@ -477,7 +505,7 @@ marquee {
     color: white;
     font-size: 18px;
     text-align: center;
-    border-radius: 8px;
+    border-radius: 12px;
 }
 @keyframes tileIn {
     from { transform: translateY(15px); opacity: 0; }
@@ -488,38 +516,6 @@ marquee {
 .empty-icon  { font-size:50px; margin-bottom:12px; }
 .empty-title { font-size:16px; font-weight:600; color:var(--text); margin-bottom:6px; }
 .empty-sub   { font-size:13px; }
-
-/* TICKER SECTION - গ্যাপ 3px (3 ভাগের 1 ভাগ) */
-.ticker-section { 
-    margin: 3px 16px 10px;
-}
-.ticker-wrap {
-    background: linear-gradient(90deg, var(--primary), var(--primary-light));
-    border-radius: 14px;
-    padding: 8px 12px;
-    overflow: hidden;
-    box-shadow: 0 3px 12px rgba(108,43,217,0.15);
-}
-.ticker {
-    display: flex;
-    white-space: nowrap;
-    animation: scrollTicker 8s linear infinite;
-    gap: 1.5rem;
-    width: fit-content;
-}
-.ticker-item {
-    font-size: 14px;
-    font-weight: 500;
-    color: white;
-    background: transparent;
-    padding: 0;
-    border-radius: 0;
-    letter-spacing: 0.5px;
-}
-@keyframes scrollTicker {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-}
 
 /* BOTTOM NAV */
 .bottom-nav {
