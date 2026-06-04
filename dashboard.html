@@ -45,6 +45,44 @@
   @keyframes spin { to { transform:rotate(360deg); } }
   .loading-text { margin-top:15px; font-size:16px; font-weight:500; color:white; }
   
+  /* Dashboard Header with Menu Icon */
+  .dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: white;
+    border-bottom: 1px solid var(--border-light);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .menu-icon-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--primary);
+    cursor: pointer;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .menu-icon-btn:hover {
+    background: var(--primary-soft);
+  }
+  .dashboard-header h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary);
+  }
+  .dashboard-header .placeholder {
+    width: 42px;
+  }
+  
   .content { padding:20px 16px 100px; }
   
   /* Glass Button */
@@ -796,6 +834,15 @@
 <body>
 
 <div id="loadingScreen"><div class="loading-spinner"></div><div class="loading-text">🚀 ড্যাশবোর্ড লোড হচ্ছে...</div></div>
+
+<!-- Dashboard Header with Menu Icon -->
+<div class="dashboard-header">
+    <button class="menu-icon-btn" id="menuIconBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+    <h2><i class="fas fa-tachometer-alt"></i> ড্যাশবোর্ড</h2>
+    <div class="placeholder"></div>
+</div>
 
 <div class="content" id="mainContent" style="display:none">
     <!-- Shop Card -->
