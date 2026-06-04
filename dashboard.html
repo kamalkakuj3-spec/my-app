@@ -593,7 +593,7 @@
     cursor: pointer;
   }
   
-  /* Logout Toast Message - সবুজ ব্যাকগ্রাউন্ড, উপরে, কোন শ্যাডো নেই */
+  /* Logout Toast Message */
   .logout-toast {
     position: fixed;
     top: 80px;
@@ -660,6 +660,137 @@
     box-shadow: none;
   }
   .custom-toast.error { background: #e74c3c; }
+  
+  /* Drawer Styles */
+  .drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0);
+    z-index: 1000;
+    display: none;
+    transition: background 0.3s ease;
+  }
+  .drawer-overlay.show {
+    background: rgba(0,0,0,0.5);
+    display: block;
+  }
+  .drawer {
+    position: fixed;
+    top: 0;
+    left: -340px;
+    width: 340px;
+    height: 100%;
+    background: white;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+    z-index: 1001;
+    transition: left 0.3s ease;
+    overflow-y: auto;
+    border-radius: 0 20px 20px 0;
+  }
+  .drawer.open {
+    left: 0;
+  }
+  .drawer-header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    padding: 22px 20px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .drawer-header h3 {
+    font-size: 20px;
+    font-weight: 800;
+  }
+  .drawer-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+  }
+  .drawer-close:hover {
+    background: rgba(255,255,255,0.2);
+    transform: rotate(90deg);
+  }
+  .drawer-content {
+    padding: 20px;
+  }
+  .drawer-info-item {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #f0ebff;
+    padding-bottom: 14px;
+  }
+  .drawer-info-item:last-child {
+    border-bottom: none;
+  }
+  .drawer-info-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary-light);
+    margin-bottom: 6px;
+    display: block;
+    letter-spacing: 0.5px;
+  }
+  .drawer-info-value {
+    font-size: 17px;
+    color: var(--text);
+    font-weight: 600;
+    line-height: 1.4;
+    display: block;
+  }
+  .drawer-info-value a {
+    color: var(--text);
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+  }
+  .drawer-info-value a:hover {
+    color: var(--primary);
+    transform: translateX(3px);
+  }
+  .drawer-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary-light), transparent);
+    margin: 15px 0;
+  }
+  .drawer-close-bottom {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 15px;
+  }
+  .close-bottom-btn {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    border: none;
+    color: white;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 22px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .close-bottom-btn:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+  }
 </style>
 </head>
 <body>
@@ -793,6 +924,21 @@
     <button class="nav-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> লগআউট</button>
 </div>
 
+<!-- Drawer Menu -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<div class="drawer" id="drawer">
+    <div class="drawer-header">
+        <h3><i class="fas fa-store"></i> দোকানের তথ্য</h3>
+        <button class="drawer-close" id="drawerCloseBtn"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="drawer-content" id="drawerContent">
+        <div style="text-align:center; padding:20px;">🌀 লোড হচ্ছে...</div>
+    </div>
+    <div class="drawer-close-bottom">
+        <button class="close-bottom-btn" id="drawerCloseBottomBtn"><i class="fas fa-times"></i></button>
+    </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -832,10 +978,105 @@ function showToast(msg, isError=false) {
 function goHome() { window.location.href = 'index.html'; }
 function viewProfile(){ if(currentShopId) window.location.href=`profile.html?id=${currentShopId}`; }
 
-// ========== লগআউট ফাংশন (সবুজ টোস্ট, উপরে, কোন শ্যাডো নেই) ==========
+// ========== ড্রয়ার ফাংশন ==========
+function openDrawer() {
+    document.getElementById('drawer').classList.add('open');
+    document.getElementById('drawerOverlay').classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+    document.getElementById('drawer').classList.remove('open');
+    document.getElementById('drawerOverlay').classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+document.getElementById('menuIconBtn')?.addEventListener('click', openDrawer);
+document.getElementById('drawerCloseBtn')?.addEventListener('click', closeDrawer);
+document.getElementById('drawerCloseBottomBtn')?.addEventListener('click', closeDrawer);
+document.getElementById('drawerOverlay')?.addEventListener('click', closeDrawer);
+
+// ========== Shop ID কপি ফাংশন ==========
+window.copyShopId = function() {
+    const shopId = currentShopId;
+    if (shopId) {
+        navigator.clipboard.writeText(shopId).then(() => {
+            showToast('✅ Shop ID কপি হয়েছে! এখন অ্যাডমিনকে পাঠাতে পারেন');
+        }).catch(() => {
+            showToast('⚠️ কপি করতে সমস্যা হয়েছে', true);
+        });
+    } else {
+        showToast('⚠️ Shop ID পাওয়া যায়নি', true);
+    }
+};
+
+// ========== ড্রয়ার কন্টেন্ট রেন্ডার (Shop ID সহ) ==========
+function renderDrawerContent(shop) {
+    const container = document.getElementById('drawerContent');
+    if(!shop) { container.innerHTML = '<div style="text-align:center; padding:20px;">তথ্য পাওয়া যায়নি</div>'; return; }
+    
+    const phoneLink = shop.phone ? `<a href="tel:${shop.phone}"><i class="fas fa-phone-alt" style="margin-right:8px; color:#6c2bd9;"></i> ${escapeHtml(shop.phone)}</a>` : '—';
+    
+    let whatsappLink = '—';
+    if(shop.whatsapp) {
+        let waNum = shop.whatsapp.replace(/[^0-9]/g, '');
+        if (!waNum.startsWith('88')) waNum = '88' + waNum;
+        whatsappLink = `<a href="https://wa.me/${waNum}" target="_blank"><i class="fab fa-whatsapp" style="margin-right:8px; color:#25D366;"></i> ${escapeHtml(shop.whatsapp)}</a>`;
+    }
+    
+    let telegramLink = '—';
+    if(shop.telegram) {
+        let tgNum = shop.telegram.replace(/[^0-9]/g, '');
+        if (!tgNum.startsWith('88')) tgNum = '88' + tgNum;
+        telegramLink = `<a href="https://t.me/+${tgNum}" target="_blank"><i class="fab fa-telegram" style="margin-right:8px; color:#0088cc;"></i> ${escapeHtml(shop.telegram)}</a>`;
+    }
+    
+    container.innerHTML = `
+        <div class="drawer-info-item">
+            <span class="drawer-info-label"><i class="fas fa-store"></i> দোকানের নাম</span>
+            <span class="drawer-info-value">${escapeHtml(shop.shopName || '—')}</span>
+        </div>
+        <div class="drawer-info-item">
+            <span class="drawer-info-label"><i class="fas fa-user-circle"></i> প্রোপাইটরের নাম</span>
+            <span class="drawer-info-value">${escapeHtml(shop.ownerName || '—')}</span>
+        </div>
+        <!-- 🔴 Shop ID - শুধুমাত্র দোকান মালিক দেখতে পাবে 🔴 -->
+        <div class="drawer-info-item">
+            <span class="drawer-info-label"><i class="fas fa-fingerprint"></i> 🆔 আপনার Shop ID (প্রমোশনের জন্য)</span>
+            <span class="drawer-info-value" style="font-family: monospace; font-size: 12px; word-break: break-all; background: #f0ebff; padding: 8px; border-radius: 12px;">
+                ${currentShopId}
+                <button onclick="copyShopId()" style="background: var(--primary); color: white; border: none; padding: 4px 12px; border-radius: 20px; margin-left: 8px; cursor: pointer; font-size: 11px;">
+                    <i class="fas fa-copy"></i> কপি
+                </button>
+            </span>
+        </div>
+        <!-- 🔴 🔴 🔴 -->
+        <div class="drawer-info-item">
+            <span class="drawer-info-label"><i class="fas fa-phone-alt"></i> 📞 কন্টাক্ট নাম্বার</span>
+            <span class="drawer-info-value">${phoneLink}</span>
+        </div>
+        <div class="drawer-info-item">
+            <span class="drawer-info-label"><i class="fab fa-whatsapp"></i> 💬 WhatsApp নাম্বার</span>
+            <span class="drawer-info-value">${whatsappLink}</span>
+        </div>
+        <div class="drawer-info-item">
+            <span class="drawer-info-label"><i class="fab fa-telegram"></i> 📡 টেলিগ্রাম নাম্বার</span>
+            <span class="drawer-info-value">${telegramLink}</span>
+        </div>
+        <div class="drawer-divider"></div>
+        <div class="drawer-info-item">
+            <span class="drawer-info-label"><i class="fas fa-map-marker-alt"></i> 🏪 দোকানের ঠিকানা</span>
+            <span class="drawer-info-value">${escapeHtml(shop.area || shop.district || '—')}</span>
+        </div>
+        <div class="drawer-info-item">
+            <span class="drawer-info-label"><i class="fas fa-align-left"></i> 📋 দোকানের বিবরণ</span>
+            <span class="drawer-info-value">${escapeHtml(shop.description || 'কোনো বিবরণ নেই')}</span>
+        </div>
+    `;
+}
+
+// ========== লগআউট ফাংশন ==========
 function logout(){ 
     auth.signOut().then(()=>{ 
-        // লগআউট টোস্ট - সবুজ ব্যাকগ্রাউন্ড, উপরে
         let toast = document.createElement('div'); 
         toast.className = 'logout-toast'; 
         toast.innerHTML = `<i class="fas fa-check-circle"></i> ✅ লগআউট সফল হয়েছে!`; 
@@ -869,13 +1110,15 @@ function toggleOptionPanel(panelId) {
 // Main Edit Button Toggle
 const mainEditBtn = document.getElementById('mainEditBtn');
 const editOptionsContainer = document.getElementById('editOptionsContainer');
-mainEditBtn.addEventListener('click', function() {
-    if (editOptionsContainer.classList.contains('show')) {
-        editOptionsContainer.classList.remove('show');
-    } else {
-        editOptionsContainer.classList.add('show');
-    }
-});
+if (mainEditBtn) {
+    mainEditBtn.addEventListener('click', function() {
+        if (editOptionsContainer.classList.contains('show')) {
+            editOptionsContainer.classList.remove('show');
+        } else {
+            editOptionsContainer.classList.add('show');
+        }
+    });
+}
 
 // ========== ক্যাটাগরি JSON লোড ফাংশন ==========
 async function loadCategoriesForDashboard() {
@@ -1187,6 +1430,7 @@ async function resetTicker(){ const def=["✨ EXCLUSIVE DROP : AI COLLECTION","�
 // ========== ইনিশিয়ালাইজ ==========
 auth.onAuthStateChanged(async user=>{
     if(!user){ 
+        window.location.href = 'login.html';
         return;
     }
     currentShopId=user.uid;
@@ -1223,6 +1467,9 @@ auth.onAuthStateChanged(async user=>{
             renderSelectedCategoriesChips();
             updateCategoryDisplayText();
         }
+        
+        // ড্রয়ার কন্টেন্ট রেন্ডার করুন
+        renderDrawerContent(currentShopData);
     }
     loadProducts();
     await loadSlides();
