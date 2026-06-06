@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>পাইকারি বাজার | পাইকারি দোকানের সেরা ঠিকানা</title>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
 :root {
     --primary: #6c2bd9;
@@ -185,7 +186,6 @@ marquee {
 }
 
 /* SLIDER SECTION */
-/* ========== SLIDER SECTION ========== */
 .slider-section { margin:0 16px 5px; }
 .slider-box {
     position: relative;
@@ -263,6 +263,29 @@ marquee {
     width: 20px;
     background: white;
 }
+
+/* ========== স্টার ডিসপ্লে স্টাইল (চমক বাদ, নিচে মার্জিন) ========== */
+.shop-stars {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 0 8px 6px;
+}
+.star-icon {
+    color: #ffd700;
+    font-size: 14px;
+}
+.star-count-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    background: transparent;
+    color: #ffd700;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 2px;
+}
+
 /* ADD BANNER */
 .add-banner { 
     margin: 5px 16px 10px;
@@ -436,7 +459,7 @@ marquee {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     justify-content: flex-start;
     margin-left: 6px;
 }
@@ -850,6 +873,22 @@ let slData = [];
 
 let videoIntersectionObservers = new Map();
 
+// ========== স্টার ডিসপ্লে হেলপার ফাংশন ==========
+function getStarsHtml(stars) {
+    if (!stars || stars === 0) return '';
+    
+    let html = '<div class="shop-stars">';
+    const fullStars = Math.min(stars, 5);
+    for (let i = 0; i < fullStars; i++) {
+        html += '<i class="fas fa-star star-icon"></i>';
+    }
+    if (stars > 5) {
+        html += `<span class="star-count-badge">+${stars - 5}</span>`;
+    }
+    html += '</div>';
+    return html;
+}
+
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -1095,7 +1134,6 @@ function loadAdminVideos() {
     });
 }
 
-// ========== আপডেটেড setupCloudinaryVideo ফাংশন ==========
 function setupCloudinaryVideo(videoElement, videoUrl) {
     if (!videoElement) return;
     
@@ -1115,14 +1153,11 @@ function setupCloudinaryVideo(videoElement, videoUrl) {
         });
     }
     
-    // ইন্টারসেকশন অবজারভার - ভিডিও বাইরে গেলে মিউট করে দেয়
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                // ভিডিও স্ক্রিনে ফিরলে শুধু প্লে করবে, কিন্তু মিউট রিমুভ করবে না
                 videoElement.play().catch(e => console.log("Play on view error:", e));
             } else {
-                // ভিডিও স্ক্রিনের বাইরে গেলে পজ + মিউট করে দেয়
                 videoElement.pause();
                 videoElement.muted = true;
             }
@@ -1512,6 +1547,7 @@ window.toggleCategoriesDropdown = function(shopId, event) {
     }
 };
 
+// ========== আপডেটেড renderShops ফাংশন (চমক বাদ, লোকেশন আইকন বাদ) ==========
 window.renderShops = function(shops) {
     const container = document.getElementById('shopList');
     if (!container) return;
@@ -1525,9 +1561,17 @@ window.renderShops = function(shops) {
         return;
     }
     
-    const shuffledShops = shuffleArray([...shops]);
+    // স্টার সংখ্যা অনুযায়ী সাজান
+    const sortedShops = [...shops].sort((a, b) => {
+        const starsA = a.stars || 0;
+        const starsB = b.stars || 0;
+        if (starsA !== starsB) {
+            return starsB - starsA;
+        }
+        return (a.lastStarUpdate || 0) - (b.lastStarUpdate || 0);
+    });
     
-    container.innerHTML = shuffledShops.map(shop => {
+    container.innerHTML = sortedShops.map(shop => {
         let videoId = null;
         if (shop.youtubeVideoId) {
             videoId = shop.youtubeVideoId;
@@ -1545,6 +1589,9 @@ window.renderShops = function(shops) {
         
         const thumbnailUrl = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : '';
         const locationText = shop.thana ? `${shop.thana}, ${shop.district}` : `${shop.area || ''}, ${shop.district || ''}`;
+        
+        // স্টার এইচটিএমএল
+        const starsHtml = getStarsHtml(shop.stars || 0);
         
         let categoriesDropdownHtml = '';
         if (shop.categories && Array.isArray(shop.categories) && shop.categories.length > 0) {
@@ -1572,9 +1619,12 @@ window.renderShops = function(shops) {
                     </div>
                     <div class="shop-video-info">
                         <div class="shop-name-row">
-                            <h3 class="shop-video-name" onclick="window.viewShop('${shop.id}')">${escapeHtml(shop.shopName) || 'নাম নেই'}</h3>
+                            <h3 class="shop-video-name" onclick="window.viewShop('${shop.id}')">
+                                ${escapeHtml(shop.shopName) || 'নাম নেই'}
+                            </h3>
                             <button class="dropdown-icon" onclick="window.toggleCategoriesDropdown('${shop.id}', event)">▼</button>
                         </div>
+                        ${starsHtml}
                         <div class="shop-video-location">
                             ${escapeHtml(locationText)}
                         </div>
@@ -1591,9 +1641,12 @@ window.renderShops = function(shops) {
                     </div>
                     <div class="shop-video-info">
                         <div class="shop-name-row">
-                            <h3 class="shop-video-name" onclick="window.viewShop('${shop.id}')">${escapeHtml(shop.shopName) || 'নাম নেই'}</h3>
+                            <h3 class="shop-video-name" onclick="window.viewShop('${shop.id}')">
+                                ${escapeHtml(shop.shopName) || 'নাম নেই'}
+                            </h3>
                             <button class="dropdown-icon" onclick="window.toggleCategoriesDropdown('${shop.id}', event)">▼</button>
                         </div>
+                        ${starsHtml}
                         <div class="shop-video-location">
                             ${escapeHtml(locationText)}
                         </div>
