@@ -345,6 +345,29 @@
   }
   textarea.input-field { resize: none; height: 80px; }
   
+  /* Save Button Inside Shop Info Panel */
+  .save-shop-info-btn {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    margin-top: 20px;
+    transition: all 0.3s;
+  }
+  .save-shop-info-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(108,43,217,0.4);
+  }
+  
   /* Category Select Button */
   .category-select-btn {
     display: flex;
@@ -385,7 +408,7 @@
   .selected-cat-chip i { cursor: pointer; font-size: 12px; color: #999; transition: color 0.2s; }
   .selected-cat-chip i:hover { color: #e74c3c; }
   
-  /* Buttons */
+  /* Buttons for other options */
   .btn-small-green {
     background: #22c55e;
     border: none;
@@ -626,6 +649,7 @@
             </div>
             <div id="productListPanel" class="option-content-panel">
                 <div id="productListContainer" style="max-height: 400px; overflow-y: auto;"></div>
+                <button id="productListRefreshBtn" class="btn-small-green" style="margin-top:10px;">🔄 রিফ্রেশ</button>
             </div>
         </div>
         
@@ -661,7 +685,7 @@
             </div>
         </div>
         
-        <!-- Option 5: দোকানের তথ্য -->
+        <!-- Option 5: দোকানের তথ্য (সেভ বাটন সহ) -->
         <div>
             <div class="option-btn" onclick="toggleOptionPanel('shopInfoPanel')">
                 <div class="option-left">
@@ -695,6 +719,11 @@
                     <input class="input-field" type="url" id="youtube" placeholder="https://www.youtube.com/watch?v=xxxxx">
                     <small style="font-size: 10px; color: #888; display: block; margin-top: 4px;">💡 এই লিংকটি হোমপেজে ভিডিও আকারে দেখানো হবে</small>
                 </div>
+                
+                <!-- 🔴 সেভ বাটন এখানে যোগ করা হয়েছে 🔴 -->
+                <button class="save-shop-info-btn" id="saveShopInfoBtn" onclick="saveShopData()">
+                    <i class="fas fa-save"></i> দোকানের তথ্য সেভ করুন
+                </button>
             </div>
         </div>
     </div>
@@ -752,7 +781,6 @@ function showSuccessPopup() {
     setTimeout(() => { if (popup && popup.remove) popup.remove(); }, 5000);
 }
 
-function goHome() { window.location.href = 'index.html'; }
 function viewProfile(){ if(currentShopId) window.location.href=`profile.html?id=${currentShopId}`; }
 
 // ========== DRAWER FUNCTIONS ==========
@@ -768,8 +796,6 @@ function closeDrawer() {
 }
 
 // ========== DRAWER MENU RENDER ==========
-let adsDropdownOpen = false;
-
 async function renderDrawerMenu() {
     const container = document.getElementById('drawerMenu');
     if (!container) return;
@@ -1040,6 +1066,7 @@ function extractYoutubeVideoId(url) {
     return null;
 }
 
+// ========== সেভ শপ ডাটা ফাংশন ==========
 async function saveShopData() {
     if(!currentShopId) return;
     const shopName=document.getElementById('shopName').value.trim();
@@ -1053,15 +1080,31 @@ async function saveShopData() {
     if(!area) return showErrorToast('ঠিকানা দিন!');
     if(!phone) return showErrorToast('মোবাইল নম্বর দিন!');
     const youtubeVideoId = extractYoutubeVideoId(youtubeUrl);
-    const btn=document.getElementById('saveBtn'); 
-    btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> সেভ হচ্ছে...'; btn.disabled = true;
+    
+    showErrorToast('⏳ তথ্য সংরক্ষণ হচ্ছে...');
+    
     try {
-        await db.ref('shops/'+currentShopId).update({ shopName, ownerName, description: document.getElementById('description').value.trim(), area, phone, whatsapp: document.getElementById('whatsapp').value.trim(), telegram: document.getElementById('telegram').value.trim(), youtube: youtubeUrl, youtubeVideoId: youtubeVideoId, category: selectedCategories, updatedAt: Date.now() });
+        await db.ref('shops/'+currentShopId).update({
+            shopName, 
+            ownerName, 
+            description: document.getElementById('description').value.trim(),
+            area, 
+            phone, 
+            whatsapp: document.getElementById('whatsapp').value.trim(),
+            telegram: document.getElementById('telegram').value.trim(),
+            youtube: youtubeUrl,
+            youtubeVideoId: youtubeVideoId,
+            category: selectedCategories,
+            updatedAt: Date.now()
+        });
         document.getElementById('headerShopName').innerHTML = shopName;
-        showErrorToast('✅ তথ্য সংরক্ষণ হয়েছে!');
+        showErrorToast('✅ দোকানের তথ্য সফলভাবে সংরক্ষণ হয়েছে!');
+        
+        // ড্রয়ার মেনু রিফ্রেশ করুন
         await renderDrawerMenu();
-    } catch(e) { showErrorToast('সংরক্ষণ ব্যর্থ!'); }
-    btn.innerHTML = '<i class="fas fa-save"></i> সেভ করুন'; btn.disabled = false;
+    } catch(e) { 
+        showErrorToast('⚠️ সংরক্ষণ ব্যর্থ! আবার চেষ্টা করুন।'); 
+    }
 }
 
 async function loadProducts() {
@@ -1088,6 +1131,9 @@ function renderProductList() {
         container.appendChild(div);
     });
     attachProductEvents();
+    
+    // রিফ্রেশ বাটন ইভেন্ট
+    document.getElementById('productListRefreshBtn')?.addEventListener('click', loadProducts);
 }
 
 function attachProductEvents() {
@@ -1219,6 +1265,7 @@ function updateTickerPreview(items){ document.getElementById('tickerPreview').in
 async function saveTicker(){ let val=document.getElementById('tickerInput').value.trim(); if(!val){ showErrorToast('কিছু লিখুন!'); return; } let items=val.includes(',')?val.split(',').map(s=>s.trim()).filter(s=>s):[val]; if(!items.length) return; await db.ref(`tickers/${currentShopId}`).set(items); updateTickerPreview(items); showErrorToast('টিকার আপডেট হয়েছে!'); }
 async function resetTicker(){ const def=["✨ EXCLUSIVE DROP : AI COLLECTION","🚀 UP TO 40% OFF","💜 FREE SHIPPING","⚡ LIMITED EDITION"]; await db.ref(`tickers/${currentShopId}`).set(def); document.getElementById('tickerInput').value=def.join(', '); updateTickerPreview(def); showErrorToast('ডিফল্ট টিকার রিসেট হয়েছে!'); }
 
+// ========== INITIALIZATION ==========
 auth.onAuthStateChanged(async user=>{
     if(!user){ window.location.href = 'login.html'; return; }
     currentShopId=user.uid;
@@ -1246,7 +1293,6 @@ auth.onAuthStateChanged(async user=>{
             renderSelectedCategoriesChips(); updateCategoryDisplayText();
         }
         
-        // রেন্ডার ড্রয়ার মেনু
         await renderDrawerMenu();
     }
     loadProducts(); 
