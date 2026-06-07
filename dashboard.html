@@ -58,7 +58,6 @@
     background: linear-gradient(135deg, #ffffff, #faf8ff);
   }
   
-  /* 3D Animated Text Styles */
   .animated-shop-name {
     font-size: 24px;
     font-weight: 800;
@@ -82,31 +81,15 @@
   }
   
   @keyframes float3D {
-    0% {
-      transform: translateY(0px) rotateX(0deg);
-      text-shadow: 0 2px 5px rgba(108,43,217,0.2);
-    }
-    50% {
-      transform: translateY(-8px) rotateX(5deg);
-      text-shadow: 0 8px 15px rgba(108,43,217,0.4), 0 0 10px rgba(162,89,247,0.3);
-      background: linear-gradient(135deg, var(--primary), var(--primary-light), var(--accent));
-      -webkit-background-clip: text;
-      background-clip: text;
-    }
-    100% {
-      transform: translateY(0px) rotateX(0deg);
-      text-shadow: 0 2px 5px rgba(108,43,217,0.2);
-    }
+    0% { transform: translateY(0px) rotateX(0deg); text-shadow: 0 2px 5px rgba(108,43,217,0.2); }
+    50% { transform: translateY(-8px) rotateX(5deg); text-shadow: 0 8px 15px rgba(108,43,217,0.4), 0 0 10px rgba(162,89,247,0.3); background: linear-gradient(135deg, var(--primary), var(--primary-light), var(--accent)); -webkit-background-clip: text; background-clip: text; }
+    100% { transform: translateY(0px) rotateX(0deg); text-shadow: 0 2px 5px rgba(108,43,217,0.2); }
   }
   
-  .dashboard-header h2 {
-    perspective: 500px;
-    transform-style: preserve-3d;
-  }
-  
+  .dashboard-header h2 { perspective: 500px; transform-style: preserve-3d; }
   .content { padding:0 16px 100px; }
   
-  /* Shop ID Banner */
+  /* Shop ID Banner - নিচে সরানো হয়েছে */
   .shop-id-banner {
     background: linear-gradient(135deg, var(--primary-soft), #e8e0ff);
     margin: 16px;
@@ -125,9 +108,6 @@
     justify-content: center;
     gap: 8px;
   }
-  .shop-id-label i {
-    font-size: 16px;
-  }
   .shop-id-value {
     font-family: monospace;
     font-size: 14px;
@@ -143,10 +123,6 @@
     gap: 10px;
     flex-wrap: wrap;
   }
-  .shop-id-value span {
-    flex: 1;
-    font-size: 13px;
-  }
   .copy-id-btn {
     background: var(--primary);
     color: white;
@@ -161,194 +137,93 @@
     gap: 6px;
     transition: all 0.2s;
   }
-  .copy-id-btn:hover {
-    background: var(--primary-dark);
-    transform: scale(1.02);
-  }
-  .shop-id-message {
-    font-size: 12px;
-    color: var(--primary);
-    margin-top: 10px;
-    font-weight: 500;
-    line-height: 1.5;
-  }
+  .copy-id-btn:hover { background: var(--primary-dark); transform: scale(1.02); }
   
-  /* ========== আমার বিজ্ঞাপন সমূহ ========== */
-  .ads-section {
-    margin: 16px;
-  }
-  .ads-title {
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--primary);
+  /* ড্রপডাউন মেনু স্টাইল */
+  .dropdown-container {
+    position: relative;
     margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
   }
-  .ad-card {
-    background: white;
-    border-radius: 20px;
-    padding: 16px;
-    margin-bottom: 12px;
-    border: 1px solid var(--border-light);
-    transition: all 0.2s;
-  }
-  .ad-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--card-shadow);
-  }
-  .ad-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .ad-icon {
-    font-size: 28px;
-  }
-  .ad-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text);
-  }
-  .ad-status {
-    font-size: 11px;
-    padding: 4px 12px;
-    border-radius: 99px;
-    font-weight: 600;
-  }
-  .ad-status.active { background: #e8faf0; color: #059669; }
-  .ad-status.expired { background: #fee8e8; color: #dc2626; }
-  .ad-status.pending { background: #fff8e5; color: #d97706; }
-  .ad-details {
-    font-size: 13px;
-    color: var(--text-light);
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid #f0ebff;
-  }
-  .ad-details span {
-    display: inline-block;
-    margin-right: 16px;
-  }
-  .renew-small-btn {
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 6px 16px;
-    border-radius: 30px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .renew-small-btn:hover {
-    background: var(--primary-dark);
-    transform: scale(1.02);
-  }
-  .no-ads {
-    text-align: center;
-    padding: 40px;
-    background: white;
-    border-radius: 20px;
-    color: var(--text-light);
-  }
-  
-  /* প্রিমিয়াম স্ট্যাটাস কার্ড */
-  .premium-status-card {
-    background: linear-gradient(135deg, #fff8e5, #fff4d6);
-    border-radius: 20px;
-    padding: 16px;
-    margin: 16px;
-    border: 1px solid rgba(240,192,64,0.3);
-  }
-  .premium-status-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 12px;
-  }
-  .premium-status-title {
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--primary);
-  }
-  .premium-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: linear-gradient(135deg, #ffd700, #ffcc00);
-    color: #1a0a3e;
-    padding: 4px 12px;
-    border-radius: 99px;
-    font-size: 13px;
-    font-weight: 800;
-  }
-  .premium-stats {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-top: 10px;
-  }
-  .premium-stat {
-    flex: 1;
-    text-align: center;
-  }
-  .premium-stat-value {
-    font-size: 28px;
-    font-weight: 800;
-    color: var(--primary);
-  }
-  .premium-stat-label {
-    font-size: 11px;
-    color: var(--text-light);
-  }
-  .renew-btn {
+  .dropdown-btn {
     background: linear-gradient(135deg, var(--primary), var(--primary-light));
-    color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 40px;
+    border-radius: 50px;
+    padding: 14px 20px;
     font-size: 14px;
     font-weight: 600;
+    color: white;
     cursor: pointer;
-    width: 100%;
-    margin-top: 12px;
-    transition: all 0.2s;
-  }
-  .renew-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(108,43,217,0.3);
-  }
-  .expiry-warning {
-    background: #fee8e8;
-    color: #dc2626;
-    padding: 8px 12px;
-    border-radius: 12px;
-    font-size: 12px;
-    margin-top: 10px;
-    text-align: center;
-  }
-  
-  /* Payment Status Badge */
-  .payment-badge {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 3px 10px;
-    border-radius: 99px;
-    font-size: 11px;
-    font-weight: 600;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    transition: var(--transition);
+    box-shadow: 0 4px 12px rgba(108,43,217,0.25);
   }
-  .payment-badge.paid { background: #e8faf0; color: #059669; }
-  .payment-badge.pending { background: #fff8e5; color: #d97706; }
-  .payment-badge.expired { background: #fee8e8; color: #dc2626; }
+  .dropdown-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(108,43,217,0.35);
+  }
+  .dropdown-icon-arrow {
+    transition: transform 0.3s ease;
+  }
+  .dropdown-icon-arrow.open {
+    transform: rotate(180deg);
+  }
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    z-index: 100;
+    margin-top: 8px;
+    overflow: hidden;
+    display: none;
+    border: 1px solid var(--border-light);
+  }
+  .dropdown-menu.show {
+    display: block;
+    animation: fadeInDown 0.3s ease;
+  }
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .dropdown-item {
+    padding: 16px;
+    border-bottom: 1px solid #f0ebff;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .dropdown-item:last-child {
+    border-bottom: none;
+  }
+  .dropdown-item:hover {
+    background: #f8f6ff;
+  }
+  .dropdown-item-title {
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .dropdown-item-status {
+    font-size: 12px;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .status-active { color: #2ecc71; }
+  .status-expired { color: #dc2626; }
+  .status-pending { color: #f0c040; }
   
   /* Glass Button */
   .btn-glass {
@@ -392,7 +267,7 @@
     gap: 10px;
     width: 100%;
     transition: var(--transition);
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     box-shadow: 0 4px 12px rgba(108,43,217,0.25);
   }
   .btn-gradient-main:hover {
@@ -406,9 +281,7 @@
     margin-top: 10px;
     animation: fadeInUp 0.4s ease;
   }
-  .edit-options-container.show {
-    display: block;
-  }
+  .edit-options-container.show { display: block; }
   @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -436,21 +309,9 @@
     background: var(--primary-soft);
     transform: translateX(5px);
   }
-  .option-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .option-left i {
-    font-size: 18px;
-    color: var(--primary);
-    width: 24px;
-  }
-  .toggle-icon {
-    font-size: 14px;
-    color: var(--primary-light);
-    transition: transform 0.2s;
-  }
+  .option-left { display: flex; align-items: center; gap: 12px; }
+  .option-left i { font-size: 18px; color: var(--primary); width: 24px; }
+  .toggle-icon { font-size: 14px; color: var(--primary-light); transition: transform 0.2s; }
   
   /* Content Panel */
   .option-content-panel {
@@ -463,9 +324,7 @@
     border: 1px solid var(--border-light);
     animation: slideDown 0.3s ease;
   }
-  .option-content-panel.show {
-    display: block;
-  }
+  .option-content-panel.show { display: block; }
   @keyframes slideDown {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -473,13 +332,7 @@
   
   /* Form Inputs */
   .input-group { margin-bottom: 16px; }
-  .input-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 6px;
-    display: block;
-  }
+  .input-label { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 6px; display: block; }
   .input-field {
     width: 100%;
     padding: 12px 14px;
@@ -514,18 +367,9 @@
     border-color: var(--primary);
     background: var(--primary-soft);
   }
-  .category-selected-text {
-    font-size: 14px;
-    color: var(--text);
-  }
-  .category-placeholder {
-    color: #aaa;
-    font-size: 14px;
-  }
-  .category-arrow {
-    color: var(--primary-light);
-    font-size: 12px;
-  }
+  .category-selected-text { font-size: 14px; color: var(--text); }
+  .category-placeholder { color: #aaa; font-size: 14px; }
+  .category-arrow { color: var(--primary-light); font-size: 12px; }
   
   .selected-categories-container {
     display: flex;
@@ -544,15 +388,8 @@
     font-weight: 500;
     color: var(--primary-dark);
   }
-  .selected-cat-chip i {
-    cursor: pointer;
-    font-size: 12px;
-    color: #999;
-    transition: color 0.2s;
-  }
-  .selected-cat-chip i:hover {
-    color: #e74c3c;
-  }
+  .selected-cat-chip i { cursor: pointer; font-size: 12px; color: #999; transition: color 0.2s; }
+  .selected-cat-chip i:hover { color: #e74c3c; }
   
   /* Buttons */
   .btn-small-green {
@@ -612,11 +449,7 @@
     font-size: 12px;
     font-family: monospace;
   }
-  .slider-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-  }
+  .slider-actions { display: flex; gap: 8px; margin-top: 8px; }
   .slider-save-btn {
     background: var(--primary);
     color: white;
@@ -627,9 +460,7 @@
     font-size: 12px;
     font-weight: 600;
   }
-  .slider-save-btn:hover {
-    background: var(--primary-dark);
-  }
+  .slider-save-btn:hover { background: var(--primary-dark); }
   .slider-delete-btn {
     background: #dc2626;
     color: white;
@@ -640,14 +471,8 @@
     font-size: 12px;
     font-weight: 600;
   }
-  .slider-delete-btn:hover {
-    background: #b91c1c;
-  }
-  .slider-info {
-    font-size: 11px;
-    color: #888;
-    margin-top: 6px;
-  }
+  .slider-delete-btn:hover { background: #b91c1c; }
+  .slider-info { font-size: 11px; color: #888; margin-top: 6px; }
   
   /* Ticker Preview */
   .ticker-preview {
@@ -659,6 +484,19 @@
     color: #f0eaff;
     font-size: 12px;
   }
+  
+  /* Status Badge */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .status-badge.approved { background: #e8faf0; color: #2ecc71; }
   
   /* Bottom Navigation */
   .bottom-nav {
@@ -726,46 +564,15 @@
     border: 2px solid var(--primary-light);
     animation: popupShow 0.3s ease forwards;
   }
-  .success-toast i {
-    font-size: 48px;
-    color: #2ecc71;
-    display: block;
-    margin-bottom: 16px;
-  }
-  .success-toast .toast-title {
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--primary);
-    margin-bottom: 12px;
-  }
-  .success-toast .toast-message {
-    font-size: 14px;
-    line-height: 1.6;
-    color: #4a4a5a;
-  }
-  .success-toast .toast-close {
-    margin-top: 20px;
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 10px 24px;
-    border-radius: 40px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-  }
+  .success-toast i { font-size: 48px; color: #2ecc71; display: block; margin-bottom: 16px; }
+  .success-toast .toast-title { font-size: 20px; font-weight: 800; color: var(--primary); margin-bottom: 12px; }
+  .success-toast .toast-message { font-size: 14px; line-height: 1.6; color: #4a4a5a; }
+  .success-toast .toast-close { margin-top: 20px; background: var(--primary); color: white; border: none; padding: 10px 24px; border-radius: 40px; font-size: 13px; font-weight: 600; cursor: pointer; }
   @keyframes popupShow {
-    from {
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(0.9);
-    }
-    to {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
   }
   
-  /* Error Toast */
   .error-toast {
     position: fixed;
     top: 80px;
@@ -781,14 +588,6 @@
     animation: fadeToast 2.5s ease forwards;
     white-space: nowrap;
   }
-  @keyframes fadeToast {
-    0% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-    15% { opacity: 1; transform: translateX(-50%) translateY(0); }
-    85% { opacity: 1; transform: translateX(-50%) translateY(0); }
-    100% { opacity: 0; transform: translateX(-50%) translateY(-20px); visibility: hidden; }
-  }
-  
-  /* Logout Toast */
   .logout-toast {
     position: fixed;
     top: 80px;
@@ -807,6 +606,12 @@
     animation: fadeToast 2.5s ease forwards;
     white-space: nowrap;
   }
+  @keyframes fadeToast {
+    0% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+    15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-20px); visibility: hidden; }
+  }
 </style>
 </head>
 <body>
@@ -820,66 +625,24 @@
 
 <div class="content" id="mainContent" style="display:none">
     
-    <!-- Shop ID Banner -->
-    <div class="shop-id-banner">
-        <div class="shop-id-label">
-            <i class="fas fa-fingerprint"></i>
-            <span>🆔 আপনার দোকানের প্রোফাইল আইডি</span>
-        </div>
-        <div class="shop-id-value">
-            <span id="shopIdDisplay">লোড হচ্ছে...</span>
-            <button class="copy-id-btn" onclick="copyShopId()">
-                <i class="fas fa-copy"></i> কপি করুন
-            </button>
-        </div>
-        <div class="shop-id-message">
-            <i class="fas fa-info-circle"></i> আপনার দোকান প্রমোট করানোর ক্ষেত্রে এই আইডি প্রয়োজন হবে।
-        </div>
-    </div>
-
-    <!-- ========== আমার বিজ্ঞাপন সমূহ ========== -->
-    <div class="ads-section">
-        <div class="ads-title">
-            <i class="fas fa-bullhorn"></i> আমার বিজ্ঞাপন সমূহ
-        </div>
-        <div id="myAdsContainer">
-            <div style="text-align:center; padding:20px;">🌀 লোড হচ্ছে...</div>
-        </div>
-    </div>
-
-    <!-- প্রিমিয়াম স্ট্যাটাস কার্ড (স্টার প্যাকেজ) -->
-    <div class="premium-status-card" id="premiumStatusCard">
-        <div class="premium-status-header">
-            <div class="premium-status-title">⭐ স্টার প্যাকেজ স্ট্যাটাস</div>
-            <div class="premium-badge" id="starBadge">⭐ 0 স্টার</div>
-        </div>
-        <div class="premium-stats">
-            <div class="premium-stat">
-                <div class="premium-stat-value" id="starCount">0</div>
-                <div class="premium-stat-label">মোট স্টার</div>
-            </div>
-            <div class="premium-stat">
-                <div class="premium-stat-value" id="starExpiry">--</div>
-                <div class="premium-stat-label">মেয়াদ শেষ</div>
-            </div>
-            <div class="premium-stat">
-                <div class="premium-stat-value" id="starPaymentStatusBadge">⏳ পেন্ডিং</div>
-                <div class="premium-stat-label">পেমেন্ট স্ট্যাটাস</div>
-            </div>
-        </div>
-        <button class="renew-btn" id="renewStarBtn" onclick="requestRenewal('star')">
-            <i class="fas fa-sync-alt"></i> স্টার প্যাকেজ রিনিউ / আপগ্রেড করুন
-        </button>
-        <div id="expiryWarning" class="expiry-warning" style="display:none;">
-            ⚠️ আপনার স্টার প্যাকেজের মেয়াদ প্রায় শেষ! দ্রুত রিনিউ করুন।
-        </div>
-    </div>
-
     <!-- Live Profile Button -->
     <button class="btn-glass" onclick="viewProfile()"><i class="fas fa-globe"></i> লাইভ প্রোফাইল দেখুন</button>
     
     <!-- Main Edit Button -->
     <button class="btn-gradient-main" id="mainEditBtn"><i class="fas fa-edit"></i> প্রোফাইল এডিট করুন</button>
+
+    <!-- ========== ড্রপডাউন মেনু বাটন ========== -->
+    <div class="dropdown-container">
+        <button class="dropdown-btn" id="adsDropdownBtn" onclick="toggleAdsDropdown()">
+            <span><i class="fas fa-bullhorn"></i> 📢 আমার বিজ্ঞাপন সমূহ</span>
+            <i class="fas fa-chevron-down dropdown-icon-arrow" id="dropdownArrow"></i>
+        </button>
+        <div class="dropdown-menu" id="adsDropdownMenu">
+            <div id="dropdownContent">
+                <div style="text-align:center; padding:20px;">🌀 লোড হচ্ছে...</div>
+            </div>
+        </div>
+    </div>
 
     <!-- Edit Options Container -->
     <div id="editOptionsContainer" class="edit-options-container">
@@ -933,7 +696,7 @@
             </div>
         </div>
         
-        <!-- Option 4: ইমেজ স্লাইডার (Updated with Save Button) -->
+        <!-- Option 4: ইমেজ স্লাইডার -->
         <div>
             <div class="option-btn" onclick="toggleOptionPanel('sliderPanel')">
                 <div class="option-left">
@@ -983,6 +746,20 @@
                     <small style="font-size: 10px; color: #888; display: block; margin-top: 4px;">💡 এই লিংকটি হোমপেজে ভিডিও আকারে দেখানো হবে</small>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Shop ID Banner - সবার নিচে -->
+    <div class="shop-id-banner">
+        <div class="shop-id-label">
+            <i class="fas fa-fingerprint"></i>
+            <span>🆔 আপনার দোকানের প্রোফাইল আইডি</span>
+        </div>
+        <div class="shop-id-value">
+            <span id="shopIdDisplay">লোড হচ্ছে...</span>
+            <button class="copy-id-btn" onclick="copyShopId()">
+                <i class="fas fa-copy"></i> কপি করুন
+            </button>
         </div>
     </div>
 </div>
@@ -1043,10 +820,7 @@ function showSuccessPopup() {
         <button class="toast-close" onclick="this.parentElement.remove()">ঠিক আছে</button>
     `;
     document.body.appendChild(popup);
-    
-    setTimeout(() => {
-        if (popup && popup.remove) popup.remove();
-    }, 5000);
+    setTimeout(() => { if (popup && popup.remove) popup.remove(); }, 5000);
 }
 
 function goHome() { window.location.href = 'index.html'; }
@@ -1055,106 +829,144 @@ function viewProfile(){ if(currentShopId) window.location.href=`profile.html?id=
 window.copyShopId = function() {
     const shopId = currentShopId;
     if (shopId) {
-        navigator.clipboard.writeText(shopId).then(() => {
-            showSuccessPopup();
-        }).catch(() => {
-            showErrorToast('⚠️ কপি করতে সমস্যা হয়েছে!');
-        });
-    } else {
-        showErrorToast('⚠️ Shop ID পাওয়া যায়নি!');
-    }
+        navigator.clipboard.writeText(shopId).then(() => { showSuccessPopup(); }).catch(() => { showErrorToast('⚠️ কপি করতে সমস্যা হয়েছে!'); });
+    } else { showErrorToast('⚠️ Shop ID পাওয়া যায়নি!'); }
 };
 
-// ========== রিনিউ রিকোয়েস্ট ফাংশন ==========
-function requestRenewal(type) {
-    let message = '';
-    if (type === 'star') {
-        message = `হ্যালো, আমি আমার স্টার প্যাকেজ রিনিউ করতে চাই। আমার Shop ID: ${currentShopId}`;
-    } else if (type === 'slider') {
-        message = `হ্যালো, আমি আমার স্লাইডার প্যাকেজ রিনিউ করতে চাই। আমার Shop ID: ${currentShopId}`;
-    } else if (type === 'video') {
-        message = `হ্যালো, আমি আমার ভিডিও প্যাকেজ রিনিউ করতে চাই। আমার Shop ID: ${currentShopId}`;
-    }
-    
-    // অ্যাডমিনকে WhatsApp এ মেসেজ পাঠানোর জন্য
-    const phoneNumber = "8801XXXXXXXXX"; // আপনার নম্বর দিন
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-    
-    showErrorToast('📞 রিনিউ করতে অ্যাডমিনকে কল করুন: 01XXXXXXXXX');
+// ========== ড্রপডাউন মেনু ফাংশন ==========
+function toggleAdsDropdown() {
+    const menu = document.getElementById('adsDropdownMenu');
+    const arrow = document.getElementById('dropdownArrow');
+    menu.classList.toggle('show');
+    arrow.classList.toggle('open');
 }
 
-// ========== আমার বিজ্ঞাপন লোড ফাংশন ==========
-async function loadMyAds() {
-    const container = document.getElementById('myAdsContainer');
+// বাইরে ক্লিক করলে ড্রপডাউন বন্ধ হবে
+document.addEventListener('click', function(e) {
+    const container = document.querySelector('.dropdown-container');
+    if (container && !container.contains(e.target)) {
+        document.getElementById('adsDropdownMenu').classList.remove('show');
+        document.getElementById('dropdownArrow').classList.remove('open');
+    }
+});
+
+// ========== ড্রপডাউন কন্টেন্ট লোড ==========
+async function loadAdsDropdown() {
+    const container = document.getElementById('dropdownContent');
     if (!container) return;
     
-    let adsHtml = '';
+    let html = '';
     let hasAnyAd = false;
     
-    // 1. স্লাইডার চেক করুন
+    // 1. স্টার প্যাকেজ
+    const stars = currentShopData?.stars || 0;
+    const starEndDate = currentShopData?.starEndDate;
+    const starStatus = currentShopData?.starPaymentStatus || 'pending';
+    let starStatusClass = '', starStatusText = '';
+    if (starStatus === 'paid') { starStatusClass = 'status-active'; starStatusText = '✅ সক্রিয়'; }
+    else if (starStatus === 'expired') { starStatusClass = 'status-expired'; starStatusText = '❌ মেয়াদ উত্তীর্ণ'; }
+    else { starStatusClass = 'status-pending'; starStatusText = '⏳ পেন্ডিং'; }
+    
+    html += `
+        <div class="dropdown-item" onclick="showAdDetails('star')">
+            <div class="dropdown-item-title">
+                <i class="fas fa-star" style="color:#ffd700;"></i> ⭐ স্টার প্যাকেজ
+            </div>
+            <div class="dropdown-item-status">
+                <span class="${starStatusClass}">${starStatusText}</span>
+                ${stars > 0 ? `<span>⭐ ${stars} স্টার</span>` : ''}
+                ${starEndDate ? `<span>📅 মেয়াদ: ${starEndDate}</span>` : ''}
+            </div>
+        </div>
+    `;
+    if (stars > 0) hasAnyAd = true;
+    
+    // 2. ইমেজ স্লাইডার
     const sliderSnap = await db.ref('slider').once('value');
+    let hasSlider = false;
     sliderSnap.forEach(child => {
         const ad = child.val();
         if (ad.shopId === currentShopId) {
+            hasSlider = true;
             hasAnyAd = true;
-            const statusClass = ad.paymentStatus === 'paid' ? 'active' : (ad.paymentStatus === 'expired' ? 'expired' : 'pending');
+            const statusClass = ad.paymentStatus === 'paid' ? 'status-active' : (ad.paymentStatus === 'expired' ? 'status-expired' : 'status-pending');
             const statusText = ad.paymentStatus === 'paid' ? '✅ সক্রিয়' : (ad.paymentStatus === 'expired' ? '❌ মেয়াদ উত্তীর্ণ' : '⏳ পেন্ডিং');
-            adsHtml += `
-                <div class="ad-card">
-                    <div class="ad-header">
-                        <div class="ad-icon">🖼️</div>
-                        <div class="ad-title">ইমেজ স্লাইডার - অবস্থান ${ad.position || '?'}</div>
-                        <div class="ad-status ${statusClass}">${statusText}</div>
+            html += `
+                <div class="dropdown-item" onclick="showAdDetails('slider')">
+                    <div class="dropdown-item-title">
+                        <i class="fas fa-images"></i> 🖼️ ইমেজ স্লাইডার
                     </div>
-                    <div class="ad-details">
-                        <span><i class="fas fa-calendar"></i> ${ad.startDate || 'নির্ধারিত নেই'} - ${ad.endDate || 'অনির্দিষ্ট'}</span>
-                        <span><i class="fas fa-taka"></i> ${ad.amount || 0} ৳</span>
+                    <div class="dropdown-item-status">
+                        <span class="${statusClass}">${statusText}</span>
+                        <span>📍 অবস্থান: ${ad.position || '?'}</span>
+                        ${ad.endDate ? `<span>📅 মেয়াদ: ${ad.endDate}</span>` : ''}
                     </div>
-                    <button class="renew-small-btn" onclick="requestRenewal('slider')">
-                        <i class="fas fa-sync-alt"></i> রিনিউ / আপগ্রেড
-                    </button>
                 </div>
             `;
         }
     });
     
-    // 2. ভিডিও চেক করুন
+    if (!hasSlider) {
+        html += `
+            <div class="dropdown-item" onclick="showAdDetails('slider')">
+                <div class="dropdown-item-title">
+                    <i class="fas fa-images"></i> 🖼️ ইমেজ স্লাইডার
+                </div>
+                <div class="dropdown-item-status">
+                    <span class="status-pending">📢 কোনো স্লাইডার বিজ্ঞাপন নেই</span>
+                </div>
+            </div>
+        `;
+    }
+    
+    // 3. ভিডিও প্লেয়ার
     const videoSnap = await db.ref('adminVideos').once('value');
+    let hasVideo = false;
     videoSnap.forEach(child => {
         const ad = child.val();
         if (ad.shopId === currentShopId) {
+            hasVideo = true;
             hasAnyAd = true;
-            const statusClass = ad.paymentStatus === 'paid' ? 'active' : (ad.paymentStatus === 'expired' ? 'expired' : 'pending');
+            const statusClass = ad.paymentStatus === 'paid' ? 'status-active' : (ad.paymentStatus === 'expired' ? 'status-expired' : 'status-pending');
             const statusText = ad.paymentStatus === 'paid' ? '✅ সক্রিয়' : (ad.paymentStatus === 'expired' ? '❌ মেয়াদ উত্তীর্ণ' : '⏳ পেন্ডিং');
-            adsHtml += `
-                <div class="ad-card">
-                    <div class="ad-header">
-                        <div class="ad-icon">🎬</div>
-                        <div class="ad-title">ক্লাউডিনারি ভিডিও</div>
-                        <div class="ad-status ${statusClass}">${statusText}</div>
+            html += `
+                <div class="dropdown-item" onclick="showAdDetails('video')">
+                    <div class="dropdown-item-title">
+                        <i class="fas fa-video"></i> 🎬 ভিডিও প্লেয়ার
                     </div>
-                    <div class="ad-details">
-                        <span><i class="fas fa-calendar"></i> ${ad.startDate || 'নির্ধারিত নেই'} - ${ad.endDate || 'অনির্দিষ্ট'}</span>
-                        <span><i class="fas fa-taka"></i> ${ad.amount || 5000} ৳</span>
-                        <span><i class="fas fa-video"></i> ${ad.title || 'ভিডিও'}</span>
+                    <div class="dropdown-item-status">
+                        <span class="${statusClass}">${statusText}</span>
+                        <span>📹 ${ad.title || 'ভিডিও'}</span>
+                        ${ad.endDate ? `<span>📅 মেয়াদ: ${ad.endDate}</span>` : ''}
                     </div>
-                    <button class="renew-small-btn" onclick="requestRenewal('video')">
-                        <i class="fas fa-sync-alt"></i> রিনিউ / আপগ্রেড
-                    </button>
                 </div>
             `;
         }
     });
     
-    if (!hasAnyAd) {
-        container.innerHTML = `<div class="no-ads">
-            <div style="font-size: 48px; margin-bottom: 12px;">📢</div>
-            <div>আপনার এখনো কোনো বিজ্ঞাপন নেই!</div>
-            <div style="font-size: 12px; margin-top: 8px;">বিজ্ঞাপন নিতে অ্যাডমিনের সাথে যোগাযোগ করুন।</div>
-        </div>`;
-    } else {
-        container.innerHTML = adsHtml;
+    if (!hasVideo) {
+        html += `
+            <div class="dropdown-item" onclick="showAdDetails('video')">
+                <div class="dropdown-item-title">
+                    <i class="fas fa-video"></i> 🎬 ভিডিও প্লেয়ার
+                </div>
+                <div class="dropdown-item-status">
+                    <span class="status-pending">📢 কোনো ভিডিও বিজ্ঞাপন নেই</span>
+                </div>
+            </div>
+        `;
+    }
+    
+    container.innerHTML = html;
+}
+
+function showAdDetails(type) {
+    if (type === 'star') {
+        showErrorToast('⭐ স্টার প্যাকেজ রিনিউ করতে অ্যাডমিনকে কল করুন: 01XXXXXXXXX');
+    } else if (type === 'slider') {
+        showErrorToast('🖼️ স্লাইডার প্যাকেজ রিনিউ করতে অ্যাডমিনকে কল করুন: 01XXXXXXXXX');
+    } else if (type === 'video') {
+        showErrorToast('🎬 ভিডিও প্যাকেজ রিনিউ করতে অ্যাডমিনকে কল করুন: 01XXXXXXXXX');
     }
 }
 
@@ -1197,9 +1009,7 @@ async function loadCategoriesForDashboard() {
     try {
         const res = await fetch(CATEGORIES_JSON_URL);
         categoriesList = await res.json();
-    } catch (error) {
-        categoriesList = [];
-    }
+    } catch (error) { categoriesList = []; }
 }
 
 function renderSelectedCategoriesChips() {
@@ -1355,27 +1165,20 @@ async function loadSlides() {
     slidesData = [];
     if(snap.exists()){ 
         const data = snap.val();
-        if(Array.isArray(data)) {
-            slidesData = data;
-        } else if(typeof data === 'object') {
-            slidesData = Object.values(data);
-        }
+        if(Array.isArray(data)) { slidesData = data; }
+        else if(typeof data === 'object') { slidesData = Object.values(data); }
     }
-    if(!slidesData.length){ 
-        slidesData = [];
-    }
+    if(!slidesData.length){ slidesData = []; }
     renderSliderList();
 }
 
 function renderSliderList() { 
     const container = document.getElementById('sliderListContainer'); 
     if(!container) return;
-    
     if(slidesData.length === 0) {
         container.innerHTML = '<div class="slider-item" style="text-align:center; color:#888;">➕ নতুন স্লাইড যোগ করুন</div>';
         return;
     }
-    
     container.innerHTML = ''; 
     slidesData.forEach((s, idx) => { 
         const imageUrl = s.image || '';
@@ -1405,13 +1208,8 @@ function renderSliderList() {
 async function saveSingleSlide(index) {
     const inputField = document.getElementById(`slide-input-${index}`);
     if(!inputField) return;
-    
     const newImageUrl = inputField.value.trim();
-    if(!newImageUrl) {
-        showErrorToast('⚠️ ইমেজ লিংক দিন!');
-        return;
-    }
-    
+    if(!newImageUrl) { showErrorToast('⚠️ ইমেজ লিংক দিন!'); return; }
     slidesData[index] = { image: newImageUrl };
     await db.ref(`sliders/${currentShopId}`).set(slidesData);
     renderSliderList();
@@ -1428,7 +1226,6 @@ async function deleteSingleSlide(index) {
         }
         return;
     }
-    
     if(confirm('এই স্লাইডটি ডিলিট করবেন?')) {
         slidesData.splice(index, 1);
         await db.ref(`sliders/${currentShopId}`).set(slidesData);
@@ -1469,49 +1266,6 @@ function updateTickerPreview(items){ document.getElementById('tickerPreview').in
 async function saveTicker(){ let val=document.getElementById('tickerInput').value.trim(); if(!val){ showErrorToast('কিছু লিখুন!'); return; } let items=val.includes(',')?val.split(',').map(s=>s.trim()).filter(s=>s):[val]; if(!items.length) return; await db.ref(`tickers/${currentShopId}`).set(items); updateTickerPreview(items); showErrorToast('টিকার আপডেট হয়েছে!'); }
 async function resetTicker(){ const def=["✨ EXCLUSIVE DROP : AI COLLECTION","🚀 UP TO 40% OFF","💜 FREE SHIPPING","⚡ LIMITED EDITION"]; await db.ref(`tickers/${currentShopId}`).set(def); document.getElementById('tickerInput').value=def.join(', '); updateTickerPreview(def); showErrorToast('ডিফল্ট টিকার রিসেট হয়েছে!'); }
 
-// ========== প্রিমিয়াম স্ট্যাটাস আপডেট ফাংশন ==========
-function updatePremiumStatus(shopData) {
-    const stars = shopData.stars || 0;
-    const starEndDate = shopData.starEndDate;
-    const starPaymentStatus = shopData.starPaymentStatus || 'pending';
-    
-    document.getElementById('starCount').innerHTML = stars;
-    document.getElementById('starBadge').innerHTML = `⭐ ${stars} স্টার`;
-    
-    if (starEndDate) {
-        const endDate = new Date(starEndDate);
-        const today = new Date();
-        const daysLeft = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
-        
-        document.getElementById('starExpiry').innerHTML = starEndDate;
-        
-        const expiryWarning = document.getElementById('expiryWarning');
-        if (daysLeft <= 7 && daysLeft >= 0 && starPaymentStatus === 'paid') {
-            expiryWarning.style.display = 'block';
-            expiryWarning.innerHTML = `⚠️ আপনার স্টার প্যাকেজের মেয়াদ শেষ হতে ${daysLeft} দিন বাকি! দ্রুত রিনিউ করুন।`;
-        } else if (daysLeft < 0) {
-            expiryWarning.style.display = 'block';
-            expiryWarning.innerHTML = `❌ আপনার স্টার প্যাকেজের মেয়াদ উত্তীর্ণ হয়েছে! পুনরায় সক্রিয় করতে রিনিউ করুন।`;
-        } else {
-            expiryWarning.style.display = 'none';
-        }
-    } else {
-        document.getElementById('starExpiry').innerHTML = 'নির্ধারিত নেই';
-    }
-    
-    const statusBadge = document.getElementById('starPaymentStatusBadge');
-    if (starPaymentStatus === 'paid') {
-        statusBadge.innerHTML = '✅ পেইড';
-        statusBadge.className = 'premium-stat-value payment-badge paid';
-    } else if (starPaymentStatus === 'expired') {
-        statusBadge.innerHTML = '❌ মেয়াদ উত্তীর্ণ';
-        statusBadge.className = 'premium-stat-value payment-badge expired';
-    } else {
-        statusBadge.innerHTML = '⏳ পেন্ডিং';
-        statusBadge.className = 'premium-stat-value payment-badge pending';
-    }
-}
-
 auth.onAuthStateChanged(async user=>{
     if(!user){ window.location.href = 'login.html'; return; }
     currentShopId=user.uid;
@@ -1527,8 +1281,6 @@ auth.onAuthStateChanged(async user=>{
         currentShopData=snap.val();
         document.getElementById('headerShopName').innerHTML = currentShopData.shopName || 'দোকানের নাম';
         
-        updatePremiumStatus(currentShopData);
-        
         document.getElementById('shopName').value=currentShopData.shopName||'';
         document.getElementById('ownerName').value=currentShopData.ownerName||'';
         document.getElementById('description').value=currentShopData.description||'';
@@ -1543,11 +1295,10 @@ auth.onAuthStateChanged(async user=>{
             else { selectedCategoriesArray = [currentShopData.category]; }
             renderSelectedCategoriesChips(); updateCategoryDisplayText();
         }
+        
+        // ড্রপডাউন কন্টেন্ট লোড করুন
+        await loadAdsDropdown();
     }
-    
-    // আমার বিজ্ঞাপন লোড করুন
-    await loadMyAds();
-    
     loadProducts(); 
     await loadSlides(); 
     await loadTicker();
